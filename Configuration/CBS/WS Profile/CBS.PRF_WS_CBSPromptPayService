@@ -1,0 +1,502 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE webservices_profile SYSTEM "jar:/mz/dtd/webservices_profile.dtd">
+<webservices_profile category="Internal">
+   <storable name="webservices_profile" storable-id="dr.Configuration" ver="6.0">
+      <array classname="java.lang.String" name="Access Groups -read -write -execute" size="3">
+         <string name="0" value="All"/>
+         <string name="1" value="Administrator"/>
+         <string name="2" value="All"/>
+      </array>
+      <storable name="Auxiliary Data" null="true"/>
+      <string name="Current Comment" null="true"/>
+      <storable name="Data" storable-id="dr.WSProfileConfig" ver="15.0">
+         <string name="Binding name" value="CBSPromptPayServiceSoap"/>
+         <boolean name="Disable Underscore Binding Mode" value="false"/>
+         <boolean name="Disable Wrapper Style" value="false"/>
+         <boolean name="Enable JAAS" value="false"/>
+         <boolean name="Enable Username Token" value="false"/>
+         <boolean name="Enable WS Addressing" value="false"/>
+         <boolean name="Enforce RM" value="false"/>
+         <string name="JAAS Module" value="File Login Module"/>
+         <string name="JAAS Properties"><![CDATA[passwordFile /etc/passwd
+debug true
+]]></string>
+         <string name="Max Enum Members" value="256"/>
+         <boolean name="Populate OriginalData Field" value="false"/>
+         <string name="Port type" value="CBSPromptPayServicePortType"/>
+         <boolean name="Process Implicit SOAP Headers" value="false"/>
+         <string name="RM Store" value="In Memory"/>
+         <string name="Schema Bindings" value=""/>
+         <boolean name="Security Enabled" value="false"/>
+         <storable name="Security Settings" null="true"/>
+         <string name="Service Port name" value="CBSPromptPayServicePort"/>
+         <boolean name="Simple Mode Enabled" value="false"/>
+         <string name="TLS keystore file" value="cbsesbcert.jks"/>
+         <bytearray name="TLS keystore file content"><![CDATA[
+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
+7!;YGHSZ]8^/W;&YY!TG;+W4/FQK:%Q0`
+`
+]]></bytearray>
+         <password name="TLS keystore password" value="DR_DEFAULT_KEY-25FB75239B53E487605912194E971790"/>
+         <password name="Username Token Password" value="DR_DEFAULT_KEY-017BB0B8FB061C1876D43DD75468AA40"/>
+         <string name="Username Token Username" value=""/>
+         <list classname="java.util.LinkedList" name="concatenationFilePathList"/>
+         <string name="helper_class" value="ws.CBS.PRF_WS_CBSPromptPayService.WSHelperImpl"/>
+         <list classname="java.util.LinkedList" name="includeFiles"/>
+         <string name="inputAndOutputTypeName"><![CDATA[ws.CBS.PRF_WS_CBSPromptPayService.udr.AbstractCBSPromptPayServicePortTypeWSCycle]]></string>
+         <string name="properties"><![CDATA[# Advanced XML binding options can be customized here. If the properties are commented out, default values are used.
+
+#Enable JAXB Simple Binding Mode
+# When true, XSD Schemas of loaded WSDL files are compiled into Java code using the experimental "Simple and better binding mode". This is necessary for some complex types, for instance when duplicate element names are used within the same complex type.
+enable_JAXB_simple_binding false
+
+#Disable JAXWS Wrapper style Mode
+# When true, the cycle UDR will contain request and response parameters that wrap all the arguments in request and response UDRs.
+disable_JAXWS_wrapper_mode false
+
+#Enable Processing Of Implicit Soap Header
+# When true, any SOAP headers defined in the binding section of WSDL files are compiled into Java code. This is necessary in order to manipulate the SOAP headers in outgoing Web Service requests. 
+enable_processing_of_implicit_SOAP_header false
+
+#Disable Underscore Binding Mode
+# When false, underscore binding mode is true, JAXB will not strip underscore from the element names when converting a WSDL file to Java.
+disable_under_score_binding false
+
+#Populate originaldata field
+# When true the OriginalData field in the WSCycleUDR will be populated with the content of the SOAP request
+populate_originaldata_field false
+
+#Max enum members
+# Sets the value for the typesafeEnumMaxMembers jaxb global variable which controls the maximum number of allowed enum members
+max_enum_members 256
+
+#Schema level bindings
+# Sets the jaxb schema level bindings per xsd file. The format is [filename.xsd]:package=[packageSuffix],[transformationType]-prefix=prefix,suffix=suffix;
+schema_level_bindings 
+
+#Enable fault stack trace in response
+# When true stack trace information will be available in error responses
+fault_stack_trace_enabled false
+
+#Allow HEAD
+# When true HTTP method HEAD is allowed
+allow_head false
+
+]]></string>
+         <boolean name="singleWSDLFile" value="true"/>
+         <string name="transport" value="HTTPS"/>
+         <map classname="java.util.HashMap" name="typeNamespaceToPrefixMap" size="1">
+            <string name="key_0"><![CDATA[http://www.ghbank.co.th/services/CBS/CBSPromptPayService]]></string>
+            <string name="value_0" value="tns"/>
+         </map>
+         <string name="unique_name" value="com.digitalroute.ws.ws1515063577802"/>
+         <string name="wsdlFileContent" quoted="true"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>\u000d
+<wsdl:definitions name="CBSPromptPayService" targetNamespace="http://www.ghbank.co.th/services/CBS/CBSPromptPayService" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:tns="http://www.ghbank.co.th/services/CBS/CBSPromptPayService">\u000d
+  <wsdl:types>\u000d
+    <xsd:schema targetNamespace="http://www.ghbank.co.th/services/CBS/CBSPromptPayService">\u000d
+      <xsd:element name="RegisterPromptPay">\u000d
+        <xsd:complexType>\u000d
+          <xsd:sequence>\u000d
+            <xsd:element name="Header">\u000d
+              <xsd:complexType>\u000d
+                <xsd:sequence>\u000d
+                  <xsd:element name="ReferenceNo">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="20" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="TransactionDateTime" type="xsd:dateTime" />\u000d
+                  <xsd:element name="ChannelID">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="3" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                </xsd:sequence>\u000d
+              </xsd:complexType>\u000d
+            </xsd:element>\u000d
+            <xsd:element name="Data">\u000d
+              <xsd:complexType>\u000d
+                <xsd:sequence>\u000d
+                  <xsd:element name="CustomerNumber">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="19" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="SystemID">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="10" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="ProxyType">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="20" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="ProxyID">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="25" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="AccountNumber">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="19" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="AccountType" minOccurs="0">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="1" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="ReferenceNumber">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="40" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="LastMaintenanceUserID">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="10" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                </xsd:sequence>\u000d
+              </xsd:complexType>\u000d
+            </xsd:element>\u000d
+          </xsd:sequence>\u000d
+        </xsd:complexType>\u000d
+      </xsd:element>\u000d
+      <xsd:element name="RegisterPromptPayResponse">\u000d
+        <xsd:complexType>\u000d
+          <xsd:sequence>\u000d
+            <xsd:element name="Header">\u000d
+              <xsd:complexType>\u000d
+                <xsd:sequence>\u000d
+                  <xsd:element name="ReferenceNo" minOccurs="0">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="20" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="TransactionDateTime" minOccurs="0" type="xsd:dateTime" />\u000d
+                  <xsd:element name="ChannelID" minOccurs="0">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="3" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="StatusInfo" minOccurs="0">\u000d
+                    <xsd:complexType>\u000d
+                      <xsd:sequence>\u000d
+                        <xsd:element name="Status" minOccurs="0">\u000d
+                          <xsd:complexType>\u000d
+                            <xsd:sequence>\u000d
+                              <xsd:element name="Success" minOccurs="0" type="xsd:boolean" />\u000d
+                              <xsd:element name="ResponseCode" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="10" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="ResponseMessage" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="200" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="UsageTime" minOccurs="0" type="xsd:long" />\u000d
+                            </xsd:sequence>\u000d
+                          </xsd:complexType>\u000d
+                        </xsd:element>\u000d
+                      </xsd:sequence>\u000d
+                    </xsd:complexType>\u000d
+                  </xsd:element>\u000d
+                </xsd:sequence>\u000d
+              </xsd:complexType>\u000d
+            </xsd:element>\u000d
+          </xsd:sequence>\u000d
+        </xsd:complexType>\u000d
+      </xsd:element>\u000d
+      <xsd:element name="DeRegisterPromptPay">\u000d
+        <xsd:complexType>\u000d
+          <xsd:sequence>\u000d
+            <xsd:element name="Header">\u000d
+              <xsd:complexType>\u000d
+                <xsd:sequence>\u000d
+                  <xsd:element name="ReferenceNo">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="20" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="TransactionDateTime" type="xsd:dateTime" />\u000d
+                  <xsd:element name="ChannelID">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="3" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                </xsd:sequence>\u000d
+              </xsd:complexType>\u000d
+            </xsd:element>\u000d
+            <xsd:element name="Data">\u000d
+              <xsd:complexType>\u000d
+                <xsd:sequence>\u000d
+                  <xsd:element name="CustomerNumber">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="19" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="SystemID">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="10" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="ProxyType">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="20" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="ProxyID">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="25" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="AccountNumber">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="19" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="AccountType" minOccurs="0">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="1" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="ReferenceNumber">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="40" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="LastMaintenanceUserID">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="10" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                </xsd:sequence>\u000d
+              </xsd:complexType>\u000d
+            </xsd:element>\u000d
+          </xsd:sequence>\u000d
+        </xsd:complexType>\u000d
+      </xsd:element>\u000d
+      <xsd:element name="DeRegisterPromptPayResponse">\u000d
+        <xsd:complexType>\u000d
+          <xsd:sequence>\u000d
+            <xsd:element name="Header">\u000d
+              <xsd:complexType>\u000d
+                <xsd:sequence>\u000d
+                  <xsd:element name="ReferenceNo">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="20" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="TransactionDateTime" type="xsd:dateTime" />\u000d
+                  <xsd:element name="ChannelID">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="3" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="StatusInfo">\u000d
+                    <xsd:complexType>\u000d
+                      <xsd:sequence>\u000d
+                        <xsd:element name="Status" minOccurs="0">\u000d
+                          <xsd:complexType>\u000d
+                            <xsd:sequence>\u000d
+                              <xsd:element name="Success" type="xsd:boolean" />\u000d
+                              <xsd:element name="ResponseCode">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="10" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="ResponseMessage">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="200" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="UsageTime" type="xsd:long" />\u000d
+                            </xsd:sequence>\u000d
+                          </xsd:complexType>\u000d
+                        </xsd:element>\u000d
+                      </xsd:sequence>\u000d
+                    </xsd:complexType>\u000d
+                  </xsd:element>\u000d
+                </xsd:sequence>\u000d
+              </xsd:complexType>\u000d
+            </xsd:element>\u000d
+          </xsd:sequence>\u000d
+        </xsd:complexType>\u000d
+      </xsd:element>\u000d
+    </xsd:schema>\u000d
+  </wsdl:types>\u000d
+  <wsdl:message name="RegisterPromptPayRequest">\u000d
+    <wsdl:part name="parameters" element="tns:RegisterPromptPay" />\u000d
+  </wsdl:message>\u000d
+  <wsdl:message name="RegisterPromptPayResponse">\u000d
+    <wsdl:part name="result" element="tns:RegisterPromptPayResponse" />\u000d
+  </wsdl:message>\u000d
+  <wsdl:message name="DeRegisterPromptPayRequest">\u000d
+    <wsdl:part name="parameters" element="tns:DeRegisterPromptPay" />\u000d
+  </wsdl:message>\u000d
+  <wsdl:message name="DeRegisterPromptPayResponse">\u000d
+    <wsdl:part name="result" element="tns:DeRegisterPromptPayResponse" />\u000d
+  </wsdl:message>\u000d
+  <wsdl:portType name="CBSPromptPayServicePortType">\u000d
+    <wsdl:operation name="RegisterPromptPay">\u000d
+      <wsdl:documentation></wsdl:documentation>\u000d
+      <wsdl:input message="tns:RegisterPromptPayRequest" />\u000d
+      <wsdl:output message="tns:RegisterPromptPayResponse" />\u000d
+    </wsdl:operation>\u000d
+    <wsdl:operation name="DeRegisterPromptPay">\u000d
+      <wsdl:documentation></wsdl:documentation>\u000d
+      <wsdl:input message="tns:DeRegisterPromptPayRequest" />\u000d
+      <wsdl:output message="tns:DeRegisterPromptPayResponse" />\u000d
+    </wsdl:operation>\u000d
+  </wsdl:portType>\u000d
+  <wsdl:binding name="CBSPromptPayServiceSoap" type="tns:CBSPromptPayServicePortType">\u000d
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />\u000d
+    <wsdl:operation name="RegisterPromptPay">\u000d
+      <soap:operation soapAction="http://www.ghbank.co.th/services/CBS/CBSPromptPayServiceRegisterPromptPay" />\u000d
+      <wsdl:input>\u000d
+        <soap:body parts="parameters" use="literal" />\u000d
+      </wsdl:input>\u000d
+      <wsdl:output>\u000d
+        <soap:body use="literal" />\u000d
+      </wsdl:output>\u000d
+    </wsdl:operation>\u000d
+    <wsdl:operation name="DeRegisterPromptPay">\u000d
+      <soap:operation soapAction="http://www.ghbank.co.th/services/CBS/CBSPromptPayServiceDeRegisterPromptPay" />\u000d
+      <wsdl:input>\u000d
+        <soap:body parts="parameters" use="literal" />\u000d
+      </wsdl:input>\u000d
+      <wsdl:output>\u000d
+        <soap:body use="literal" />\u000d
+      </wsdl:output>\u000d
+    </wsdl:operation>\u000d
+  </wsdl:binding>\u000d
+  <wsdl:service name="CBSPromptPayService">\u000d
+    <wsdl:port name="CBSPromptPayServicePort" binding="tns:CBSPromptPayServiceSoap">\u000d
+      <soap:address location="http://localhost:7080/ws/CBSPromptPayService" />\u000d
+    </wsdl:port>\u000d
+  </wsdl:service>\u000d
+</wsdl:definitions>]]></string>
+         <string name="wsdlFileName" value="CBSPromptPayService.wsdl"/>
+         <string name="wsdl_file" value="/Users/Tue/Desktop"/>
+      </storable>
+      <string name="Folder" value="CBS"/>
+      <boolean name="Is Dirty" value="false"/>
+      <boolean name="Is Encrypted" value="false"/>
+      <boolean name="Is Locked" value="false"/>
+      <boolean name="Is Valid" value="true"/>
+      <string name="Key" value="MZ1515088846497"/>
+      <string name="Modified By" value="mzadmin"/>
+      <long name="Modified Date" value="1546912914695"/>
+      <string name="Name" value="PRF_WS_CBSPromptPayService"/>
+      <string name="Owner" value="mzadmin"/>
+      <string name="Type" value="WS Profile"/>
+      <int name="Version" value="2"/>
+      <string name="documentation" value=""/>
+      <string name="parameters" value=""/>
+   </storable>
+</webservices_profile>

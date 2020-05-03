@@ -1,0 +1,967 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE webservices_profile SYSTEM "jar:/mz/dtd/webservices_profile.dtd">
+<webservices_profile category="Internal">
+   <storable name="webservices_profile" storable-id="dr.Configuration" ver="6.0">
+      <array classname="java.lang.String" name="Access Groups -read -write -execute" size="3">
+         <string name="0" value="All"/>
+         <string name="1" value="Administrator"/>
+         <string name="2" value="All"/>
+      </array>
+      <storable name="Auxiliary Data" null="true"/>
+      <string name="Current Comment" null="true"/>
+      <storable name="Data" storable-id="dr.WSProfileConfig" ver="15.0">
+         <string name="Binding name" value="CBSLoanServiceSoap"/>
+         <boolean name="Disable Underscore Binding Mode" value="false"/>
+         <boolean name="Disable Wrapper Style" value="false"/>
+         <boolean name="Enable JAAS" value="false"/>
+         <boolean name="Enable Username Token" value="false"/>
+         <boolean name="Enable WS Addressing" value="false"/>
+         <boolean name="Enforce RM" value="false"/>
+         <string name="JAAS Module" value="File Login Module"/>
+         <string name="JAAS Properties"><![CDATA[passwordFile /etc/passwd
+debug true
+]]></string>
+         <string name="Max Enum Members" value="256"/>
+         <boolean name="Populate OriginalData Field" value="false"/>
+         <string name="Port type" value="CBSLoanServicePortType"/>
+         <boolean name="Process Implicit SOAP Headers" value="false"/>
+         <string name="RM Store" value="In Memory"/>
+         <string name="Schema Bindings" value=""/>
+         <boolean name="Security Enabled" value="false"/>
+         <storable name="Security Settings" null="true"/>
+         <string name="Service Port name" value="CBSLoanServicePort"/>
+         <boolean name="Simple Mode Enabled" value="false"/>
+         <string name="TLS keystore file" value="cbsesbcert.jks"/>
+         <bytearray name="TLS keystore file content"><![CDATA[
+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
+7!;YGHSZ]8^/W;&YY!TG;+W4/FQK:%Q0`
+`
+]]></bytearray>
+         <password name="TLS keystore password" value="DR_DEFAULT_KEY-25FB75239B53E487605912194E971790"/>
+         <password name="Username Token Password" value="DR_DEFAULT_KEY-017BB0B8FB061C1876D43DD75468AA40"/>
+         <string name="Username Token Username" value=""/>
+         <list classname="java.util.LinkedList" name="concatenationFilePathList"/>
+         <string name="helper_class" value="ws.CBS.PRF_WS_CBSLoanService.WSHelperImpl"/>
+         <list classname="java.util.LinkedList" name="includeFiles"/>
+         <string name="inputAndOutputTypeName"><![CDATA[ws.CBS.PRF_WS_CBSLoanService.udr.AbstractCBSLoanServicePortTypeWSCycle]]></string>
+         <string name="properties"><![CDATA[# Advanced XML binding options can be customized here. If the properties are commented out, default values are used.
+
+#Enable JAXB Simple Binding Mode
+# When true, XSD Schemas of loaded WSDL files are compiled into Java code using the experimental "Simple and better binding mode". This is necessary for some complex types, for instance when duplicate element names are used within the same complex type.
+enable_JAXB_simple_binding false
+
+#Disable JAXWS Wrapper style Mode
+# When true, the cycle UDR will contain request and response parameters that wrap all the arguments in request and response UDRs.
+disable_JAXWS_wrapper_mode false
+
+#Enable Processing Of Implicit Soap Header
+# When true, any SOAP headers defined in the binding section of WSDL files are compiled into Java code. This is necessary in order to manipulate the SOAP headers in outgoing Web Service requests. 
+enable_processing_of_implicit_SOAP_header false
+
+#Disable Underscore Binding Mode
+# When false, underscore binding mode is true, JAXB will not strip underscore from the element names when converting a WSDL file to Java.
+disable_under_score_binding false
+
+#Populate originaldata field
+# When true the OriginalData field in the WSCycleUDR will be populated with the content of the SOAP request
+populate_originaldata_field false
+
+#Max enum members
+# Sets the value for the typesafeEnumMaxMembers jaxb global variable which controls the maximum number of allowed enum members
+max_enum_members 256
+
+#Schema level bindings
+# Sets the jaxb schema level bindings per xsd file. The format is [filename.xsd]:package=[packageSuffix],[transformationType]-prefix=prefix,suffix=suffix;
+schema_level_bindings 
+
+#Enable fault stack trace in response
+# When true stack trace information will be available in error responses
+fault_stack_trace_enabled false
+
+#Allow HEAD
+# When true HTTP method HEAD is allowed
+allow_head false
+
+]]></string>
+         <boolean name="singleWSDLFile" value="true"/>
+         <string name="transport" value="HTTPS"/>
+         <map classname="java.util.HashMap" name="typeNamespaceToPrefixMap" size="1">
+            <string name="key_0"><![CDATA[http://www.ghbank.co.th/services/CBS/CBSLoanService]]></string>
+            <string name="value_0" value="tns"/>
+         </map>
+         <string name="unique_name" value="com.digitalroute.ws.ws1520833405161"/>
+         <string name="wsdlFileContent"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="CBSLoanService" targetNamespace="http://www.ghbank.co.th/services/CBS/CBSLoanService" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:tns="http://www.ghbank.co.th/services/CBS/CBSLoanService">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://www.ghbank.co.th/services/CBS/CBSLoanService">
+      <xsd:element name="GetLoanAccountDetail">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="Header">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="ReferenceNo">
+                    <xsd:simpleType>
+                      <xsd:restriction base="xsd:string">
+                        <xsd:maxLength value="20" />
+                      </xsd:restriction>
+                    </xsd:simpleType>
+                  </xsd:element>
+                  <xsd:element name="TransactionDateTime" type="xsd:dateTime" />
+                  <xsd:element name="ChannelID">
+                    <xsd:simpleType>
+                      <xsd:restriction base="xsd:string">
+                        <xsd:maxLength value="3" />
+                      </xsd:restriction>
+                    </xsd:simpleType>
+                  </xsd:element>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="Data">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="AccountNumber">
+                    <xsd:simpleType>
+                      <xsd:restriction base="xsd:string">
+                        <xsd:maxLength value="19" />
+                      </xsd:restriction>
+                    </xsd:simpleType>
+                  </xsd:element>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="Paging">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="NextPageIndicator">
+                    <xsd:simpleType>
+                      <xsd:restriction base="xsd:string">
+                        <xsd:maxLength value="200" />
+                      </xsd:restriction>
+                    </xsd:simpleType>
+                  </xsd:element>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="GetLoanAccountDetailResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="Header">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="ReferenceNo">
+                    <xsd:simpleType>
+                      <xsd:restriction base="xsd:string">
+                        <xsd:maxLength value="20" />
+                      </xsd:restriction>
+                    </xsd:simpleType>
+                  </xsd:element>
+                  <xsd:element name="TransactionDateTime" type="xsd:dateTime" />
+                  <xsd:element name="ChannelID">
+                    <xsd:simpleType>
+                      <xsd:restriction base="xsd:string">
+                        <xsd:maxLength value="3" />
+                      </xsd:restriction>
+                    </xsd:simpleType>
+                  </xsd:element>
+                  <xsd:element name="LoanAccountInfo">
+                    <xsd:complexType>
+                      <xsd:sequence>
+                        <xsd:element name="LoanAccount" minOccurs="0" maxOccurs="unbounded">
+                          <xsd:complexType>
+                            <xsd:sequence>
+                              <xsd:element name="AccountNumber">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="19" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="AccountType">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="1" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="CustomerNumber">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="19" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="BranchNumber" type="xsd:long" />
+                              <xsd:element name="PartOfAccount">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="2" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="AccountName">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="80" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="LoanType">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="10" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="ShortDescription">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="20" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="FacilityCode">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="10" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="FacilityType">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="20" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="NumberOfLimitLine" type="xsd:long" />
+                              <xsd:element name="FacilityStatus">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="1" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="ProjectCode">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="10" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="Description">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="256" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="CreditTerm">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="1" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="LoanTerm" type="xsd:long" />
+                              <xsd:element name="LoanTermCode">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="1" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="CommercialPaperNumber">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="20" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="ManagerApprovalDate" type="xsd:dateTime" />
+                              <xsd:element name="OriginalLoanDate" type="xsd:dateTime" />
+                              <xsd:element name="MaturityDate" type="xsd:dateTime" />
+                              <xsd:element name="AFTTransferFlag">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="1" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="AFTDebitAccountNumber">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="19" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="AFTDebitAccountType">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="1" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="InterestRatePercentage" type="xsd:decimal" />
+                              <xsd:element name="PrimeRateNumber">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="5" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="PrimeVarianceCode">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="1" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="PrimeVariancePercentage" type="xsd:decimal" />
+                              <xsd:element name="CampaignInterestRatePercentage" type="xsd:decimal" />
+                              <xsd:element name="CampaignPrimeRateNumber">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="5" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="CampaignPrimeVarianceCode">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="1" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="CampaignPrimeVariancePercentage" type="xsd:decimal" />
+                              <xsd:element name="CampaignCode">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="10" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="CampaignExpiredDate" type="xsd:dateTime" />
+                              <xsd:element name="MonthlyAccruedInterestSuspensed" type="xsd:decimal" />
+                              <xsd:element name="StandardRatePercentage" type="xsd:decimal" />
+                              <xsd:element name="StandardRateNumber" type="xsd:long" />
+                              <xsd:element name="StandardRateVarianceCode">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="1" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="StandardRateVariancePercentage" type="xsd:decimal" />
+                              <xsd:element name="MaximumInterestRatePercentage" type="xsd:decimal" />
+                              <xsd:element name="DiscountPromotionRatePercentage" type="xsd:decimal" />
+                              <xsd:element name="DailyAccrual" type="xsd:decimal" />
+                              <xsd:element name="LastCalculateInterestDate" type="xsd:dateTime" />
+                              <xsd:element name="PaymentCode">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="1" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="PaymentFrequency">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="3" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="PaymentFreqCode">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="1" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="InterestPaymentFrequency">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="3" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="InterestPaymentFrequencyCode">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="1" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="DrawingLimit" type="xsd:decimal" />
+                              <xsd:element name="UsedLimit" type="xsd:decimal" />
+                              <xsd:element name="AvailableLimit" type="xsd:decimal" />
+                              <xsd:element name="UnutilizedLimit" type="xsd:decimal" />
+                              <xsd:element name="EarmarkAmount" type="xsd:decimal" />
+                              <xsd:element name="LastTopUpCampaignDate" type="xsd:dateTime" />
+                              <xsd:element name="TopUpApprovedDate" type="xsd:dateTime" />
+                              <xsd:element name="AccumulateTopUpAmount" type="xsd:decimal" />
+                              <xsd:element name="LastTopUpAmount" type="xsd:decimal" />
+                              <xsd:element name="LastReleaseChannel">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="23" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="CurrentBalance" type="xsd:decimal" />
+                              <xsd:element name="BilledPrincipleODAmount" type="xsd:decimal" />
+                              <xsd:element name="BilledTotalOutstandingAmount" type="xsd:decimal" />
+                              <xsd:element name="BilledTotalOriginalAmount" type="xsd:decimal" />
+                              <xsd:element name="StatementTotalDue" type="xsd:decimal" />
+                              <xsd:element name="StatementTotalDueOutstanding" type="xsd:decimal" />
+                              <xsd:element name="LastStatementDate" type="xsd:dateTime" />
+                              <xsd:element name="PaymentDueDate" type="xsd:dateTime" />
+                              <xsd:element name="PaymentInterestDueDate" type="xsd:dateTime" />
+                              <xsd:element name="StatementPaymentDueDate" type="xsd:dateTime" />
+                              <xsd:element name="StatementInterestPaymentDueDate" type="xsd:dateTime" />
+                              <xsd:element name="CycleStatementPaymentDueDate" type="xsd:dateTime" />
+                              <xsd:element name="CycleStatementInterestDueDate" type="xsd:dateTime" />
+                              <xsd:element name="ReceivedMonthToDateInterest" type="xsd:decimal" />
+                              <xsd:element name="ReceivableLifeToDateInterest" type="xsd:decimal" />
+                              <xsd:element name="OutstandingInterestUnpaidAccrued" type="xsd:decimal" />
+                              <xsd:element name="NewPaymentCondition">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="1" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="NewPaymentConditionDate" type="xsd:dateTime" />
+                              <xsd:element name="NewPaymentAmount" type="xsd:decimal" />
+                              <xsd:element name="TotalPrePaymentTodayAmount" type="xsd:decimal" />
+                              <xsd:element name="MonthToDatePaymentsReceivedAmount" type="xsd:decimal" />
+                              <xsd:element name="FullChequeAmount" type="xsd:decimal" />
+                              <xsd:element name="YesterdayChequeAmount" type="xsd:decimal" />
+                              <xsd:element name="TotalFeeChargeAmount" type="xsd:decimal" />
+                              <xsd:element name="TotalAdvanceFeeAmount" type="xsd:decimal" />
+                              <xsd:element name="OtherFeeAmount" type="xsd:decimal" />
+                              <xsd:element name="FeeChargeThisMonth" type="xsd:decimal" />
+                              <xsd:element name="InterestFeeReceiveeYear" type="xsd:decimal" />
+                              <xsd:element name="TotalFeePrintStatementReady" type="xsd:decimal" />
+                              <xsd:element name="DateStopCalculateInterest" type="xsd:dateTime" />
+                              <xsd:element name="DateOfInterestSuspensedBegin" type="xsd:dateTime" />
+                              <xsd:element name="InterestSuspensedAccrued" type="xsd:decimal" />
+                              <xsd:element name="InterestSuspensedReverseIncome" type="xsd:decimal" />
+                              <xsd:element name="OutstandingBalanceAmount" type="xsd:decimal" />
+                              <xsd:element name="AgingHistoryNumberOfDayDraftPrincipal">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="72" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="AgingHistoryNumberOfDayDraftInterest">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="72" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="AgingByDays" type="xsd:long" />
+                              <xsd:element name="TotalDelinquencyNumberAndActiveDelinquency">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="12" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="FirstReleaseChannel">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="23" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="FirstPaymentChannel">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="23" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="LateChargeAmount" type="xsd:decimal" />
+                              <xsd:element name="ExpiryEarlyClosedDate" type="xsd:dateTime" />
+                              <xsd:element name="BranchName">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="50" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="YesterdayCurrentBalance" type="xsd:decimal" />
+                              <xsd:element name="ApprovedName">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="10" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="HoldMailCode">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="1" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="DrawingLimit2" type="xsd:decimal" />
+                              <xsd:element name="LimitUsedAmount" type="xsd:decimal" />
+                              <xsd:element name="UnutilizeLimit" type="xsd:decimal" />
+                              <xsd:element name="DailyAccrual2" type="xsd:decimal" />
+                              <xsd:element name="AdditionalReferenceNumber">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="30" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="LastReleaseDate" type="xsd:dateTime" />
+                              <xsd:element name="YearToDateMaximumIncome" type="xsd:decimal" />
+                              <xsd:element name="FacilityID">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="5" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="FirstReleaseDate" type="xsd:dateTime" />
+                              <xsd:element name="FullReleaseDate" type="xsd:dateTime" />
+                              <xsd:element name="LoanTerm2" type="xsd:long" />
+                              <xsd:element name="LoanTermCode2">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="1" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="PaymentAmount" type="xsd:decimal" />
+                              <xsd:element name="NPLStatus">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="1" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="NPLDate" type="xsd:dateTime" />
+                              <xsd:element name="OriginalBalance" type="xsd:decimal" />
+                              <xsd:element name="NonTaxableInterestInSuspensed" type="xsd:decimal" />
+                              <xsd:element name="BillInterest" type="xsd:decimal" />
+                              <xsd:element name="LastPaymentAmount" type="xsd:decimal" />
+                              <xsd:element name="LastReceiptNumber">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="20" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="FirstPaymentDate" type="xsd:dateTime" />
+                              <xsd:element name="BirthDate" type="xsd:dateTime" />
+                              <xsd:element name="IDNumber">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="40" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="IDTypeCode">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="3" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="IDIssueCountryCode">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="3" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="Address">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="200" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="PhoneNumber">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="200" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="BilledInterestODAmount" type="xsd:decimal" />
+                              <xsd:element name="BilledRestructureInterest" type="xsd:decimal" />
+                              <xsd:element name="BilledMoratoriumInterest" type="xsd:decimal" />
+                              <xsd:element name="BilledOtherChargesOD" type="xsd:decimal" />
+                              <xsd:element name="BilledMiscCostOD" type="xsd:decimal" />
+                              <xsd:element name="BilledLateCharge" type="xsd:decimal" />
+                              <xsd:element name="InterestPaidtoDate" type="xsd:dateTime" />
+                              <xsd:element name="NumberOfPaymentPastDue" type="xsd:long" />
+                              <xsd:element name="AccountStatus">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="1" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                            </xsd:sequence>
+                          </xsd:complexType>
+                        </xsd:element>
+                      </xsd:sequence>
+                    </xsd:complexType>
+                  </xsd:element>
+                  <xsd:element name="StatusInfo">
+                    <xsd:complexType>
+                      <xsd:sequence>
+                        <xsd:element name="Status" minOccurs="0">
+                          <xsd:complexType>
+                            <xsd:sequence>
+                              <xsd:element name="Success" type="xsd:boolean" />
+                              <xsd:element name="ResponseCode">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="10" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="ResponseMessage">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="200" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="UsageTime" type="xsd:long" />
+                            </xsd:sequence>
+                          </xsd:complexType>
+                        </xsd:element>
+                      </xsd:sequence>
+                    </xsd:complexType>
+                  </xsd:element>
+                  <xsd:element name="PagingInfo">
+                    <xsd:complexType>
+                      <xsd:sequence>
+                        <xsd:element name="Paging" minOccurs="0">
+                          <xsd:complexType>
+                            <xsd:sequence>
+                              <xsd:element name="NextPageIndicator">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="200" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="PageSize" type="xsd:long" />
+                              <xsd:element name="NumberOfRecord" type="xsd:long" />
+                              <xsd:element name="HasMoreRecord" type="xsd:boolean" />
+                            </xsd:sequence>
+                          </xsd:complexType>
+                        </xsd:element>
+                      </xsd:sequence>
+                    </xsd:complexType>
+                  </xsd:element>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="InquiryLoanStatementHistory">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="Header">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="ReferenceNo">
+                    <xsd:simpleType>
+                      <xsd:restriction base="xsd:string">
+                        <xsd:maxLength value="20" />
+                      </xsd:restriction>
+                    </xsd:simpleType>
+                  </xsd:element>
+                  <xsd:element name="TransactionDateTime" type="xsd:dateTime" />
+                  <xsd:element name="ChannelID">
+                    <xsd:simpleType>
+                      <xsd:restriction base="xsd:string">
+                        <xsd:maxLength value="3" />
+                      </xsd:restriction>
+                    </xsd:simpleType>
+                  </xsd:element>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="Data">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="AccountNumber">
+                    <xsd:simpleType>
+                      <xsd:restriction base="xsd:string">
+                        <xsd:maxLength value="19" />
+                      </xsd:restriction>
+                    </xsd:simpleType>
+                  </xsd:element>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="Paging">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="NextPageIndicator">
+                    <xsd:simpleType>
+                      <xsd:restriction base="xsd:string">
+                        <xsd:maxLength value="200" />
+                      </xsd:restriction>
+                    </xsd:simpleType>
+                  </xsd:element>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="InquiryLoanStatementHistoryResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="Header">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="ReferenceNo">
+                    <xsd:simpleType>
+                      <xsd:restriction base="xsd:string">
+                        <xsd:maxLength value="20" />
+                      </xsd:restriction>
+                    </xsd:simpleType>
+                  </xsd:element>
+                  <xsd:element name="TransactionDateTime" type="xsd:dateTime" />
+                  <xsd:element name="ChannelID">
+                    <xsd:simpleType>
+                      <xsd:restriction base="xsd:string">
+                        <xsd:maxLength value="3" />
+                      </xsd:restriction>
+                    </xsd:simpleType>
+                  </xsd:element>
+                  <xsd:element name="LoanStatementList">
+                    <xsd:complexType>
+                      <xsd:sequence>
+                        <xsd:element name="LoanStatement" minOccurs="0" maxOccurs="unbounded">
+                          <xsd:complexType>
+                            <xsd:sequence>
+                              <xsd:element name="AccountNumber">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="19" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="PostingDate" type="xsd:dateTime" />
+                              <xsd:element name="EffectiveDate" type="xsd:dateTime" />
+                              <xsd:element name="LoanTypeDescription">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="50" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="ReleaseAmount" type="xsd:decimal" />
+                              <xsd:element name="PrincipalPaymentAmount" type="xsd:decimal" />
+                              <xsd:element name="InterestPaymentAmount" type="xsd:decimal" />
+                              <xsd:element name="OtherPaymentAmount" type="xsd:decimal" />
+                              <xsd:element name="PenaltyPaymentAmount" type="xsd:decimal" />
+                              <xsd:element name="PrincipalOutstanding" type="xsd:decimal" />
+                              <xsd:element name="ReceiptNumber">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="20" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                            </xsd:sequence>
+                          </xsd:complexType>
+                        </xsd:element>
+                      </xsd:sequence>
+                    </xsd:complexType>
+                  </xsd:element>
+                  <xsd:element name="StatusInfo">
+                    <xsd:complexType>
+                      <xsd:sequence>
+                        <xsd:element name="Status" minOccurs="0">
+                          <xsd:complexType>
+                            <xsd:sequence>
+                              <xsd:element name="Success" type="xsd:boolean" />
+                              <xsd:element name="ResponseCode">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="10" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="ResponseMessage">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="200" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="UsageTime" type="xsd:long" />
+                            </xsd:sequence>
+                          </xsd:complexType>
+                        </xsd:element>
+                      </xsd:sequence>
+                    </xsd:complexType>
+                  </xsd:element>
+                  <xsd:element name="PagingInfo">
+                    <xsd:complexType>
+                      <xsd:sequence>
+                        <xsd:element name="Paging" minOccurs="0">
+                          <xsd:complexType>
+                            <xsd:sequence>
+                              <xsd:element name="NextPageIndicator">
+                                <xsd:simpleType>
+                                  <xsd:restriction base="xsd:string">
+                                    <xsd:maxLength value="200" />
+                                  </xsd:restriction>
+                                </xsd:simpleType>
+                              </xsd:element>
+                              <xsd:element name="PageSize" type="xsd:long" />
+                              <xsd:element name="NumberOfRecord" type="xsd:long" />
+                              <xsd:element name="HasMoreRecord" type="xsd:boolean" />
+                            </xsd:sequence>
+                          </xsd:complexType>
+                        </xsd:element>
+                      </xsd:sequence>
+                    </xsd:complexType>
+                  </xsd:element>
+                </xsd:sequence>
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="GetLoanAccountDetailRequest">
+    <wsdl:part name="parameters" element="tns:GetLoanAccountDetail" />
+  </wsdl:message>
+  <wsdl:message name="GetLoanAccountDetailResponse">
+    <wsdl:part name="result" element="tns:GetLoanAccountDetailResponse" />
+  </wsdl:message>
+  <wsdl:message name="InquiryLoanStatementHistoryRequest">
+    <wsdl:part name="parameters" element="tns:InquiryLoanStatementHistory" />
+  </wsdl:message>
+  <wsdl:message name="InquiryLoanStatementHistoryResponse">
+    <wsdl:part name="result" element="tns:InquiryLoanStatementHistoryResponse" />
+  </wsdl:message>
+  <wsdl:portType name="CBSLoanServicePortType">
+    <wsdl:operation name="GetLoanAccountDetail">
+      <wsdl:documentation></wsdl:documentation>
+      <wsdl:input message="tns:GetLoanAccountDetailRequest" />
+      <wsdl:output message="tns:GetLoanAccountDetailResponse" />
+    </wsdl:operation>
+    <wsdl:operation name="InquiryLoanStatementHistory">
+      <wsdl:documentation></wsdl:documentation>
+      <wsdl:input message="tns:InquiryLoanStatementHistoryRequest" />
+      <wsdl:output message="tns:InquiryLoanStatementHistoryResponse" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="CBSLoanServiceSoap" type="tns:CBSLoanServicePortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="GetLoanAccountDetail">
+      <soap:operation soapAction="http://www.ghbank.co.th/services/CBS/CBSLoanServiceGetLoanAccountDetail" />
+      <wsdl:input>
+        <soap:body parts="parameters" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="InquiryLoanStatementHistory">
+      <soap:operation soapAction="http://www.ghbank.co.th/services/CBS/CBSLoanServiceInquiryLoanStatementHistory" />
+      <wsdl:input>
+        <soap:body parts="parameters" use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="CBSLoanService">
+    <wsdl:port name="CBSLoanServicePort" binding="tns:CBSLoanServiceSoap">
+      <soap:address location="http://localhost:7080/ws/CBSLoanService" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>]]></string>
+         <string name="wsdlFileName" value="CBSLoanService.wsdl"/>
+         <string name="wsdl_file" value="I:\"/>
+      </storable>
+      <string name="Folder" value="CBS"/>
+      <boolean name="Is Dirty" value="false"/>
+      <boolean name="Is Encrypted" value="false"/>
+      <boolean name="Is Locked" value="false"/>
+      <boolean name="Is Valid" value="true"/>
+      <string name="Key" value="MZ1552028570704"/>
+      <string name="Modified By" value="mzadmin"/>
+      <long name="Modified Date" value="1552028821828"/>
+      <string name="Name" value="PRF_WS_CBSLoanService"/>
+      <string name="Owner" value="mzadmin"/>
+      <string name="Type" value="WS Profile"/>
+      <int name="Version" value="3"/>
+      <string name="documentation" value=""/>
+      <string name="parameters" value=""/>
+   </storable>
+</webservices_profile>

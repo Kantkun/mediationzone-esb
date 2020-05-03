@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Ultra_Format" ref_path="ultra_format[Internal]/storable[ultra_format]/storable[Data]">
+   <string name="Definition"><![CDATA[import CBS.UFL_DSP_Header;
+
+session ABCS_Agg{
+    Matcher match;
+};
+
+internal Matcher {
+    string uuid;    
+    date requestDatetime;
+    long requestMillisec;
+    ws.AbstractWSCycle soapRequest;
+    ws.AbstractWSCycle soapResponse;
+    DSP_Header_TgIn tcpResponse; 
+    DSP_Header_TgIn tcpRequest;
+    bytearray socketRequest;
+    bytearray data;
+    string flagFirstLoop;   
+    int sequence;
+    string reference;
+    RESTClient.RESTResponse restResponse;
+    boolean errorUDR;
+};]]></string>
+   <boolean name="IsValid" value="true"/>
+</exportmultiplex>

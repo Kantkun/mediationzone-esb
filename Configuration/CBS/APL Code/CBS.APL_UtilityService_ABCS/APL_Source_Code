@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="APL_Source_Code" ref_path="apl_script[Internal]/storable[apl_script]/storable[Data]">
+   <string name="Definition"><![CDATA[import ultra.CBS.UFL_DSP_Header;
+import ultra.CBS.UFL_ABCS_Header;
+import ultra.CBS.UFL_TLLOG;
+import ultra.Ultra.UFL_TMQHB;
+import ultra.CBS.UFL_ABCS_Rejected;
+
+import ultra.ws.CBS.PRF_WS_CBSUtilityService.cycles;
+import ultra.ws.CBS.PRF_WS_CBSUtilityService.tns;
+
+import apl.CBS.APL_Default_ABCS;
+import apl.CBS.APL_Default_TLLOG;
+import apl.Common.APL_Common_Utilities;
+import apl.Common.APL_Common_Constant;
+import apl.Common.APL_Common_ABCS;
+import apl.Common.APL_Common_ABCS_Log;
+
+
+bytearray generateCheckHostStatusRequest(string uniqKey, WSCycle_checkHostStatus in) {
+    
+    list<any> objList = generateCheckHostStatusRequestSocket(uniqKey, in);
+    
+    DSP_Header_TgIn dspHeader = (DSP_Header_TgIn)listGet(objList,0);
+    ABCS_Header_TgIn abcsHeader = (ABCS_Header_TgIn)listGet(objList,1);
+    TLLOG_TgIn tllogRequest = (TLLOG_TgIn)listGet(objList,2);
+    
+    return combineABCSSocket(dspHeader, abcsHeader, tllogRequest);
+}
+
+string generateCheckHostStatusRequestLog(string uniqKey, WSCycle_checkHostStatus in){
+    
+    list<any> objList = generateCheckHostStatusRequestSocket(uniqKey, in);
+    
+    DSP_Header_TgIn dspHeader = (DSP_Header_TgIn)listGet(objList,0);
+    ABCS_Header_TgIn abcsHeader = (ABCS_Header_TgIn)listGet(objList,1);
+    TLLOG_TgIn tllogRequest = (TLLOG_TgIn)listGet(objList,2);
+    
+    //create request string log
+    string dspLog = generateDSPHeaderLog(dspHeader);
+    string abcsLog = generateABCSHeaderLog(abcsHeader);
+    
+    string tllogLog = generateTLLOGLog(tllogRequest);
+    
+    return dspLog + abcsLog + tllogLog;
+}
+
+
+list<any> generateCheckHostStatusRequestSocket(string uniqKey, WSCycle_checkHostStatus in){
+      //DSP HEADER
+    string sourceID = "ESB##";
+    DSP_Header_TgIn dspHeader = createDefaultDSPHeaderForABCS(sourceID , uniqKey);    
+      
+    //ABCS HEADER
+    ABCS_Header_TgIn abcsHeader = createDefaultABCSHeader();
+    
+    //TLLOG
+    TLLOG_TgIn tllogRequest = createDefaultTLLOG();    
+    string channelID = in.param_Header.ChannelID;
+    string tellerID = in.param_Data.TellerID;
+    string journalSeq = (string)in.param_Data.JournalSeq;
+    string transCode = "90252";
+    string transactionDateStr = ""; dateToString(transactionDateStr ,in.param_Header.TransactionDateTime, "yyyyMMdd");
+    string effectiveDateStr = ""; dateToString(effectiveDateStr ,in.param_Data.EffectiveDate, "yyyyMMdd");
+    string controlUnit = getControlUnit(in.param_Header.ChannelID);
+    string workStation = in.param_Data.WorkStationID;
+    string remark = in.param_Data.Remark;        
+    inputDefaultValueTLLOG(tllogRequest, channelID, tellerID, journalSeq, transCode, transactionDateStr, effectiveDateStr, controlUnit, workStation, remark);
+    
+    string handlerCode = in.param_HealthCheck.HandlerCode;
+    tllogRequest.TLBF11 = strInsert(tllogRequest.TLBF11,0,handlerCode); //"XXXX" + "F"    
+    
+    list<any> objList = listCreate(any);
+    listAdd(objList,dspHeader);
+    listAdd(objList,abcsHeader);
+    listAdd(objList,tllogRequest);
+    return objList;
+}
+
+///RESPONSE
+WSCycle_checkHostStatus generateCheckHostStatusResponse(WSCycle_checkHostStatus originalRequest , DSP_Header_TgIn tcpResponse ,  date requestDatetime , long requestMillisec,boolean errorUDR){
+    if(errorUDR==false){
+        debug("DSP Status : " + tcpResponse.I13MSTA);
+        
+    //debug(""); debug(""); debug("");
+    //debug("START DSP");
+    //debug(tcpResponse);
+    //debug("END DSP");
+    //debug(""); debug(""); debug("");
+    
+        list<ABCS_Header_With_Payload_TgIn> aList = listCreate(ABCS_Header_With_Payload_TgIn);        
+        udrDecode("ABCS_Header_With_Payload_Decoder", aList, tcpResponse.data);        
+        ABCS_Header_With_Payload_TgIn abcs = listGet(aList,0);
+    
+    
+    //debug(""); debug(""); debug("");
+    //debug("START ABCS");
+    //debug(abcs);    
+    //debug("END ABCS");
+    //debug(""); debug(""); debug("");
+    
+        //Declare Response Object
+        originalRequest.param_Header_01 = udrCreate(CheckHostStatusResponse$Header); 
+        
+        //Response Header
+        date responseTransactinDatetime = dateCreateCopy(originalRequest.param_Header.TransactionDateTime);
+        dateSetTimeZone(responseTransactinDatetime, "GMT+7");        
+        originalRequest.param_Header_01.ReferenceNo = originalRequest.param_Header.ReferenceNo;
+        originalRequest.param_Header_01.TransactionDateTime = responseTransactinDatetime;        
+        originalRequest.param_Header_01.ChannelID = originalRequest.param_Header.ChannelID;
+        
+        //Response Status Info
+        originalRequest.param_Header_01.StatusInfo = udrCreate(CheckHostStatusResponse$Header$StatusInfo);
+        originalRequest.param_Header_01.StatusInfo.Status = udrCreate(CheckHostStatusResponse$Header$StatusInfo$Status);    
+        originalRequest.param_Header_01.StatusInfo.Status.UsageTime = dateCreateNowMilliseconds()-requestMillisec;
+        
+        //DSP response nothing then return response error 
+        if(tcpResponse.I13MSTA == "" || tcpResponse.I13MSTA == null){
+                //Response Stattus Info            
+                originalRequest.param_Header_01.StatusInfo.Status.ResponseCode = "";
+                originalRequest.param_Header_01.StatusInfo.Status.ResponseMessage = "Connot connect to host";
+                originalRequest.param_Header_01.StatusInfo.Status.Success = false;       
+                return originalRequest;
+        }
+        
+        if(strStartsWith(tcpResponse.I13MSTA, "/")){
+            //Success
+            debug("SUCCESS RESPONSE");
+            
+            string responseLength = "";
+            string responseCode= "";
+            string hostOk = "";        
+            
+            //response content list        
+            list<TMQHB_TgIn> tmqhbList = listCreate(TMQHB_TgIn);
+            udrDecode("TMQHB_Decoder",tmqhbList,abcs.data);
+            //debug("NUMBER OF TMQHB : " + listSize(tmqhbList));
+            for (TMQHB_TgIn tmqhb: tmqhbList){
+                
+                responseLength = tmqhb.RSPLEN_ResponseLength;
+                responseCode = tmqhb.RSPCOD_ResponseCode;
+                hostOk = tmqhb.HOSTOK_HostOK;          
+            }
+            
+            //Response Stattus Info
+            originalRequest.param_Header_01.StatusInfo.Status.ResponseCode = responseCode;
+            originalRequest.param_Header_01.StatusInfo.Status.ResponseMessage = "Success";
+            originalRequest.param_Header_01.StatusInfo.Status.Success = true;
+            
+            //no Paging        
+        }
+        else{        
+            debug("REJECTED RESPONSE");        
+            //Rejected DSP
+            if(strStartsWith(tcpResponse.I13MSTA, ".DSP")){
+                //Response Stattus Info
+                string responseCodeDSP = strREReplaceAll(tcpResponse.I13MSTA, "\\.", "");
+                originalRequest.param_Header_01.StatusInfo.Status.ResponseCode = responseCodeDSP;
+                originalRequest.param_Header_01.StatusInfo.Status.ResponseMessage = getDSPErrorDesc(responseCodeDSP);
+                originalRequest.param_Header_01.StatusInfo.Status.Success = false;       
+                return originalRequest;
+            }
+            //Rejected ABCS                
+            list<ABCS_Rejected_Header_With_Details_TgIn> abcsRejectedHeaderList = listCreate(ABCS_Rejected_Header_With_Details_TgIn);          
+            udrDecode("ABCS_Rejected_Header_With_Details_Decoder",abcsRejectedHeaderList,abcs.data);
+            ABCS_Rejected_Header_With_Details_TgIn abcsRejected = listGet(abcsRejectedHeaderList,0);
+            
+            //debug(abcsRejected);
+            
+            string errorCode = unPackStr(abcsRejected.ABCS_Rejected_Details.ERN1_ErrorCode);
+            string errorDesc = getABCSErrorDesc((string)errorCode);
+            string responseCode = abcsRejected.ABCS_Rejected_Header.RSPCOD_ResponseCode;
+            string responseMessage = strTrim(errorDesc + " " + abcsRejected.ABCS_Rejected_Details.VMSG_ErrorMsgText + " " + abcsRejected.ABCS_Rejected_Details.AVAILB_AvlBalATM);
+            
+            debug("errorCode : " + errorCode);
+            debug("errorDesc : " + errorDesc);
+            
+            //Response Stattus Info
+            originalRequest.param_Header_01.StatusInfo.Status.ResponseCode = errorCode;
+            originalRequest.param_Header_01.StatusInfo.Status.ResponseMessage = responseMessage;
+            originalRequest.param_Header_01.StatusInfo.Status.Success = false;        
+        }
+    }else{
+            //Response Header
+            originalRequest.param_Header_01 = udrCreate(CheckHostStatusResponse$Header);
+            date responseTransactinDatetime = dateCreateCopy(originalRequest.param_Header.TransactionDateTime);
+            dateSetTimeZone(responseTransactinDatetime, "GMT+7");       
+            originalRequest.param_Header_01.ReferenceNo = originalRequest.param_Header.ReferenceNo;
+            originalRequest.param_Header_01.TransactionDateTime = responseTransactinDatetime;
+            originalRequest.param_Header_01.ChannelID = originalRequest.param_Header.ChannelID;
+            //Response StatusInfo
+            originalRequest.param_Header_01.StatusInfo = udrCreate(CheckHostStatusResponse$Header$StatusInfo);
+            originalRequest.param_Header_01.StatusInfo.Status = udrCreate(CheckHostStatusResponse$Header$StatusInfo$Status);
+            originalRequest.param_Header_01.StatusInfo.Status.UsageTime = dateCreateNowMilliseconds()-requestMillisec;
+            originalRequest.param_Header_01.StatusInfo.Status.Success = false;
+            originalRequest.param_Header_01.StatusInfo.Status.ResponseCode = "CBS8990";
+            originalRequest.param_Header_01.StatusInfo.Status.ResponseMessage = "Connection to CBS lost";
+    }
+    return originalRequest;
+}
+
+string generateCheckHostStatusResponseLog(DSP_Header_TgIn tcpResponse){
+     
+    //DSP Header
+    string dspLog = generateDSPHeaderLog(tcpResponse);
+    
+    //ABCS Header
+    list<ABCS_Header_With_Payload_TgIn> aList = listCreate(ABCS_Header_With_Payload_TgIn);  
+    udrDecode("ABCS_Header_With_Payload_Decoder", aList, tcpResponse.data);        
+    ABCS_Header_With_Payload_TgIn abcs = listGet(aList,0);
+    ABCS_Header_TgIn abcsHeader = mapABCSHeaderTgInFromABCSHeaderWithPayload(abcs);
+    string abcsLog = generateABCSHeaderLog(abcsHeader);
+    
+    //Content
+    string responseContent = "";
+    if(strStartsWith(tcpResponse.I13MSTA, "/")){
+        //success TMQHB
+        bytearray dataRefilled = refillTrimedColumn(abcs.data,sizeOf_TMQHB);
+        list<TMQHB_TgIn> tmqhbList = listCreate(TMQHB_TgIn);        
+        udrDecode("TMQHB_Decoder",tmqhbList,dataRefilled);
+        
+        string tmqhbLog = "";
+        for (TMQHB_TgIn tmqhb: tmqhbList){
+            tmqhbLog = tmqhbLog + padLogNumeric ( unPackStrForLog(tmqhb.RSPLEN_ResponseLength,3) ,3);
+            tmqhbLog = tmqhbLog + padLogString ( tmqhb.RSPCOD_ResponseCode ,2);
+            tmqhbLog = tmqhbLog + padLogString ( tmqhb.HOSTOK_HostOK ,1);
+        }
+        responseContent = tmqhbLog;
+    }
+    else{
+        //rejected or cannot connect
+        responseContent = generateABCSRejectedLog(tcpResponse);
+    }   
+    //Combine socket string
+    return dspLog + abcsLog + responseContent;
+}
+]]></string>
+</exportmultiplex>

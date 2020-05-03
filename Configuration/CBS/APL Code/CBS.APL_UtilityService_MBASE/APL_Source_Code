@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="APL_Source_Code" ref_path="apl_script[Internal]/storable[apl_script]/storable[Data]">
+   <string name="Definition"><![CDATA[import ultra.CBS.UFL_DSP_Header;
+import ultra.CBS.UFL_MBASE_Header;
+import ultra.Ultra.UFL_MBASE_Reject;
+import ultra.ws.CBS.PRF_WS_CBSUtilityService.cycles;
+import ultra.ws.CBS.PRF_WS_CBSUtilityService.tns;
+import ultra.Ultra.UFL_MBASE_SS86707;
+
+import apl.Common.APL_Common_Utilities;
+import apl.Common.APL_Common_MBASE;
+
+final int sizeOf_SS86903 = 0;
+
+bytearray generateGetProcessingModeRequest(string uniqKey, WSCycle_getProcessingMode request) {
+    //DSP Header
+    DSP_Header_TgIn dspHeader = createDefaultDSPHeader();
+    dspHeader.SKTMLEN = sizeOf_DSPHeader + sizeOf_MBaseHeader + sizeOf_SS86903 - 9;
+    dspHeader.I13FMID = "MBASE";  
+    dspHeader.I13DID = "SYSI"; 
+    dspHeader.I13SID = request.param_Header.ChannelID + "##";
+    //dspHeader.I13ACQN = uniqKey;  
+    dspHeader.I13ACQN = strSubstring(uniqKey, 0, 12);  
+    dspHeader.I13TMNO = strSubstring(uniqKey, 12, 16);  
+    
+    //MBASE Header
+    MBASE_Header_TI mbaseHeader = createDefaultMBASEHeader();
+    mbaseHeader.HDTCOD = "SS86707";
+    mbaseHeader.HDDSID = "ESB"; //"RBK";
+    mbaseHeader.HDACCD = "I";
+    mbaseHeader.HDNREC = "20";
+    mbaseHeader.HDUSID = request.param_Header.ChannelID + "USR";
+    
+    //no request data
+    
+    //Build Socket Message
+    bytearray outgoing = udrEncode("DSP_Header_Encoder", dspHeader);
+    outgoing = baAppend(outgoing, udrEncode("MBASE_Header_Encode", mbaseHeader));
+    
+    return outgoing;
+}
+
+bytearray generateHandShakeConnectionRequest(string uniqKey) {
+    //DSP Header
+    DSP_Header_TgIn dspHeader = createDefaultDSPHeader();
+    dspHeader.SKTMLEN = sizeOf_DSPHeader + sizeOf_MBaseHeader + sizeOf_SS86903 - 9;
+    dspHeader.I13FMID = "MBASE";  
+    dspHeader.I13DID = "SYSI"; //request.param_Header.ChannelID;
+    dspHeader.I13SID = "ESB##";
+    //dspHeader.I13ACQN = uniqKey;  
+    dspHeader.I13ACQN = strSubstring(uniqKey, 0, 12);  
+    dspHeader.I13TMNO = strSubstring(uniqKey, 12, 16);   
+    
+    //MBASE Header
+    MBASE_Header_TI mbaseHeader = createDefaultMBASEHeader();
+    mbaseHeader.HDTCOD = "SS86707";
+    mbaseHeader.HDDSID = "ESB"; //"RBK";
+    mbaseHeader.HDACCD = "I";
+    mbaseHeader.HDNREC = "20";
+    mbaseHeader.HDUSID = "ESBUSR";
+    
+    //no request data
+    
+    //Build Socket Message
+    bytearray outgoing = udrEncode("DSP_Header_Encoder", dspHeader);
+    outgoing = baAppend(outgoing, udrEncode("MBASE_Header_Encode", mbaseHeader));
+    
+    return outgoing;
+}
+
+WSCycle_getProcessingMode generateGetProcessingModeResponse(WSCycle_getProcessingMode responseMessage,DSP_Header_TgIn tcpResponse,date requestDatetime,long requestMillisec,boolean errorUDR){
+    if(errorUDR==false){
+        list<MBASE_Header_With_Payload_TI> aList = listCreate(MBASE_Header_With_Payload_TI);
+        udrDecode("MBASE_Header_With_Payload_Decode", aList, tcpResponse.data);
+        MBASE_Header_With_Payload_TI mbase = listGet(aList,0);
+        debug("MBase Header:" + mbase.mbaseHeader);
+        //debug("MBase Data:" + baToStr(mbase.data, "IBM-Thai")); 
+        
+        //Response Header
+        responseMessage.param_Header_01 = udrCreate(GetProcessingModeResponse$Header); 
+        date responseTransactinDatetime = dateCreateCopy(responseMessage.param_Header.TransactionDateTime);
+        dateSetTimeZone(responseTransactinDatetime, "GMT+7");       
+        responseMessage.param_Header_01.ReferenceNo = responseMessage.param_Header.ReferenceNo;
+        responseMessage.param_Header_01.TransactionDateTime = responseTransactinDatetime;
+        responseMessage.param_Header_01.ChannelID = responseMessage.param_Header.ChannelID;
+        
+        //Response StatusInfo
+        responseMessage.param_Header_01.StatusInfo = udrCreate(GetProcessingModeResponse$Header$StatusInfo);
+        responseMessage.param_Header_01.StatusInfo.Status = udrCreate(GetProcessingModeResponse$Header$StatusInfo$Status);
+        responseMessage.param_Header_01.StatusInfo.Status.UsageTime = dateCreateNowMilliseconds() - requestMillisec;
+        
+        //DSP response nothing then return response error 
+        if(mbase.mbaseHeader.HDRIND == "" || mbase.mbaseHeader.HDRIND == null){
+                //Response Stattus Info            
+                responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = "";
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Cannot connect to host";
+                return responseMessage;
+        }
+        
+        //Request Data AccountList 
+        if(!strStartsWith(tcpResponse.I13MSTA, ".DSP")){
+            if(mbase.mbaseHeader.HDRIND == "AA"){
+                //Success
+                debug("AA");
+                responseMessage.param_Header_01.ProcessingInfo = udrCreate(GetProcessingModeResponse$Header$ProcessingInfo);
+                responseMessage.param_Header_01.ProcessingInfo.CurrentProcessingMode = udrCreate(GetProcessingModeResponse$Header$ProcessingInfo$CurrentProcessingMode); //1 to 1
+                
+                //response content 1 to 1
+                bytearray refilledData = refillTrimedColumn(mbase.data,10); //10 = size of CurrentProcessingMode
+                list<MBASE_SS86903_RS_TI> processingList = listCreate(MBASE_SS86903_RS_TI);
+                udrDecode("MBASE_SS86903_RS_Decode", processingList, refilledData);
+                
+                MBASE_SS86903_RS_TI processing = listGet(processingList,0);
+                responseMessage.param_Header_01.ProcessingInfo.CurrentProcessingMode.CurrentProcessingMode = getStringValue(processing.CurrentProcessingMode);
+                
+                //Response Status Info
+                responseMessage.param_Header_01.StatusInfo.Status.Success = true;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = mbase.mbaseHeader.HDRIND;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Success";
+                
+            }else{
+                //Rejected
+                debug("AB");
+                
+                list<MBASE_Reject_With_Payload_TI> aRejected = listCreate(MBASE_Reject_With_Payload_TI);
+                udrDecode("MBASE_Reject_With_Payload_Decode", aRejected, mbase.data);
+                MBASE_Reject_With_Payload_TI rejected = listGet(aRejected,0);
+                //debug(rejected);
+                
+                responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = rejected.mbaseReject.ErrorCode;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = baToStr(rejected.errorDesc, "IBM-Thai");
+                
+                debug("errorCode : " + rejected.mbaseReject.ErrorCode);
+                debug("errorDesc : " + baToStr(rejected.errorDesc, "IBM-Thai"));
+                
+            }
+        }else{
+                if(strStartsWith(tcpResponse.I13MSTA, ".DSP")){
+                    //Response Stattus Info
+                    string responseCodeDSP = strREReplaceAll(tcpResponse.I13MSTA, "\\.", "");
+                    responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = responseCodeDSP;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = getDSPErrorDesc(responseCodeDSP);       
+                }
+                else{
+                    //DSP Service down 
+                    responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = "CBS8999";
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Unknow data format (Invalid response from host)";     
+                }
+        }
+    }else{
+            //Response Header
+            responseMessage.param_Header_01 = udrCreate(GetProcessingModeResponse$Header);
+            date responseTransactinDatetime = dateCreateCopy(responseMessage.param_Header.TransactionDateTime);
+            dateSetTimeZone(responseTransactinDatetime, "GMT+7");       
+            responseMessage.param_Header_01.ReferenceNo = responseMessage.param_Header.ReferenceNo;
+            responseMessage.param_Header_01.TransactionDateTime = responseTransactinDatetime;
+            responseMessage.param_Header_01.ChannelID = responseMessage.param_Header.ChannelID;
+            //Response StatusInfo
+            responseMessage.param_Header_01.StatusInfo = udrCreate(GetProcessingModeResponse$Header$StatusInfo);
+            responseMessage.param_Header_01.StatusInfo.Status = udrCreate(GetProcessingModeResponse$Header$StatusInfo$Status);
+            responseMessage.param_Header_01.StatusInfo.Status.UsageTime = dateCreateNowMilliseconds()-requestMillisec;
+            responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+            responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = "CBS8990";
+            responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Connection to CBS lost";
+    }
+    return responseMessage;
+}]]></string>
+</exportmultiplex>

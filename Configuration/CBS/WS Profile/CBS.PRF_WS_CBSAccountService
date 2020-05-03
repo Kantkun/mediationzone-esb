@@ -1,0 +1,2415 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE webservices_profile SYSTEM "jar:/mz/dtd/webservices_profile.dtd">
+<webservices_profile category="Internal">
+   <storable name="webservices_profile" storable-id="dr.Configuration" ver="6.0">
+      <array classname="java.lang.String" name="Access Groups -read -write -execute" size="3">
+         <string name="0" value="All"/>
+         <string name="1" value="Administrator"/>
+         <string name="2" value="All"/>
+      </array>
+      <storable name="Auxiliary Data" null="true"/>
+      <string name="Current Comment" null="true"/>
+      <storable name="Data" storable-id="dr.WSProfileConfig" ver="15.0">
+         <string name="Binding name" value="CBSAccountServiceSoap"/>
+         <boolean name="Disable Underscore Binding Mode" value="false"/>
+         <boolean name="Disable Wrapper Style" value="false"/>
+         <boolean name="Enable JAAS" value="false"/>
+         <boolean name="Enable Username Token" value="false"/>
+         <boolean name="Enable WS Addressing" value="false"/>
+         <boolean name="Enforce RM" value="false"/>
+         <string name="JAAS Module" value="File Login Module"/>
+         <string name="JAAS Properties"><![CDATA[passwordFile /etc/passwd
+debug true
+]]></string>
+         <string name="Max Enum Members" value="256"/>
+         <boolean name="Populate OriginalData Field" value="false"/>
+         <string name="Port type" value="CBSAccountServicePortType"/>
+         <boolean name="Process Implicit SOAP Headers" value="false"/>
+         <string name="RM Store" value="In Memory"/>
+         <string name="Schema Bindings" value=""/>
+         <boolean name="Security Enabled" value="false"/>
+         <storable name="Security Settings" null="true"/>
+         <string name="Service Port name" value="CBSAccountServicePort"/>
+         <boolean name="Simple Mode Enabled" value="false"/>
+         <string name="TLS keystore file" value="cbsesbcert.jks"/>
+         <bytearray name="TLS keystore file content"><![CDATA[
+M_NW^[0````(````!`````0`&8V)S97-B```!9U,[%WD```4#,(($_S`.!@HK
+M!@$$`2H"$0$!!0`$@@3KG8ZO,GB#9D!59&)P7R^.L<K8>+KW=13Q)XO(@R_"
+MNT/EK;X-?M35S*RK_YSA&_MW\3.02]:QLQX^^\R"(/<OG2OGM^>JA:$5P,@%
+M!C%[/G0[@U?M9PYY6TDK_!E=%#%R(!7^;*1%9JR2"5T=$=^E+;KWV(QV@-W(
+MJ9050!5G]][)9\O?9,CB>,_)1O=;%T^J2<:R&&RR^^C9(KJW%E12WPK'E%$>
+M@K_[X@#S>5;X,]KA>Q_%2*3P6WTM(V>STHCF41NRT\/86(^/[BE(E!C])],E
+MVQP"U8XGDN`F:OP-%?H.FF\3?TY+G),L)F3?$PM>8PJ,52BH[#^;@#-B_Y$G
+M=N5/_?A.04O"AE1XF#<EI)0.K=1=HJXZS!(:SXGUK23]-\O)XCY9.JXAKF*>
+M)LQ?NAH4A[M#)T(O&6L.$1BW[6?,ADZ2)0N"/4X0-/(#8/*)M<$D"3$3%9Z@
+M.L@)5V*[PX[*%I5*P7/6K!:U0$O;1G0;\BED_>'M(%CJAIIKIW=RLQV1>G@L
+M/X73.G`[+JM''!Y(Q["Q#]*>XJDKS*E@%=0B8@.KGP[LPD0-$4#JKM+3;'*D
+M%%M>WFQS0G,$,Y.Q@89L;8(2)<)8DCW#!A$[E(:(/[ZUN(@LE/F>,C;D-#JF
+M!C]<89V\)4O@(T@!AX/X56A_)7"O^[>COGSZ1"&B_EI7&DN0NWWZ#'>B+=O`
+M`-4A=Y^R4"O**E5C>0.MAQT?\EB>2&/#T#`ZQ(=2=V)0ETQA)T:'ER^8N/A7
+MI`)H$LN51FV)^X_F@V$'"PEGZ/VW"`_^@Q1B3KAJ9.*SY+;:G??%3(`C<(@F
+MYRLRC.2]-ECK+/4EMZQKR.<^Q!ZVVV76U-YBT7Q+S9O,4P[50^;1P[W*200.
+M/"G*!E&N%^X&HJ-[0)[QVH]*IC4J[>+T4SPOA^43R#Z.!-T9Z!TBDW%Z1^;+
+M%56O=/60E)`/VF'\A(^5B:H5A2?P]^P@R7V!)^>$1*B'PR"K+PM[$9ZR09Q/
+M0.1J!@,Y;EFD@PA.+ZSFEL["5ELB([E<2]S'_XG>[W=<@ML\J]\:=OGR@3ZG
+M;-\]!&]CR'&([0Q7L[L+13'*)^)^?!_K"@'YO=@E0^]HZ9_V5"N2`O3($(5B
+M[/#3>>:H93SL;<?-I<<$\>F;.R)LYG(7EZ_4LE)7]!!/.:'<K,]X@E1^A;^N
+M,[#0C(OAF*V+%C:K.X!WPPP#-_X3UL>J&=M&C,XS\'4:V-<13>5ZZS\[@$<`
+M*B,AF9+H1^[ETH%FA^H!<'QH,R;JZ5*#2$:>(<VN0,(12>C_9IL">-;_J^,B
+M0AHZDTCT0&5(.P!>(:W2#LD8)?6>\ASEYM%ZT,C4_)L9T[,VC=:D`CXC=+@T
+ME)DL$*S2\VIN0FSEX=9S80Y'!Q*,>V*ARY=0EP>;<RA3^8LGM!19><IR*;6-
+MK*NS+):B55')!I*`<P1%@7'Q,K-O.A*7(RN0^<K?O'$M>'1/>PN6!N\[/,*.
+MH-L9`..WKEEG9X4`YTQ>98(XNJ0R$G.J<0&_S^ATK(1SC@>-^1GWV16>FJ8D
+M#,&[,9YNCES3Y5Z$:(R.]NA'&HC0C10RH$;<'AI<%J/S\KX/?4B?\M'54SC)
+M4:+*40TR^:2`";:8<6TDGE+53;8+9><)N4^\)8B]-Y`FX$:QDP$J<6@4W?@Q
+M.?,'"@J^I*<?B?#K-PT````!``58+C4P.0```Q`P@@,,,((!]`()`+@C["F!
+M$,BZ,`T&"2J&2(;W#0$!"P4`,$@Q"S`)!@-5!`83`E1(,1`P#@8#500(#`="
+M04Y'2T]+,0PP"@8#500*#`-'2$(Q&3`7!@-5!`,,$&-B<V5S8BYG:&(N8V\N
+M=&@P'A<-,3@Q,3(V,3(S.#4S6A<-,C@Q,3(S,3(S.#4S6C!(,0LP"08#500&
+M$P)42#$0,`X&`U4$"`P'0D%.1TM/2S$,,`H&`U4$"@P#1TA",1DP%P8#500#
+M#!!C8G-E<V(N9VAB+F-O+G1H,((!(C`-!@DJADB&]PT!`0$%``."`0\`,((!
+M"@*"`0$`Y-?I%BVV"M!+'S\NE&!FO+N@!+>_FV[C'L-IQ3_0A*5KKSUQ:)[>
+M94/JXAT1:V=;^!OCD&]9$HP`B3@JJZ'YEU_UI>\_>FD%;9OQ:(-X/@(='^HN
+M;[_?-]<G)-$;M4J$-?8?36]C1"D$YSH;X.<I#_!I6C9-%JLG'L^^?7^SX$56
+M85*\#DH\(3#'_B833WW%&&YO>R5UOU0:N=HE\L'"_T-P08`4LC0HOH"!!?5[
+M$&;!&$6#3=&A;_/?#)U:6*XZO"K0''+5-90=7^)M*46Z(!URZH[U`3G$+:IV
+MGI`V/O5BI0FVGQ_J/0C1K,@UM&(*+1,..)T)>%P4#*$>HW.NRP(#`0`!,`T&
+M"2J&2(;W#0$!"P4``X(!`0`7/:*Y<G4M09*-4&&+J1M6P?EK(*MBBU4HL^/G
+M8@Y?`T)C1G%?MHZKGQY9/"H7ZMW*?&GPX[K=DU+[^/\=C/T$,^^$8[#PS+0$
+MYNP/(@W;K&.WG%;#.9B=\:6NEW,K$0SJM.=AOP]GE?=0RVJC?M[88GLJ)Q'/
+M%F(R/O';6&8.B7U;-NLUGZ,G-&I#@3=8M_^>7I,W7@PHHNL[S[@2$ZK7`;9F
+MRA4\UG`ICI<0VT*^AAF(.._@[L$W^\E^N23%7L'`I(U_\:WCB29?=.F20@_C
+M^'/#E.Y\'P0G?FNNKZSI9K!!V6TJJM"RA.CC7-E2%5\@%1R;.]X2WKSQ2BM7
+7!;YGHSZ]8^/W;&YY!TG;+W4/FQK:%Q0`
+`
+]]></bytearray>
+         <password name="TLS keystore password" value="DR_DEFAULT_KEY-25FB75239B53E487605912194E971790"/>
+         <password name="Username Token Password" value="DR_DEFAULT_KEY-017BB0B8FB061C1876D43DD75468AA40"/>
+         <string name="Username Token Username" value=""/>
+         <list classname="java.util.LinkedList" name="concatenationFilePathList"/>
+         <string name="helper_class" value="ws.CBS.PRF_WS_CBSAccountService.WSHelperImpl"/>
+         <list classname="java.util.LinkedList" name="includeFiles"/>
+         <string name="inputAndOutputTypeName"><![CDATA[ws.CBS.PRF_WS_CBSAccountService.udr.AbstractCBSAccountServicePortTypeWSCycle]]></string>
+         <string name="properties"><![CDATA[# Advanced XML binding options can be customized here. If the properties are commented out, default values are used.
+
+#Enable JAXB Simple Binding Mode
+# When true, XSD Schemas of loaded WSDL files are compiled into Java code using the experimental "Simple and better binding mode". This is necessary for some complex types, for instance when duplicate element names are used within the same complex type.
+enable_JAXB_simple_binding false
+
+#Disable JAXWS Wrapper style Mode
+# When true, the cycle UDR will contain request and response parameters that wrap all the arguments in request and response UDRs.
+disable_JAXWS_wrapper_mode false
+
+#Enable Processing Of Implicit Soap Header
+# When true, any SOAP headers defined in the binding section of WSDL files are compiled into Java code. This is necessary in order to manipulate the SOAP headers in outgoing Web Service requests. 
+enable_processing_of_implicit_SOAP_header false
+
+#Disable Underscore Binding Mode
+# When false, underscore binding mode is true, JAXB will not strip underscore from the element names when converting a WSDL file to Java.
+disable_under_score_binding false
+
+#Populate originaldata field
+# When true the OriginalData field in the WSCycleUDR will be populated with the content of the SOAP request
+populate_originaldata_field false
+
+#Max enum members
+# Sets the value for the typesafeEnumMaxMembers jaxb global variable which controls the maximum number of allowed enum members
+max_enum_members 256
+
+#Schema level bindings
+# Sets the jaxb schema level bindings per xsd file. The format is [filename.xsd]:package=[packageSuffix],[transformationType]-prefix=prefix,suffix=suffix;
+schema_level_bindings 
+
+#Enable fault stack trace in response
+# When true stack trace information will be available in error responses
+fault_stack_trace_enabled false
+
+#Allow HEAD
+# When true HTTP method HEAD is allowed
+allow_head false
+
+]]></string>
+         <boolean name="singleWSDLFile" value="true"/>
+         <string name="transport" value="HTTPS"/>
+         <map classname="java.util.HashMap" name="typeNamespaceToPrefixMap" size="1">
+            <string name="key_0"><![CDATA[http://www.ghbank.co.th/services/CBS/CBSAccountService]]></string>
+            <string name="value_0" value="tns"/>
+         </map>
+         <string name="unique_name" value="com.digitalroute.ws.ws1520833405161"/>
+         <string name="wsdlFileContent" quoted="true"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>\u000d
+<wsdl:definitions name="CBSAccountService" targetNamespace="http://www.ghbank.co.th/services/CBS/CBSAccountService" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:tns="http://www.ghbank.co.th/services/CBS/CBSAccountService">\u000d
+  <wsdl:types>\u000d
+    <xsd:schema targetNamespace="http://www.ghbank.co.th/services/CBS/CBSAccountService">\u000d
+      <xsd:element name="InquiryAccountSummary">\u000d
+        <xsd:complexType>\u000d
+          <xsd:sequence>\u000d
+            <xsd:element name="Header">\u000d
+              <xsd:complexType>\u000d
+                <xsd:sequence>\u000d
+                  <xsd:element name="ReferenceNo">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="20" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="TransactionDateTime" type="xsd:dateTime" />\u000d
+                  <xsd:element name="ChannelID">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="3" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                </xsd:sequence>\u000d
+              </xsd:complexType>\u000d
+            </xsd:element>\u000d
+            <xsd:element name="Data">\u000d
+              <xsd:complexType>\u000d
+                <xsd:sequence>\u000d
+                  <xsd:element name="CustomerNumber">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="19" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="AccountStatus" minOccurs="0">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="1" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="AccountType" minOccurs="0">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="1" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                </xsd:sequence>\u000d
+              </xsd:complexType>\u000d
+            </xsd:element>\u000d
+            <xsd:element name="Paging">\u000d
+              <xsd:complexType>\u000d
+                <xsd:sequence>\u000d
+                  <xsd:element name="NextPageIndicator" minOccurs="0">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="200" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                </xsd:sequence>\u000d
+              </xsd:complexType>\u000d
+            </xsd:element>\u000d
+          </xsd:sequence>\u000d
+        </xsd:complexType>\u000d
+      </xsd:element>\u000d
+      <xsd:element name="InquiryAccountSummaryResponse">\u000d
+        <xsd:complexType>\u000d
+          <xsd:sequence>\u000d
+            <xsd:element name="Header">\u000d
+              <xsd:complexType>\u000d
+                <xsd:sequence>\u000d
+                  <xsd:element name="ReferenceNo" minOccurs="0">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="20" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="TransactionDateTime" minOccurs="0" type="xsd:dateTime" />\u000d
+                  <xsd:element name="ChannelID" minOccurs="0">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="3" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="AccountList" minOccurs="0">\u000d
+                    <xsd:complexType>\u000d
+                      <xsd:sequence>\u000d
+                        <xsd:element name="Account" minOccurs="0" maxOccurs="unbounded">\u000d
+                          <xsd:complexType>\u000d
+                            <xsd:sequence>\u000d
+                              <xsd:element name="AccountNumber" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="19" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="AccountType" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="ReferenceNumber" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="40" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="EntityNumber" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="19" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="RelationshipCode" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="2" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="RelationshipEndDate" minOccurs="0" type="xsd:dateTime" />\u000d
+                              <xsd:element name="AddressCustomerNumber" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="19" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="Seq" minOccurs="0" type="xsd:long" />\u000d
+                              <xsd:element name="SystemCode" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="10" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="AccountTypeCode" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="10" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="AccountStatus" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="ProductCode" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="20" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="Holder" minOccurs="0" type="xsd:long" />\u000d
+                              <xsd:element name="BundleCode" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="10" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="OriginalCurrency" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="4" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="CurrentBalance" minOccurs="0" type="xsd:decimal" />\u000d
+                              <xsd:element name="EquivalentBalance" minOccurs="0" type="xsd:decimal" />\u000d
+                              <xsd:element name="EquivalentCurrency" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="4" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="MaskedBalance" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="EnglishName" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="120" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="AccountName" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="120" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                            </xsd:sequence>\u000d
+                          </xsd:complexType>\u000d
+                        </xsd:element>\u000d
+                      </xsd:sequence>\u000d
+                    </xsd:complexType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="StatusInfo" minOccurs="0">\u000d
+                    <xsd:complexType>\u000d
+                      <xsd:sequence>\u000d
+                        <xsd:element name="Status" minOccurs="0">\u000d
+                          <xsd:complexType>\u000d
+                            <xsd:sequence>\u000d
+                              <xsd:element name="Success" minOccurs="0" type="xsd:boolean" />\u000d
+                              <xsd:element name="ResponseCode" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="10" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="ResponseMessage" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="200" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="UsageTime" minOccurs="0" type="xsd:long" />\u000d
+                            </xsd:sequence>\u000d
+                          </xsd:complexType>\u000d
+                        </xsd:element>\u000d
+                      </xsd:sequence>\u000d
+                    </xsd:complexType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="PagingInfo" minOccurs="0">\u000d
+                    <xsd:complexType>\u000d
+                      <xsd:sequence>\u000d
+                        <xsd:element name="Paging" minOccurs="0">\u000d
+                          <xsd:complexType>\u000d
+                            <xsd:sequence>\u000d
+                              <xsd:element name="NextPageIndicator" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="200" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="PageSize" minOccurs="0" type="xsd:long" />\u000d
+                              <xsd:element name="NumberOfRecord" minOccurs="0" type="xsd:long" />\u000d
+                              <xsd:element name="HasMoreRecord" minOccurs="0" type="xsd:boolean" />\u000d
+                            </xsd:sequence>\u000d
+                          </xsd:complexType>\u000d
+                        </xsd:element>\u000d
+                      </xsd:sequence>\u000d
+                    </xsd:complexType>\u000d
+                  </xsd:element>\u000d
+                </xsd:sequence>\u000d
+              </xsd:complexType>\u000d
+            </xsd:element>\u000d
+          </xsd:sequence>\u000d
+        </xsd:complexType>\u000d
+      </xsd:element>\u000d
+      <xsd:element name="GetCASAAccountDetail">\u000d
+        <xsd:complexType>\u000d
+          <xsd:sequence>\u000d
+            <xsd:element name="Header">\u000d
+              <xsd:complexType>\u000d
+                <xsd:sequence>\u000d
+                  <xsd:element name="ReferenceNo">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="20" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="TransactionDateTime" type="xsd:dateTime" />\u000d
+                  <xsd:element name="ChannelID">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="3" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                </xsd:sequence>\u000d
+              </xsd:complexType>\u000d
+            </xsd:element>\u000d
+            <xsd:element name="Data">\u000d
+              <xsd:complexType>\u000d
+                <xsd:sequence>\u000d
+                  <xsd:element name="AccountNumber" minOccurs="0">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="19" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                </xsd:sequence>\u000d
+              </xsd:complexType>\u000d
+            </xsd:element>\u000d
+          </xsd:sequence>\u000d
+        </xsd:complexType>\u000d
+      </xsd:element>\u000d
+      <xsd:element name="GetCASAAccountDetailResponse">\u000d
+        <xsd:complexType>\u000d
+          <xsd:sequence>\u000d
+            <xsd:element name="Header">\u000d
+              <xsd:complexType>\u000d
+                <xsd:sequence>\u000d
+                  <xsd:element name="ReferenceNo" minOccurs="0">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="20" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="TransactionDateTime" minOccurs="0" type="xsd:dateTime" />\u000d
+                  <xsd:element name="ChannelID" minOccurs="0">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="3" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="AccountInfo" minOccurs="0">\u000d
+                    <xsd:complexType>\u000d
+                      <xsd:sequence>\u000d
+                        <xsd:element name="Account" minOccurs="0">\u000d
+                          <xsd:complexType>\u000d
+                            <xsd:sequence>\u000d
+                              <xsd:element name="AccountNumber" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="19" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="AccountType" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="AccountName" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="200" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="BankNumber" minOccurs="0" type="xsd:long" />\u000d
+                              <xsd:element name="BranchNumber" minOccurs="0" type="xsd:long" />\u000d
+                              <xsd:element name="CustomerNumber" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="19" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="CustomerType" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="DepositTypeCode" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="10" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="TypeDescription" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="50" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="LocalDescription" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="50" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="ShortDescription" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="20" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="LedgerBalance" minOccurs="0" type="xsd:decimal" />\u000d
+                              <xsd:element name="AvailableBalance" minOccurs="0" type="xsd:decimal" />\u000d
+                              <xsd:element name="FloatAmount" minOccurs="0" type="xsd:decimal" />\u000d
+                              <xsd:element name="DrawingLimit" minOccurs="0" type="xsd:decimal" />\u000d
+                              <xsd:element name="EarmarkAmount" minOccurs="0" type="xsd:decimal" />\u000d
+                              <xsd:element name="LastTransactionDate" minOccurs="0" type="xsd:dateTime" />\u000d
+                              <xsd:element name="LastTransactionTime" minOccurs="0" type="xsd:dateTime" />\u000d
+                              <xsd:element name="Status" minOccurs="0" type="xsd:long" />\u000d
+                              <xsd:element name="PassbookFlag" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="PrintStatementFlag" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="TitleShortDescription" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="20" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="TitleLongDescription" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="50" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="TitleLocalDescription" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="50" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="CustomerName" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="40" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="OpenedDate" minOccurs="0" type="xsd:dateTime" />\u000d
+                              <xsd:element name="OccurrenceDate" minOccurs="0" type="xsd:dateTime" />\u000d
+                              <xsd:element name="LastCalculationDate" minOccurs="0" type="xsd:dateTime" />\u000d
+                              <xsd:element name="UnpostPassBookItem" minOccurs="0" type="xsd:long" />\u000d
+                              <xsd:element name="PassBookNextLineNumber" minOccurs="0" type="xsd:long" />\u000d
+                              <xsd:element name="PassbookBalance" minOccurs="0" type="xsd:decimal" />\u000d
+                              <xsd:element name="AccountInterestRatePercentage" minOccurs="0" type="xsd:decimal" />\u000d
+                              <xsd:element name="ProductInterestRateNumber" minOccurs="0" type="xsd:long" />\u000d
+                              <xsd:element name="ProductInterestRatePercentage" minOccurs="0" type="xsd:decimal" />\u000d
+                              <xsd:element name="InterestLoadingPercentage" minOccurs="0" type="xsd:decimal" />\u000d
+                              <xsd:element name="InterestLoadingCode" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="InterestPayable" minOccurs="0" type="xsd:decimal" />\u000d
+                              <xsd:element name="AccruedTaxPenaltyTax" minOccurs="0" type="xsd:decimal" />\u000d
+                              <xsd:element name="YTDInterestPaid" minOccurs="0" type="xsd:decimal" />\u000d
+                              <xsd:element name="TodayDepositAmount" minOccurs="0" type="xsd:decimal" />\u000d
+                              <xsd:element name="TodayWithdrawalAmount" minOccurs="0" type="xsd:decimal" />\u000d
+                              <xsd:element name="SpecialInformation" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="HoldCode" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="MessageLine" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="78" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="DepositTerm" minOccurs="0" type="xsd:long" />\u000d
+                              <xsd:element name="ExpiredDate" minOccurs="0" type="xsd:dateTime" />\u000d
+                              <xsd:element name="TimeDepositNumber" minOccurs="0" type="xsd:long" />\u000d
+                              <xsd:element name="AmountPerPeriod" minOccurs="0" type="xsd:decimal" />\u000d
+                              <xsd:element name="LostContract" minOccurs="0" type="xsd:long" />\u000d
+                              <xsd:element name="TransferAccountNumber" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="19" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="TransferAccountType" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="PenaltyInterestSaving" minOccurs="0" type="xsd:decimal" />\u000d
+                              <xsd:element name="CompleteFlag" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="LastDepositNumber" minOccurs="0" type="xsd:long" />\u000d
+                              <xsd:element name="ExcessDayNumber" minOccurs="0" type="xsd:long" />\u000d
+                              <xsd:element name="YesterdayBalance" minOccurs="0" type="xsd:decimal" />\u000d
+                              <xsd:element name="MailingCode" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="MailDeliveryMode" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="LessOneDayCheque" minOccurs="0" type="xsd:decimal" />\u000d
+                              <xsd:element name="YesterdayClearing" minOccurs="0" type="xsd:decimal" />\u000d
+                              <xsd:element name="YesterdaySemiClearing" minOccurs="0" type="xsd:decimal" />\u000d
+                              <xsd:element name="PostedDateChequeAmount" minOccurs="0" type="xsd:decimal" />\u000d
+                              <xsd:element name="SemiAMTHold" minOccurs="0" type="xsd:decimal" />\u000d
+                              <xsd:element name="SegmentCode" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="4" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="TaxRatePercentage" minOccurs="0" type="xsd:decimal" />\u000d
+                              <xsd:element name="Officer" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="10" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="SignatureConditionCode" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="2" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="SignatureConditionDescription" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="50" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="OutstandingBalance" minOccurs="0" type="xsd:decimal" />\u000d
+                            </xsd:sequence>\u000d
+                          </xsd:complexType>\u000d
+                        </xsd:element>\u000d
+                      </xsd:sequence>\u000d
+                    </xsd:complexType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="StatusInfo" minOccurs="0">\u000d
+                    <xsd:complexType>\u000d
+                      <xsd:sequence>\u000d
+                        <xsd:element name="Status" minOccurs="0">\u000d
+                          <xsd:complexType>\u000d
+                            <xsd:sequence>\u000d
+                              <xsd:element name="Success" minOccurs="0" type="xsd:boolean" />\u000d
+                              <xsd:element name="ResponseCode" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="10" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="ResponseMessage" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="200" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="UsageTime" minOccurs="0" type="xsd:long" />\u000d
+                            </xsd:sequence>\u000d
+                          </xsd:complexType>\u000d
+                        </xsd:element>\u000d
+                      </xsd:sequence>\u000d
+                    </xsd:complexType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="PagingInfo" minOccurs="0">\u000d
+                    <xsd:complexType>\u000d
+                      <xsd:sequence>\u000d
+                        <xsd:element name="Paging" minOccurs="0">\u000d
+                          <xsd:complexType>\u000d
+                            <xsd:sequence>\u000d
+                              <xsd:element name="NextPageIndicator" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="200" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="PageSize" minOccurs="0" type="xsd:long" />\u000d
+                              <xsd:element name="NumberOfRecord" minOccurs="0" type="xsd:long" />\u000d
+                              <xsd:element name="HasMoreRecord" minOccurs="0" type="xsd:boolean" />\u000d
+                            </xsd:sequence>\u000d
+                          </xsd:complexType>\u000d
+                        </xsd:element>\u000d
+                      </xsd:sequence>\u000d
+                    </xsd:complexType>\u000d
+                  </xsd:element>\u000d
+                </xsd:sequence>\u000d
+              </xsd:complexType>\u000d
+            </xsd:element>\u000d
+          </xsd:sequence>\u000d
+        </xsd:complexType>\u000d
+      </xsd:element>\u000d
+      <xsd:element name="InquiryCASAAccountList">\u000d
+        <xsd:complexType>\u000d
+          <xsd:sequence>\u000d
+            <xsd:element name="Header">\u000d
+              <xsd:complexType>\u000d
+                <xsd:sequence>\u000d
+                  <xsd:element name="ReferenceNo">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="20" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="TransactionDateTime" type="xsd:dateTime" />\u000d
+                  <xsd:element name="ChannelID">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="3" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                </xsd:sequence>\u000d
+              </xsd:complexType>\u000d
+            </xsd:element>\u000d
+            <xsd:element name="Data">\u000d
+              <xsd:complexType>\u000d
+                <xsd:sequence>\u000d
+                  <xsd:element name="CustomerNumber">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="19" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                </xsd:sequence>\u000d
+              </xsd:complexType>\u000d
+            </xsd:element>\u000d
+            <xsd:element name="Paging">\u000d
+              <xsd:complexType>\u000d
+                <xsd:sequence>\u000d
+                  <xsd:element name="NextPageIndicator">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="200" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                </xsd:sequence>\u000d
+              </xsd:complexType>\u000d
+            </xsd:element>\u000d
+          </xsd:sequence>\u000d
+        </xsd:complexType>\u000d
+      </xsd:element>\u000d
+      <xsd:element name="InquiryCASAAccountListResponse">\u000d
+        <xsd:complexType>\u000d
+          <xsd:sequence>\u000d
+            <xsd:element name="Header">\u000d
+              <xsd:complexType>\u000d
+                <xsd:sequence>\u000d
+                  <xsd:element name="ReferenceNo" minOccurs="0">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="20" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="TransactionDateTime" minOccurs="0" type="xsd:dateTime" />\u000d
+                  <xsd:element name="ChannelID" minOccurs="0">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="3" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="AccountList" minOccurs="0">\u000d
+                    <xsd:complexType>\u000d
+                      <xsd:sequence>\u000d
+                        <xsd:element name="Account" minOccurs="0" maxOccurs="unbounded">\u000d
+                          <xsd:complexType>\u000d
+                            <xsd:sequence>\u000d
+                              <xsd:element name="CustomerNumber" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="19" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="AccountType" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="AccountNumber" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="19" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="RelationshipCode" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="2" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="AccountName" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="201" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="DepositTypeCode" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="10" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="TypeDescription" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="50" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="LocalDescription" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="50" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="ShortDescription" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="20" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="LedgerBalance" minOccurs="0" type="xsd:decimal" />\u000d
+                              <xsd:element name="AvailableBalance" minOccurs="0" type="xsd:decimal" />\u000d
+                              <xsd:element name="BranchNumber" minOccurs="0" type="xsd:long" />\u000d
+                              <xsd:element name="JoinAccountFlag" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="AllToSignFlag" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="PrimaryHolder" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="OpenedDate" minOccurs="0" type="xsd:dateTime" />\u000d
+                              <xsd:element name="AccountStatus" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="EnglishName" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="200" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                            </xsd:sequence>\u000d
+                          </xsd:complexType>\u000d
+                        </xsd:element>\u000d
+                      </xsd:sequence>\u000d
+                    </xsd:complexType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="StatusInfo">\u000d
+                    <xsd:complexType>\u000d
+                      <xsd:sequence>\u000d
+                        <xsd:element name="Status" minOccurs="0">\u000d
+                          <xsd:complexType>\u000d
+                            <xsd:sequence>\u000d
+                              <xsd:element name="Success" type="xsd:boolean" />\u000d
+                              <xsd:element name="ResponseCode">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="10" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="ResponseMessage">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="200" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="UsageTime" type="xsd:long" />\u000d
+                            </xsd:sequence>\u000d
+                          </xsd:complexType>\u000d
+                        </xsd:element>\u000d
+                      </xsd:sequence>\u000d
+                    </xsd:complexType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="PagingInfo">\u000d
+                    <xsd:complexType>\u000d
+                      <xsd:sequence>\u000d
+                        <xsd:element name="Paging" minOccurs="0">\u000d
+                          <xsd:complexType>\u000d
+                            <xsd:sequence>\u000d
+                              <xsd:element name="NextPageIndicator">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="200" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="PageSize" type="xsd:long" />\u000d
+                              <xsd:element name="NumberOfRecord" type="xsd:long" />\u000d
+                              <xsd:element name="HasMoreRecord" type="xsd:boolean" />\u000d
+                            </xsd:sequence>\u000d
+                          </xsd:complexType>\u000d
+                        </xsd:element>\u000d
+                      </xsd:sequence>\u000d
+                    </xsd:complexType>\u000d
+                  </xsd:element>\u000d
+                </xsd:sequence>\u000d
+              </xsd:complexType>\u000d
+            </xsd:element>\u000d
+          </xsd:sequence>\u000d
+        </xsd:complexType>\u000d
+      </xsd:element>\u000d
+      <xsd:element name="InquiryCASAStatementHistory">\u000d
+        <xsd:complexType>\u000d
+          <xsd:sequence>\u000d
+            <xsd:element name="Header">\u000d
+              <xsd:complexType>\u000d
+                <xsd:sequence>\u000d
+                  <xsd:element name="ReferenceNo">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="20" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="TransactionDateTime" type="xsd:dateTime" />\u000d
+                  <xsd:element name="ChannelID">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="3" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                </xsd:sequence>\u000d
+              </xsd:complexType>\u000d
+            </xsd:element>\u000d
+            <xsd:element name="Data">\u000d
+              <xsd:complexType>\u000d
+                <xsd:sequence>\u000d
+                  <xsd:element name="AccountNumber">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="19" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="AccountType">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="1" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="RunningSequence" minOccurs="0" type="xsd:long" />\u000d
+                  <xsd:element name="StartDate" minOccurs="0" type="xsd:dateTime" />\u000d
+                  <xsd:element name="EndDate" minOccurs="0" type="xsd:dateTime" />\u000d
+                  <xsd:element name="TransactionType" minOccurs="0">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="1" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="FromTransactionAmount" minOccurs="0" type="xsd:decimal" />\u000d
+                  <xsd:element name="ToTransactionAmount" minOccurs="0" type="xsd:decimal" />\u000d
+                  <xsd:element name="TransactionCode" minOccurs="0">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="3" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                </xsd:sequence>\u000d
+              </xsd:complexType>\u000d
+            </xsd:element>\u000d
+            <xsd:element name="Paging">\u000d
+              <xsd:complexType>\u000d
+                <xsd:sequence>\u000d
+                  <xsd:element name="NextPageIndicator">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="200" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                </xsd:sequence>\u000d
+              </xsd:complexType>\u000d
+            </xsd:element>\u000d
+          </xsd:sequence>\u000d
+        </xsd:complexType>\u000d
+      </xsd:element>\u000d
+      <xsd:element name="InquiryCASAStatementHistoryResponse">\u000d
+        <xsd:complexType>\u000d
+          <xsd:sequence>\u000d
+            <xsd:element name="Header">\u000d
+              <xsd:complexType>\u000d
+                <xsd:sequence>\u000d
+                  <xsd:element name="ReferenceNo" minOccurs="0">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="20" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="TransactionDateTime" minOccurs="0" type="xsd:dateTime" />\u000d
+                  <xsd:element name="ChannelID" minOccurs="0">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="3" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="AccountList" minOccurs="0">\u000d
+                    <xsd:complexType>\u000d
+                      <xsd:sequence>\u000d
+                        <xsd:element name="Account" minOccurs="0" maxOccurs="unbounded">\u000d
+                          <xsd:complexType>\u000d
+                            <xsd:sequence>\u000d
+                              <xsd:element name="TransactionType" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="TransactionDate" minOccurs="0" type="xsd:dateTime" />\u000d
+                              <xsd:element name="SequenceNumber" minOccurs="0" type="xsd:long" />\u000d
+                              <xsd:element name="TransactionBranch" minOccurs="0" type="xsd:long" />\u000d
+                              <xsd:element name="TransactionBranchDescription" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="50" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="TellerID" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="10" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="TransactionDescription" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="40" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="LocalTransactionDescription" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="50" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="TransactionAmount" minOccurs="0" type="xsd:decimal" />\u000d
+                              <xsd:element name="LedgerBalance" minOccurs="0" type="xsd:decimal" />\u000d
+                              <xsd:element name="PostingTimeStamp" minOccurs="0" type="xsd:dateTime" />\u000d
+                              <xsd:element name="TransactionCode" minOccurs="0" type="xsd:long" />\u000d
+                              <xsd:element name="DebitCreditCode" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="ChequeNumber" minOccurs="0" type="xsd:long" />\u000d
+                              <xsd:element name="StatementMnemonic" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="3" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="TransactionCodeSearch" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="3" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="LastStatementDate" minOccurs="0" type="xsd:dateTime" />\u000d
+                              <xsd:element name="LastStatementBalance" minOccurs="0" type="xsd:decimal" />\u000d
+                              <xsd:element name="WithdrawalAmount" minOccurs="0" type="xsd:decimal" />\u000d
+                              <xsd:element name="DepositAmount" minOccurs="0" type="xsd:decimal" />\u000d
+                              <xsd:element name="PostingTime" minOccurs="0" type="xsd:dateTime" />\u000d
+                              <xsd:element name="PlacementNumber" minOccurs="0" type="xsd:long" />\u000d
+                            </xsd:sequence>\u000d
+                          </xsd:complexType>\u000d
+                        </xsd:element>\u000d
+                      </xsd:sequence>\u000d
+                    </xsd:complexType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="StatusInfo" minOccurs="0">\u000d
+                    <xsd:complexType>\u000d
+                      <xsd:sequence>\u000d
+                        <xsd:element name="Status" minOccurs="0">\u000d
+                          <xsd:complexType>\u000d
+                            <xsd:sequence>\u000d
+                              <xsd:element name="Success" minOccurs="0" type="xsd:boolean" />\u000d
+                              <xsd:element name="ResponseCode" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="10" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="ResponseMessage" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="200" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="UsageTime" minOccurs="0" type="xsd:long" />\u000d
+                            </xsd:sequence>\u000d
+                          </xsd:complexType>\u000d
+                        </xsd:element>\u000d
+                      </xsd:sequence>\u000d
+                    </xsd:complexType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="PagingInfo" minOccurs="0">\u000d
+                    <xsd:complexType>\u000d
+                      <xsd:sequence>\u000d
+                        <xsd:element name="Paging" minOccurs="0">\u000d
+                          <xsd:complexType>\u000d
+                            <xsd:sequence>\u000d
+                              <xsd:element name="NextPageIndicator" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="200" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="PageSize" minOccurs="0" type="xsd:long" />\u000d
+                              <xsd:element name="NumberOfRecord" minOccurs="0" type="xsd:long" />\u000d
+                              <xsd:element name="HasMoreRecord" minOccurs="0" type="xsd:boolean" />\u000d
+                            </xsd:sequence>\u000d
+                          </xsd:complexType>\u000d
+                        </xsd:element>\u000d
+                      </xsd:sequence>\u000d
+                    </xsd:complexType>\u000d
+                  </xsd:element>\u000d
+                </xsd:sequence>\u000d
+              </xsd:complexType>\u000d
+            </xsd:element>\u000d
+          </xsd:sequence>\u000d
+        </xsd:complexType>\u000d
+      </xsd:element>\u000d
+      <xsd:element name="InquiryTDAccountList">\u000d
+        <xsd:complexType>\u000d
+          <xsd:sequence>\u000d
+            <xsd:element name="Header">\u000d
+              <xsd:complexType>\u000d
+                <xsd:sequence>\u000d
+                  <xsd:element name="ReferenceNo">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="20" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="TransactionDateTime" type="xsd:dateTime" />\u000d
+                  <xsd:element name="ChannelID">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="3" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                </xsd:sequence>\u000d
+              </xsd:complexType>\u000d
+            </xsd:element>\u000d
+            <xsd:element name="Data">\u000d
+              <xsd:complexType>\u000d
+                <xsd:sequence>\u000d
+                  <xsd:element name="TDGroupNumber">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="10" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="TDItemSequence" minOccurs="0">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="4" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                </xsd:sequence>\u000d
+              </xsd:complexType>\u000d
+            </xsd:element>\u000d
+            <xsd:element name="Paging">\u000d
+              <xsd:complexType>\u000d
+                <xsd:sequence>\u000d
+                  <xsd:element name="NextPageIndicator">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="200" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                </xsd:sequence>\u000d
+              </xsd:complexType>\u000d
+            </xsd:element>\u000d
+          </xsd:sequence>\u000d
+        </xsd:complexType>\u000d
+      </xsd:element>\u000d
+      <xsd:element name="InquiryTDAccountListResponse">\u000d
+        <xsd:complexType>\u000d
+          <xsd:sequence>\u000d
+            <xsd:element name="Header">\u000d
+              <xsd:complexType>\u000d
+                <xsd:sequence>\u000d
+                  <xsd:element name="ReferenceNo" minOccurs="0">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="20" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="TransactionDateTime" minOccurs="0" type="xsd:dateTime" />\u000d
+                  <xsd:element name="ChannelID" minOccurs="0">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="3" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="AccountList" minOccurs="0">\u000d
+                    <xsd:complexType>\u000d
+                      <xsd:sequence>\u000d
+                        <xsd:element name="Account" minOccurs="0" maxOccurs="unbounded">\u000d
+                          <xsd:complexType>\u000d
+                            <xsd:sequence>\u000d
+                              <xsd:element name="TDGroupNumber" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="10" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="TDItemSequence" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="4" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="TDPlacementNumber" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="10" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="CurrencyCode" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="4" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="AccountType" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="AccountTypeDescription" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="50" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="RenewalCounter" minOccurs="0" type="xsd:long" />\u000d
+                              <xsd:element name="Term" minOccurs="0" type="xsd:long" />\u000d
+                              <xsd:element name="TermCode" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="EffectiveDate" minOccurs="0" type="xsd:dateTime" />\u000d
+                              <xsd:element name="MaturityDate" minOccurs="0" type="xsd:dateTime" />\u000d
+                              <xsd:element name="InterestRatePercentage" minOccurs="0" type="xsd:decimal" />\u000d
+                              <xsd:element name="OriginalAmount" minOccurs="0" type="xsd:decimal" />\u000d
+                              <xsd:element name="AccountStatus" minOccurs="0" type="xsd:long" />\u000d
+                              <xsd:element name="AccountStatusDescription" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="50" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="LedgerBalance" minOccurs="0" type="xsd:decimal" />\u000d
+                              <xsd:element name="HoldAmount" minOccurs="0" type="xsd:decimal" />\u000d
+                              <xsd:element name="ProductCode" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="10" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="ProductCodeDescription" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="50" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="TermDateInterest" minOccurs="0" type="xsd:decimal" />\u000d
+                              <xsd:element name="LastBatchDate" minOccurs="0" type="xsd:dateTime" />\u000d
+                              <xsd:element name="BranchNumber" minOccurs="0" type="xsd:long" />\u000d
+                              <xsd:element name="CustomerNumber" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="19" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="LastTransactionDate" minOccurs="0" type="xsd:dateTime" />\u000d
+                              <xsd:element name="LastMaintenanceDate" minOccurs="0" type="xsd:dateTime" />\u000d
+                              <xsd:element name="IssuedDate" minOccurs="0" type="xsd:dateTime" />\u000d
+                              <xsd:element name="ReceiptSerialNumber" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="11" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="ShortTDGroupName" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="20" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="FullTDGroupName" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="120" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                            </xsd:sequence>\u000d
+                          </xsd:complexType>\u000d
+                        </xsd:element>\u000d
+                      </xsd:sequence>\u000d
+                    </xsd:complexType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="StatusInfo" minOccurs="0">\u000d
+                    <xsd:complexType>\u000d
+                      <xsd:sequence>\u000d
+                        <xsd:element name="Status" minOccurs="0">\u000d
+                          <xsd:complexType>\u000d
+                            <xsd:sequence>\u000d
+                              <xsd:element name="Success" minOccurs="0" type="xsd:boolean" />\u000d
+                              <xsd:element name="ResponseCode" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="10" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="ResponseMessage" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="200" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="UsageTime" minOccurs="0" type="xsd:long" />\u000d
+                            </xsd:sequence>\u000d
+                          </xsd:complexType>\u000d
+                        </xsd:element>\u000d
+                      </xsd:sequence>\u000d
+                    </xsd:complexType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="PagingInfo" minOccurs="0">\u000d
+                    <xsd:complexType>\u000d
+                      <xsd:sequence>\u000d
+                        <xsd:element name="Paging" minOccurs="0">\u000d
+                          <xsd:complexType>\u000d
+                            <xsd:sequence>\u000d
+                              <xsd:element name="NextPageIndicator" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="200" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="PageSize" minOccurs="0" type="xsd:long" />\u000d
+                              <xsd:element name="NumberOfRecord" minOccurs="0" type="xsd:long" />\u000d
+                              <xsd:element name="HasMoreRecord" minOccurs="0" type="xsd:boolean" />\u000d
+                            </xsd:sequence>\u000d
+                          </xsd:complexType>\u000d
+                        </xsd:element>\u000d
+                      </xsd:sequence>\u000d
+                    </xsd:complexType>\u000d
+                  </xsd:element>\u000d
+                </xsd:sequence>\u000d
+              </xsd:complexType>\u000d
+            </xsd:element>\u000d
+          </xsd:sequence>\u000d
+        </xsd:complexType>\u000d
+      </xsd:element>\u000d
+      <xsd:element name="GetTDAccountDetail">\u000d
+        <xsd:complexType>\u000d
+          <xsd:sequence>\u000d
+            <xsd:element name="Header">\u000d
+              <xsd:complexType>\u000d
+                <xsd:sequence>\u000d
+                  <xsd:element name="ReferenceNo">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="20" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="TransactionDateTime" type="xsd:dateTime" />\u000d
+                  <xsd:element name="ChannelID">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="3" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                </xsd:sequence>\u000d
+              </xsd:complexType>\u000d
+            </xsd:element>\u000d
+            <xsd:element name="Data">\u000d
+              <xsd:complexType>\u000d
+                <xsd:sequence>\u000d
+                  <xsd:element name="TDPlacementNumber">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="10" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                </xsd:sequence>\u000d
+              </xsd:complexType>\u000d
+            </xsd:element>\u000d
+          </xsd:sequence>\u000d
+        </xsd:complexType>\u000d
+      </xsd:element>\u000d
+      <xsd:element name="GetTDAccountDetailResponse">\u000d
+        <xsd:complexType>\u000d
+          <xsd:sequence>\u000d
+            <xsd:element name="Header">\u000d
+              <xsd:complexType>\u000d
+                <xsd:sequence>\u000d
+                  <xsd:element name="ReferenceNo">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="20" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="TransactionDateTime" type="xsd:dateTime" />\u000d
+                  <xsd:element name="ChannelID">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="3" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="PlacementInfo">\u000d
+                    <xsd:complexType>\u000d
+                      <xsd:sequence>\u000d
+                        <xsd:element name="Placement" minOccurs="0">\u000d
+                          <xsd:complexType>\u000d
+                            <xsd:sequence>\u000d
+                              <xsd:element name="TDPlacementNumber">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="14" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="AccountType">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="PrintStatementFlag">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="PassbookFlag">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="SPTFFlag">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="CDCategoryCode">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="Term" type="xsd:long" />\u000d
+                              <xsd:element name="TermCode">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="StructureFDType">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="ReceiptSerialNumber">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="11" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="AutoRenewalCode">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="OfficerCode">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="10" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="OfficerName">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="50" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="CostCenter">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="5" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="GroupText">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="50" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="TrancheCode">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="10" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="Description">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="40" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="OperatingAccountNo">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="19" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="OperatingAccountType">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="OperatingAccountCurrency">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="4" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="OperatingAccountName">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="40" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="OperatingAccountBranch">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="5" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="BundleCode">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="10" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="EnteredDate" type="xsd:dateTime" />\u000d
+                              <xsd:element name="IssuedDate" type="xsd:dateTime" />\u000d
+                              <xsd:element name="OriginalAmount" type="xsd:decimal" />\u000d
+                              <xsd:element name="OriginalDiscount" type="xsd:decimal" />\u000d
+                              <xsd:element name="LastRenewalDate" type="xsd:dateTime" />\u000d
+                              <xsd:element name="RenewalCounter">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="3" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="AutoRenewalCountLimit">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="3" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="MaturityDate" type="xsd:dateTime" />\u000d
+                              <xsd:element name="PartialWithdrawCounter">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="3" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="LastPaymentDate" type="xsd:dateTime" />\u000d
+                              <xsd:element name="NextPaymentDate" type="xsd:dateTime" />\u000d
+                              <xsd:element name="UnclaimStatusRefundDate" type="xsd:dateTime" />\u000d
+                              <xsd:element name="UnclaimstatusRefundFlag">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="UpfrontInterestFlag">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="PurposeCode">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="10" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="AccrualMethod">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="YearBase">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="RateCeilingPercentage" type="xsd:decimal" />\u000d
+                              <xsd:element name="RateFloorPercentage" type="xsd:decimal" />\u000d
+                              <xsd:element name="VariablerateCode">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="PromotionPlan">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="10" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="RatePlanDescription">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="50" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="PenaltyType">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="10" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="PenaltyDescription">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="50" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="BypassAutomateWithHoldingCode">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="WithHoldingCode">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="WithHoldingTaxAbsorbByBank">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="ForfeitAccruedAfterMaturity">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="TierType">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="CycleForSpecialRateNumber" type="xsd:long" />\u000d
+                              <xsd:element name="StepUp">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="SplitAccrualMethod">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="VariableRateNumber" type="xsd:long" />\u000d
+                              <xsd:element name="InterestRatePercentage" type="xsd:decimal" />\u000d
+                              <xsd:element name="WithLiability">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="LastStatuschangeDate" type="xsd:dateTime" />\u000d
+                              <xsd:element name="StatementCycleCode">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="4" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="StatementType">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="MaturityDateRequired">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="RateList">\u000d
+                                <xsd:complexType>\u000d
+                                  <xsd:sequence>\u000d
+                                    <xsd:element name="Rate" minOccurs="0" maxOccurs="unbounded">\u000d
+                                      <xsd:complexType>\u000d
+                                        <xsd:sequence>\u000d
+                                          <xsd:element name="BalanceRate" type="xsd:decimal" />\u000d
+                                          <xsd:element name="InterestRateNumber" type="xsd:long" />\u000d
+                                          <xsd:element name="InterestRatePercentage" type="xsd:decimal" />\u000d
+                                        </xsd:sequence>\u000d
+                                      </xsd:complexType>\u000d
+                                    </xsd:element>\u000d
+                                  </xsd:sequence>\u000d
+                                </xsd:complexType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="BalanceInfo">\u000d
+                                <xsd:complexType>\u000d
+                                  <xsd:sequence>\u000d
+                                    <xsd:element name="Balance" minOccurs="0">\u000d
+                                      <xsd:complexType>\u000d
+                                        <xsd:sequence>\u000d
+                                          <xsd:element name="LedgerBalance" type="xsd:decimal" />\u000d
+                                          <xsd:element name="AvailableBalance" type="xsd:decimal" />\u000d
+                                          <xsd:element name="HoldAmount" type="xsd:decimal" />\u000d
+                                          <xsd:element name="TotalAvailibilityFloat" type="xsd:decimal" />\u000d
+                                          <xsd:element name="CollectionItemAmount" type="xsd:decimal" />\u000d
+                                          <xsd:element name="AccruedInterest" type="xsd:decimal" />\u000d
+                                          <xsd:element name="PenaltyForEarlyRedeem" type="xsd:decimal" />\u000d
+                                          <xsd:element name="WithdrawableWHTax" type="xsd:decimal" />\u000d
+                                          <xsd:element name="WithdrawableInterest" type="xsd:decimal" />\u000d
+                                          <xsd:element name="SettlementAmount" type="xsd:decimal" />\u000d
+                                          <xsd:element name="MaturityNetAmount" type="xsd:decimal" />\u000d
+                                          <xsd:element name="ContractInt" type="xsd:decimal" />\u000d
+                                          <xsd:element name="ContractWH" type="xsd:decimal" />\u000d
+                                          <xsd:element name="AmountLastInterestPaid" type="xsd:decimal" />\u000d
+                                          <xsd:element name="LastPenalty" type="xsd:decimal" />\u000d
+                                          <xsd:element name="LastWitholdingTax" type="xsd:decimal" />\u000d
+                                          <xsd:element name="TermToDateInterest" type="xsd:decimal" />\u000d
+                                          <xsd:element name="TermToDatePenalty" type="xsd:decimal" />\u000d
+                                          <xsd:element name="TermToDateFedWH" type="xsd:decimal" />\u000d
+                                          <xsd:element name="YearToDateinterest" type="xsd:decimal" />\u000d
+                                          <xsd:element name="YTDInterestPenalty" type="xsd:decimal" />\u000d
+                                          <xsd:element name="WithholdingYTD" type="xsd:decimal" />\u000d
+                                          <xsd:element name="LifetodateInterest" type="xsd:decimal" />\u000d
+                                          <xsd:element name="LifetoDatePenalty" type="xsd:decimal" />\u000d
+                                          <xsd:element name="WithholdingLTD" type="xsd:decimal" />\u000d
+                                          <xsd:element name="FloatFlag">\u000d
+                                            <xsd:simpleType>\u000d
+                                              <xsd:restriction base="xsd:string">\u000d
+                                                <xsd:maxLength value="1" />\u000d
+                                              </xsd:restriction>\u000d
+                                            </xsd:simpleType>\u000d
+                                          </xsd:element>\u000d
+                                          <xsd:element name="FloatExpiryDate" type="xsd:dateTime" />\u000d
+                                        </xsd:sequence>\u000d
+                                      </xsd:complexType>\u000d
+                                    </xsd:element>\u000d
+                                  </xsd:sequence>\u000d
+                                </xsd:complexType>\u000d
+                              </xsd:element>\u000d
+                            </xsd:sequence>\u000d
+                          </xsd:complexType>\u000d
+                        </xsd:element>\u000d
+                      </xsd:sequence>\u000d
+                    </xsd:complexType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="StatusInfo">\u000d
+                    <xsd:complexType>\u000d
+                      <xsd:sequence>\u000d
+                        <xsd:element name="Status" minOccurs="0">\u000d
+                          <xsd:complexType>\u000d
+                            <xsd:sequence>\u000d
+                              <xsd:element name="Success" type="xsd:boolean" />\u000d
+                              <xsd:element name="ResponseCode">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="10" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="ResponseMessage">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="200" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="UsageTime" type="xsd:long" />\u000d
+                            </xsd:sequence>\u000d
+                          </xsd:complexType>\u000d
+                        </xsd:element>\u000d
+                      </xsd:sequence>\u000d
+                    </xsd:complexType>\u000d
+                  </xsd:element>\u000d
+                </xsd:sequence>\u000d
+              </xsd:complexType>\u000d
+            </xsd:element>\u000d
+          </xsd:sequence>\u000d
+        </xsd:complexType>\u000d
+      </xsd:element>\u000d
+      <xsd:element name="InquiryAccountList">\u000d
+        <xsd:complexType>\u000d
+          <xsd:sequence>\u000d
+            <xsd:element name="Header">\u000d
+              <xsd:complexType>\u000d
+                <xsd:sequence>\u000d
+                  <xsd:element name="ReferenceNo">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="20" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="TransactionDateTime" type="xsd:dateTime" />\u000d
+                  <xsd:element name="ChannelID">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="3" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                </xsd:sequence>\u000d
+              </xsd:complexType>\u000d
+            </xsd:element>\u000d
+            <xsd:element name="Data">\u000d
+              <xsd:complexType>\u000d
+                <xsd:sequence>\u000d
+                  <xsd:element name="ReferenceNumber">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="20" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="AccountNumber" minOccurs="0">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="19" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="IDNumber" minOccurs="0">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="40" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                </xsd:sequence>\u000d
+              </xsd:complexType>\u000d
+            </xsd:element>\u000d
+          </xsd:sequence>\u000d
+        </xsd:complexType>\u000d
+      </xsd:element>\u000d
+      <xsd:element name="InquiryAccountListResponse">\u000d
+        <xsd:complexType>\u000d
+          <xsd:sequence>\u000d
+            <xsd:element name="Header">\u000d
+              <xsd:complexType>\u000d
+                <xsd:sequence>\u000d
+                  <xsd:element name="ReferenceNo">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="20" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="TransactionDateTime" type="xsd:dateTime" />\u000d
+                  <xsd:element name="ChannelID">\u000d
+                    <xsd:simpleType>\u000d
+                      <xsd:restriction base="xsd:string">\u000d
+                        <xsd:maxLength value="3" />\u000d
+                      </xsd:restriction>\u000d
+                    </xsd:simpleType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="AccountList">\u000d
+                    <xsd:complexType>\u000d
+                      <xsd:sequence>\u000d
+                        <xsd:element name="Account" minOccurs="0" maxOccurs="unbounded">\u000d
+                          <xsd:complexType>\u000d
+                            <xsd:sequence>\u000d
+                              <xsd:element name="IsInputFlag">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="ReferenceNo">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="19" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="AccountNumber">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="19" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="IDNumber">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="13" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="CustomerNumber">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="19" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="CustomerNameTH" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="200" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="CustomerNameEN" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="200" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="RelationshipCode" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="FreezeCode" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="AccountStatus" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="1" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="AccountTypeCode">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="3" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="ProductCode" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="10" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="ProductSubCode" minOccurs="0">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="10" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="OutstandingBalance" minOccurs="0" type="xsd:decimal" />\u000d
+                            </xsd:sequence>\u000d
+                          </xsd:complexType>\u000d
+                        </xsd:element>\u000d
+                      </xsd:sequence>\u000d
+                    </xsd:complexType>\u000d
+                  </xsd:element>\u000d
+                  <xsd:element name="StatusInfo">\u000d
+                    <xsd:complexType>\u000d
+                      <xsd:sequence>\u000d
+                        <xsd:element name="Status" minOccurs="0">\u000d
+                          <xsd:complexType>\u000d
+                            <xsd:sequence>\u000d
+                              <xsd:element name="Success" type="xsd:boolean" />\u000d
+                              <xsd:element name="ResponseCode">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="10" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="ResponseMessage">\u000d
+                                <xsd:simpleType>\u000d
+                                  <xsd:restriction base="xsd:string">\u000d
+                                    <xsd:maxLength value="200" />\u000d
+                                  </xsd:restriction>\u000d
+                                </xsd:simpleType>\u000d
+                              </xsd:element>\u000d
+                              <xsd:element name="UsageTime" type="xsd:long" />\u000d
+                            </xsd:sequence>\u000d
+                          </xsd:complexType>\u000d
+                        </xsd:element>\u000d
+                      </xsd:sequence>\u000d
+                    </xsd:complexType>\u000d
+                  </xsd:element>\u000d
+                </xsd:sequence>\u000d
+              </xsd:complexType>\u000d
+            </xsd:element>\u000d
+          </xsd:sequence>\u000d
+        </xsd:complexType>\u000d
+      </xsd:element>\u000d
+    </xsd:schema>\u000d
+  </wsdl:types>\u000d
+  <wsdl:message name="InquiryAccountSummaryRequest">\u000d
+    <wsdl:part name="parameters" element="tns:InquiryAccountSummary" />\u000d
+  </wsdl:message>\u000d
+  <wsdl:message name="InquiryAccountSummaryResponse">\u000d
+    <wsdl:part name="result" element="tns:InquiryAccountSummaryResponse" />\u000d
+  </wsdl:message>\u000d
+  <wsdl:message name="GetCASAAccountDetailRequest">\u000d
+    <wsdl:part name="parameters" element="tns:GetCASAAccountDetail" />\u000d
+  </wsdl:message>\u000d
+  <wsdl:message name="GetCASAAccountDetailResponse">\u000d
+    <wsdl:part name="result" element="tns:GetCASAAccountDetailResponse" />\u000d
+  </wsdl:message>\u000d
+  <wsdl:message name="InquiryCASAAccountListRequest">\u000d
+    <wsdl:part name="parameters" element="tns:InquiryCASAAccountList" />\u000d
+  </wsdl:message>\u000d
+  <wsdl:message name="InquiryCASAAccountListResponse">\u000d
+    <wsdl:part name="result" element="tns:InquiryCASAAccountListResponse" />\u000d
+  </wsdl:message>\u000d
+  <wsdl:message name="InquiryCASAStatementHistoryRequest">\u000d
+    <wsdl:part name="parameters" element="tns:InquiryCASAStatementHistory" />\u000d
+  </wsdl:message>\u000d
+  <wsdl:message name="InquiryCASAStatementHistoryResponse">\u000d
+    <wsdl:part name="result" element="tns:InquiryCASAStatementHistoryResponse" />\u000d
+  </wsdl:message>\u000d
+  <wsdl:message name="InquiryTDAccountListRequest">\u000d
+    <wsdl:part name="parameters" element="tns:InquiryTDAccountList" />\u000d
+  </wsdl:message>\u000d
+  <wsdl:message name="InquiryTDAccountListResponse">\u000d
+    <wsdl:part name="result" element="tns:InquiryTDAccountListResponse" />\u000d
+  </wsdl:message>\u000d
+  <wsdl:message name="GetTDAccountDetailRequest">\u000d
+    <wsdl:part name="parameters" element="tns:GetTDAccountDetail" />\u000d
+  </wsdl:message>\u000d
+  <wsdl:message name="GetTDAccountDetailResponse">\u000d
+    <wsdl:part name="result" element="tns:GetTDAccountDetailResponse" />\u000d
+  </wsdl:message>\u000d
+  <wsdl:message name="InquiryAccountListRequest">\u000d
+    <wsdl:part name="parameters" element="tns:InquiryAccountList" />\u000d
+  </wsdl:message>\u000d
+  <wsdl:message name="InquiryAccountListResponse">\u000d
+    <wsdl:part name="result" element="tns:InquiryAccountListResponse" />\u000d
+  </wsdl:message>\u000d
+  <wsdl:portType name="CBSAccountServicePortType">\u000d
+    <wsdl:operation name="InquiryAccountSummary">\u000d
+      <wsdl:documentation></wsdl:documentation>\u000d
+      <wsdl:input message="tns:InquiryAccountSummaryRequest" />\u000d
+      <wsdl:output message="tns:InquiryAccountSummaryResponse" />\u000d
+    </wsdl:operation>\u000d
+    <wsdl:operation name="GetCASAAccountDetail">\u000d
+      <wsdl:documentation></wsdl:documentation>\u000d
+      <wsdl:input message="tns:GetCASAAccountDetailRequest" />\u000d
+      <wsdl:output message="tns:GetCASAAccountDetailResponse" />\u000d
+    </wsdl:operation>\u000d
+    <wsdl:operation name="InquiryCASAAccountList">\u000d
+      <wsdl:documentation></wsdl:documentation>\u000d
+      <wsdl:input message="tns:InquiryCASAAccountListRequest" />\u000d
+      <wsdl:output message="tns:InquiryCASAAccountListResponse" />\u000d
+    </wsdl:operation>\u000d
+    <wsdl:operation name="InquiryCASAStatementHistory">\u000d
+      <wsdl:documentation></wsdl:documentation>\u000d
+      <wsdl:input message="tns:InquiryCASAStatementHistoryRequest" />\u000d
+      <wsdl:output message="tns:InquiryCASAStatementHistoryResponse" />\u000d
+    </wsdl:operation>\u000d
+    <wsdl:operation name="InquiryTDAccountList">\u000d
+      <wsdl:documentation></wsdl:documentation>\u000d
+      <wsdl:input message="tns:InquiryTDAccountListRequest" />\u000d
+      <wsdl:output message="tns:InquiryTDAccountListResponse" />\u000d
+    </wsdl:operation>\u000d
+    <wsdl:operation name="GetTDAccountDetail">\u000d
+      <wsdl:documentation></wsdl:documentation>\u000d
+      <wsdl:input message="tns:GetTDAccountDetailRequest" />\u000d
+      <wsdl:output message="tns:GetTDAccountDetailResponse" />\u000d
+    </wsdl:operation>\u000d
+    <wsdl:operation name="InquiryAccountList">\u000d
+      <wsdl:documentation></wsdl:documentation>\u000d
+      <wsdl:input message="tns:InquiryAccountListRequest" />\u000d
+      <wsdl:output message="tns:InquiryAccountListResponse" />\u000d
+    </wsdl:operation>\u000d
+  </wsdl:portType>\u000d
+  <wsdl:binding name="CBSAccountServiceSoap" type="tns:CBSAccountServicePortType">\u000d
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http" />\u000d
+    <wsdl:operation name="InquiryAccountSummary">\u000d
+      <soap:operation soapAction="http://www.ghbank.co.th/services/CBS/CBSAccountServiceInquiryAccountSummary" />\u000d
+      <wsdl:input>\u000d
+        <soap:body parts="parameters" use="literal" />\u000d
+      </wsdl:input>\u000d
+      <wsdl:output>\u000d
+        <soap:body use="literal" />\u000d
+      </wsdl:output>\u000d
+    </wsdl:operation>\u000d
+    <wsdl:operation name="GetCASAAccountDetail">\u000d
+      <soap:operation soapAction="http://www.ghbank.co.th/services/CBS/CBSAccountServiceGetCASAAccountDetail" />\u000d
+      <wsdl:input>\u000d
+        <soap:body parts="parameters" use="literal" />\u000d
+      </wsdl:input>\u000d
+      <wsdl:output>\u000d
+        <soap:body use="literal" />\u000d
+      </wsdl:output>\u000d
+    </wsdl:operation>\u000d
+    <wsdl:operation name="InquiryCASAAccountList">\u000d
+      <soap:operation soapAction="http://www.ghbank.co.th/services/CBS/CBSAccountServiceInquiryCASAAccountList" />\u000d
+      <wsdl:input>\u000d
+        <soap:body parts="parameters" use="literal" />\u000d
+      </wsdl:input>\u000d
+      <wsdl:output>\u000d
+        <soap:body use="literal" />\u000d
+      </wsdl:output>\u000d
+    </wsdl:operation>\u000d
+    <wsdl:operation name="InquiryCASAStatementHistory">\u000d
+      <soap:operation soapAction="http://www.ghbank.co.th/services/CBS/CBSAccountServiceInquiryCASAStatementHistory" />\u000d
+      <wsdl:input>\u000d
+        <soap:body parts="parameters" use="literal" />\u000d
+      </wsdl:input>\u000d
+      <wsdl:output>\u000d
+        <soap:body use="literal" />\u000d
+      </wsdl:output>\u000d
+    </wsdl:operation>\u000d
+    <wsdl:operation name="InquiryTDAccountList">\u000d
+      <soap:operation soapAction="http://www.ghbank.co.th/services/CBS/CBSAccountServiceInquiryTDAccountList" />\u000d
+      <wsdl:input>\u000d
+        <soap:body parts="parameters" use="literal" />\u000d
+      </wsdl:input>\u000d
+      <wsdl:output>\u000d
+        <soap:body use="literal" />\u000d
+      </wsdl:output>\u000d
+    </wsdl:operation>\u000d
+    <wsdl:operation name="GetTDAccountDetail">\u000d
+      <soap:operation soapAction="http://www.ghbank.co.th/services/CBS/CBSAccountServiceGetTDAccountDetail" />\u000d
+      <wsdl:input>\u000d
+        <soap:body parts="parameters" use="literal" />\u000d
+      </wsdl:input>\u000d
+      <wsdl:output>\u000d
+        <soap:body use="literal" />\u000d
+      </wsdl:output>\u000d
+    </wsdl:operation>\u000d
+    <wsdl:operation name="InquiryAccountList">\u000d
+      <soap:operation soapAction="http://www.ghbank.co.th/services/CBS/CBSAccountServiceInquiryAccountList" />\u000d
+      <wsdl:input>\u000d
+        <soap:body parts="parameters" use="literal" />\u000d
+      </wsdl:input>\u000d
+      <wsdl:output>\u000d
+        <soap:body use="literal" />\u000d
+      </wsdl:output>\u000d
+    </wsdl:operation>\u000d
+  </wsdl:binding>\u000d
+  <wsdl:service name="CBSAccountService">\u000d
+    <wsdl:port name="CBSAccountServicePort" binding="tns:CBSAccountServiceSoap">\u000d
+      <soap:address location="http://localhost:7080/ws/CBSAccountService" />\u000d
+    </wsdl:port>\u000d
+  </wsdl:service>\u000d
+</wsdl:definitions>]]></string>
+         <string name="wsdlFileName" value="CBSAccountService.wsdl"/>
+         <string name="wsdl_file" value="C:\Users\HP\Desktop\wsdl"/>
+      </storable>
+      <string name="Folder" value="CBS"/>
+      <boolean name="Is Dirty" value="false"/>
+      <boolean name="Is Encrypted" value="false"/>
+      <boolean name="Is Locked" value="false"/>
+      <boolean name="Is Valid" value="true"/>
+      <string name="Key" value="MZ1520833442021"/>
+      <string name="Modified By" value="mzadmin"/>
+      <long name="Modified Date" value="1551426787871"/>
+      <string name="Name" value="PRF_WS_CBSAccountService"/>
+      <string name="Owner" value="mzadmin"/>
+      <string name="Type" value="WS Profile"/>
+      <int name="Version" value="4"/>
+      <string name="documentation" value=""/>
+      <string name="parameters" value=""/>
+   </storable>
+</webservices_profile>

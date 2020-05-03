@@ -1,0 +1,1634 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="APL_Source_Code" ref_path="apl_script[Internal]/storable[apl_script]/storable[Data]">
+   <string name="Definition"><![CDATA[//common
+import ultra.CBS.UFL_DSP_Header;
+import ultra.CBS.UFL_MBASE_Header;
+import apl.Common.APL_Common_MBASE;
+import ultra.Ultra.UFL_MBASE_Reject;
+import apl.Common.APL_Common_Utilities;
+
+//wsdl
+import ultra.ws.CBS.PRF_WS_CBSCustomerService.cycles;
+import ultra.ws.CBS.PRF_WS_CBSCustomerService.tns;
+
+//ultra transaction code
+import ultra.Ultra.UFL_MBASE_CFC150010;
+import ultra.Ultra.UFL_MBASE_CFC150020;
+import ultra.Ultra.UFL_MBASE_CFC150040;
+import ultra.Ultra.UFL_MBASE_CFC150090;
+import ultra.Ultra.UFL_MBASE_CFC150440;
+import ultra.Ultra.UFL_MBASE_CFC150190;
+import ultra.Ultra.UFL_MBASE_CFC150200;
+import ultra.Ultra.UFL_MBASE_CFC152120;
+import ultra.Ultra.UFL_MBASE_CFC800200;
+import ultra.Ultra.UFL_MBASE_CFC152020;
+
+final int sizeOf_CFC150010 = 215; // size of request charactor
+final int sizeOf_CFC150020 = 50;
+final int sizeOf_CFC150040 = 24;
+final int sizeOf_CFC150090 = 109;
+final int sizeOf_CFC150440 = 20;
+final int sizeOf_CFC150190 = 41;
+final int sizeOf_CFC150200 = 46;
+final int sizeOf_CFC152120 = 41;
+final int sizeOf_CFC800200 = 430;
+final int sizeOf_CFC152020 = 24;
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
+
+//convert str to bytearray and send to silverlake
+bytearray createContentMessageCFC150010_InquiryCustomerByName(string uniqKey,WSCycle_inquiryCustomerByName request){
+   //DSP Header
+    DSP_Header_TgIn dspHeader = createDefaultDSPHeader();
+    dspHeader.SKTMLEN = sizeOf_DSPHeader + sizeOf_MBaseHeader + sizeOf_CFC150010 - 9;
+    dspHeader.I13FMID = "MBASE";  
+    dspHeader.I13DID = "CIFI";
+    dspHeader.I13SID = request.param_Header.ChannelID + "##";
+    //dspHeader.I13ACQN = uniqKey;  
+    dspHeader.I13ACQN = strSubstring(uniqKey, 0, 12);  
+    dspHeader.I13TMNO = strSubstring(uniqKey, 12, 16);
+         
+    //MBASE Header
+    MBASE_Header_TI mbaseHeader = createDefaultMBASEHeader();
+    mbaseHeader.HDTCOD = "CFC150010";
+    mbaseHeader.HDDSID = "ESB";
+    mbaseHeader.HDACCD = "I";
+    mbaseHeader.HDNREC = "20"; // record max 20 
+    mbaseHeader.HDUSID = request.param_Header.ChannelID + "USR";
+    if (request.param_Paging.NextPageIndicator != ""){
+        mbaseHeader.HDMREC = "Y"; 
+        mbaseHeader.HDVFMT = request.param_Paging.NextPageIndicator;    
+    }
+
+    //Request Data
+    MBASE_CFC150010_RQ_TI mbaseRequest = udrCreate(MBASE_CFC150010_RQ_TI);
+    mbaseRequest.WSERCH_SearchType = "01";
+    mbaseRequest.WEXACT_ExactSearchIndicator = "";
+    mbaseRequest.CFFNMS_FormattedName = request.param_Data.CustomerName;
+    mbaseRequest.CFCITZ_CountryOfCitizenShip = request.param_Data.CountryOfCitizenship;
+    dateToString(mbaseRequest.CFBIR8_DateOfBirth,request.param_Data.BirthDate,"yyyyMMdd");  
+    mbaseRequest.CFINDI_CustomerType = "Y";
+    
+    //Build Socket Message
+    bytearray outgoing = udrEncode("DSP_Header_Encoder", dspHeader);
+    outgoing = baAppend(outgoing, udrEncode("MBASE_Header_Encode", mbaseHeader));
+    outgoing = baAppend(outgoing, udrEncode("MBASE_CFC150010_RQ_Encode", mbaseRequest));
+    return outgoing;
+}
+
+WSCycle_inquiryCustomerByName responseMessage_InquiryCustomerByName(WSCycle_inquiryCustomerByName responseMessage,DSP_Header_TgIn tcpResponse,long requestMillisec,boolean errorUDR){
+    if(errorUDR==false){
+        list<MBASE_Header_With_Payload_TI> aList = listCreate(MBASE_Header_With_Payload_TI);
+        udrDecode("MBASE_Header_With_Payload_Decode", aList, tcpResponse.data);
+        MBASE_Header_With_Payload_TI mbase = listGet(aList,0);
+        //debug(baToStr(mbase.data, "IBM-Thai")); 
+        
+        bytearray refilled = refillTrimedColumn(mbase.data,284);   
+        debug(baToStr(refilled, "IBM-Thai")); 
+        
+        //Response Header
+        responseMessage.param_Header_01 = udrCreate(InquiryCustomerByNameResponse$Header);
+        date responseTransactinDatetime = dateCreateCopy(responseMessage.param_Header.TransactionDateTime);
+        dateSetTimeZone(responseTransactinDatetime, "GMT+7");       
+        responseMessage.param_Header_01.ReferenceNo = responseMessage.param_Header.ReferenceNo;
+        responseMessage.param_Header_01.TransactionDateTime = responseTransactinDatetime;
+        responseMessage.param_Header_01.ChannelID = responseMessage.param_Header.ChannelID;
+        
+        //Response StatusInfo
+        responseMessage.param_Header_01.StatusInfo = udrCreate(InquiryCustomerByNameResponse$Header$StatusInfo);
+        responseMessage.param_Header_01.StatusInfo.Status = udrCreate(InquiryCustomerByNameResponse$Header$StatusInfo$Status);
+        responseMessage.param_Header_01.StatusInfo.Status.UsageTime = dateCreateNowMilliseconds()-requestMillisec;
+        
+        //Request Data 
+        if(!strStartsWith(tcpResponse.I13MSTA, ".DSP")){
+            if(mbase.mbaseHeader.HDRIND == "AA"){
+                //Success
+                debug("AA");
+                //debug("mbase length : " + baSize(refilled));
+                
+                responseMessage.param_Header_01.CustomerList = udrCreate(InquiryCustomerByNameResponse$Header$CustomerList);
+                responseMessage.param_Header_01.CustomerList.Customer = listCreate(InquiryCustomerByNameResponse$Header$CustomerList$Customer);
+                
+                //response content list
+                list<MBASE_CFC150010_RS_TI> CustomerList = listCreate(MBASE_CFC150010_RS_TI);
+                udrDecode("MBASE_CFC150010_RS_Decode", CustomerList, refilled);
+                
+                for(MBASE_CFC150010_RS_TI customer: CustomerList){
+                    InquiryCustomerByNameResponse$Header$CustomerList$Customer cust = udrCreate(InquiryCustomerByNameResponse$Header$CustomerList$Customer);   
+                    
+                    
+                    
+                    cust.AlternateName = getStringValue(customer.WCFNA12_AlternateName);
+                    cust.AuthorizedFlag = getStringValue(customer.WAUTOK_AuthorizeFlag);
+                    strToDate(cust.BirthDate, getStringValue(customer.CFBIR8_DateOfBirth), "yyyyMMdd", "GMT+7");
+                    cust.CountryOfCitizenship = getStringValue(customer.CFCITZ_CountryOfCitizenShip);
+                    cust.CustomerCategory = getStringValue(customer.CFCLAS_CustomerCategory);
+                    cust.CustomerName = responseMessage.param_Data.CustomerName;
+                    cust.CustomerNumber = getStringValue(customer.CFCIFN_CustomerNumber);
+                    strToDate(cust.CustomerOriginalCreationDate, getStringValue(customer.CFORG8_CustomerOriginalCreationDate), "yyyyMMdd", "GMT+7");
+                    cust.CustomerType = getStringValue(customer.CFINDI_CustomerType);
+                    cust.IDAliasFlag = getStringValue(customer.WAUTOK_AuthorizeFlag);
+                    cust.IDIssueCountryCode = getStringValue(customer.CFCIDT_IDIssueCountryCode);
+                    cust.IDNumber = getStringValue(customer.CFSSNO_IDNumber);
+                    cust.IDTypeCode = getStringValue(customer.CFSSCD_IDTypeCode);
+                    cust.InsiderCode = getStringValue(customer.CFINSC_InsiderCode);
+                    cust.NameAliasFlag = getStringValue(customer.WNMALS_NameAliasIndicator);
+                    cust.OfficerCode = getStringValue(customer.CFOFID_OfficerCode);
+                    cust.OfficerShortName = getStringValue(customer.SSOSNA_OfficerShortName);
+                    cust.SegmentCode = getStringValue(customer.CFSEGC_SegmentCode);
+                    
+                	listAdd(responseMessage.param_Header_01.CustomerList.Customer,cust);
+                }
+                    
+                //Response Status Info
+                responseMessage.param_Header_01.StatusInfo.Status.Success = true;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = mbase.mbaseHeader.HDRIND;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Success";
+                
+                //Response Paging Info
+                responseMessage.param_Header_01.PagingInfo = udrCreate(InquiryCustomerByNameResponse$Header$PagingInfo);
+                responseMessage.param_Header_01.PagingInfo.Paging = udrCreate(InquiryCustomerByNameResponse$Header$PagingInfo$Paging);
+                if (mbase.mbaseHeader.HDMREC == "Y"){
+                    responseMessage.param_Header_01.PagingInfo.Paging.HasMoreRecord = true;
+                }else{
+                    responseMessage.param_Header_01.PagingInfo.Paging.HasMoreRecord = false;
+                }
+                
+                responseMessage.param_Header_01.PagingInfo.Paging.NextPageIndicator = mbase.mbaseHeader.HDVFMT;
+                strToInt(responseMessage.param_Header_01.PagingInfo.Paging.NumberOfRecord, mbase.mbaseHeader.HDNREC);
+                strToInt(responseMessage.param_Header_01.PagingInfo.Paging.PageSize,"20");
+        
+            }else{
+                //Rejected
+                //Get Mbase Reject
+                list<MBASE_Reject_With_Payload_TI> aRejected = listCreate(MBASE_Reject_With_Payload_TI);
+                udrDecode("MBASE_Reject_With_Payload_Decode", aRejected, mbase.data);
+                MBASE_Reject_With_Payload_TI rejected = listGet(aRejected,0);
+                
+                responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = rejected.mbaseReject.ErrorCode;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = baToStr(rejected.errorDesc, "IBM-Thai");
+            }
+        }else{
+                if(strStartsWith(tcpResponse.I13MSTA, ".DSP")){
+                    //Response Stattus Info
+                    string responseCodeDSP = strREReplaceAll(tcpResponse.I13MSTA, "\\.", "");
+                    responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = responseCodeDSP;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = getDSPErrorDesc(responseCodeDSP);       
+                }
+                else{
+                    //DSP Service down 
+                    responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = "CBS8999";
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Unknow data format (Invalid response from host)";     
+                }
+        }
+    }else{
+            //Response Header
+            responseMessage.param_Header_01 = udrCreate(InquiryCustomerByNameResponse$Header);
+            date responseTransactinDatetime = dateCreateCopy(responseMessage.param_Header.TransactionDateTime);
+            dateSetTimeZone(responseTransactinDatetime, "GMT+7");       
+            responseMessage.param_Header_01.ReferenceNo = responseMessage.param_Header.ReferenceNo;
+            responseMessage.param_Header_01.TransactionDateTime = responseTransactinDatetime;
+            responseMessage.param_Header_01.ChannelID = responseMessage.param_Header.ChannelID;
+            //Response StatusInfo
+            responseMessage.param_Header_01.StatusInfo = udrCreate(InquiryCustomerByNameResponse$Header$StatusInfo);
+            responseMessage.param_Header_01.StatusInfo.Status = udrCreate(InquiryCustomerByNameResponse$Header$StatusInfo$Status);
+            responseMessage.param_Header_01.StatusInfo.Status.UsageTime = dateCreateNowMilliseconds()-requestMillisec;
+            responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+            responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = "CBS8990";
+            responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Connection to CBS lost";
+    }    
+    return responseMessage;
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+bytearray createContentMessageCFC150020_InquiryCustomerByID(string uniqKey,WSCycle_inquiryCustomerByID request,string IDNumber,string IDTypeCode,string IDIssuedCountryCode){
+   //DSP Header
+    DSP_Header_TgIn dspHeader = createDefaultDSPHeader();
+    dspHeader.SKTMLEN = sizeOf_DSPHeader + sizeOf_MBaseHeader + sizeOf_CFC150020 - 9;
+    dspHeader.I13FMID = "MBASE";  
+    dspHeader.I13DID = "CIFI";
+    dspHeader.I13SID = (request==null)?"ESB##":request.param_Header.ChannelID+"##";
+    //dspHeader.I13ACQN = uniqKey;  
+    dspHeader.I13ACQN = strSubstring(uniqKey, 0, 12);  
+    dspHeader.I13TMNO = strSubstring(uniqKey, 12, 16);
+         
+    //MBASE Header
+    MBASE_Header_TI mbaseHeader = createDefaultMBASEHeader();
+    mbaseHeader.HDTCOD = "CFC150020";
+    mbaseHeader.HDDSID = "ESB";
+    mbaseHeader.HDACCD = "I";
+    mbaseHeader.HDNREC = "20"; // record max 20 
+    mbaseHeader.HDUSID = (request==null)?"ESBUSR":request.param_Header.ChannelID+"USR";
+
+    if(request==null){
+    }else{
+        if (request.param_Paging.NextPageIndicator != ""){
+                mbaseHeader.HDMREC = "Y"; 
+                mbaseHeader.HDVFMT = request.param_Paging.NextPageIndicator;    
+        }
+    }
+    //Request Data
+    MBASE_CFC150020_RQ_TI mbaseRequest = udrCreate(MBASE_CFC150020_RQ_TI);
+    mbaseRequest.WSERCH_SearchType = "02";
+    
+    
+    mbaseRequest.CFSSNO_IDNumber = (request==null)?IDNumber:request.param_Data.IDNumber;
+    mbaseRequest.WEXACT_ExactSearchIndicator = (request==null)?"Y":request.param_Data.IndividualFlag;
+    mbaseRequest.CFSSCD_IDTypeCode = (request==null)?IDTypeCode:request.param_Data.IDTypeCode;
+    mbaseRequest.CFCIDT_IDIssueCountryCode = (request==null)?IDIssuedCountryCode:request.param_Data.IDIssueCountryCode;
+    mbaseRequest.CFINDI_CustomerType = "Y";
+    
+    //Build Socket Message
+    bytearray outgoing = udrEncode("DSP_Header_Encoder", dspHeader);
+    outgoing = baAppend(outgoing, udrEncode("MBASE_Header_Encode", mbaseHeader));
+    outgoing = baAppend(outgoing, udrEncode("MBASE_CFC150020_RQ_Encode", mbaseRequest));
+    return outgoing;
+}
+
+WSCycle_inquiryCustomerByID responseMessage_InquiryCustomerByID(WSCycle_inquiryCustomerByID responseMessage,DSP_Header_TgIn tcpResponse,long requestMillisec,boolean errorUDR){
+    if(errorUDR==false){
+        list<MBASE_Header_With_Payload_TI> aList = listCreate(MBASE_Header_With_Payload_TI);
+        udrDecode("MBASE_Header_With_Payload_Decode", aList, tcpResponse.data);
+        MBASE_Header_With_Payload_TI mbase = listGet(aList,0);
+        //debug(baToStr(mbase.data, "IBM-Thai")); 
+        
+        bytearray refilled = refillTrimedColumn(mbase.data,484);   
+        debug(baToStr(refilled, "IBM-Thai")); 
+        
+        //Response Header
+        responseMessage.param_Header_01 = udrCreate(InquiryCustomerByIDResponse$Header);
+        date responseTransactinDatetime = dateCreateCopy(responseMessage.param_Header.TransactionDateTime);
+        dateSetTimeZone(responseTransactinDatetime, "GMT+7");       
+        responseMessage.param_Header_01.ReferenceNo = responseMessage.param_Header.ReferenceNo;
+        responseMessage.param_Header_01.TransactionDateTime = responseTransactinDatetime;
+        responseMessage.param_Header_01.ChannelID = responseMessage.param_Header.ChannelID;
+        
+        //Response StatusInfo
+        responseMessage.param_Header_01.StatusInfo = udrCreate(InquiryCustomerByIDResponse$Header$StatusInfo);
+        responseMessage.param_Header_01.StatusInfo.Status = udrCreate(InquiryCustomerByIDResponse$Header$StatusInfo$Status);
+        responseMessage.param_Header_01.StatusInfo.Status.UsageTime = dateCreateNowMilliseconds()-requestMillisec;
+        
+        //Request Data 
+        if(!strStartsWith(tcpResponse.I13MSTA, ".DSP")){
+            if(mbase.mbaseHeader.HDRIND == "AA"){
+                //Success
+                debug("AA");
+                //debug("mbase length : " + baSize(refilled));
+                
+                responseMessage.param_Header_01.CustomerList = udrCreate(InquiryCustomerByIDResponse$Header$CustomerList);
+                responseMessage.param_Header_01.CustomerList.Customer = udrCreate(InquiryCustomerByIDResponse$Header$CustomerList$Customer);
+                
+                //response content list
+                list<MBASE_CFC150020_RS_TI> CustomerList = listCreate(MBASE_CFC150020_RS_TI);
+                udrDecode("MBASE_CFC150020_RS_Decode", CustomerList, refilled);
+                MBASE_CFC150020_RS_TI customer = listGet(CustomerList,0);
+                
+                    InquiryCustomerByIDResponse$Header$CustomerList$Customer cust = udrCreate(InquiryCustomerByIDResponse$Header$CustomerList$Customer);   
+                    
+                    cust.CustomerNumber = getStringValue(customer.CFCIFN_CustomerNumber);
+                    cust.NameAliasFlag = getStringValue(customer.WNMALS_NameAliasIndicator);
+                    cust.CustomerName = getStringValue(customer.WCFNA11_PrimaryName);
+                    cust.AlternateName = getStringValue(customer.WCFNA12_AlternateName);
+                    cust.IDAliasFlag = getStringValue(customer.WIDALS_IDAliasIndicator);
+                    cust.IDNumber = getStringValue(customer.CFSSNO_IDNumber);
+                    cust.IDTypeCode = getStringValue(customer.CFSSCD_IDTypeCode);
+                    cust.IDIssueCountryCode = getStringValue(customer.CFCIDT_IDIssueCountryCode);
+                    cust.CustomerCategory = getStringValue(customer.CFCLAS_CustomerCategory);
+                    strToDate(cust.BirthDate, getStringValue(customer.CFBIR8_DateOfBirth), "yyyyMMdd", "GMT+7");
+                    cust.CountryOfCitizenship = getStringValue(customer.CFCITZ_CountryOfCitizenShip);
+                    cust.SegmentCode = getStringValue(customer.CFSEGC_SegmentCode);
+                    cust.InsiderCode = getStringValue(customer.CFINSC_InsiderCode);
+                    cust.CustomerType = getStringValue(customer.CFINDI_CustomerType);
+                    strToDate(cust.CustomerOriginalCreationDate, getStringValue(customer.CFORG8_CustomerOriginalCreationDate), "yyyyMMdd", "GMT+7");
+                    cust.OfficerCode = getStringValue(customer.CFOFID_OfficerCode);
+                    cust.OfficerShortName = getStringValue(customer.SSOSNA_OfficerShortName);
+                    cust.AuthorizedFlag = getStringValue(customer.WAUTOK_AuthorizeFlag);
+                    //cust. = getStringValue(CFPARN_ParentName);
+                    
+                	responseMessage.param_Header_01.CustomerList.Customer = cust;
+                
+                    
+                //Response Status Info
+                responseMessage.param_Header_01.StatusInfo.Status.Success = true;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = mbase.mbaseHeader.HDRIND;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Success";
+                
+                //Response Paging Info
+                responseMessage.param_Header_01.PagingInfo = udrCreate(InquiryCustomerByIDResponse$Header$PagingInfo);
+                responseMessage.param_Header_01.PagingInfo.Paging = udrCreate(InquiryCustomerByIDResponse$Header$PagingInfo$Paging);
+                if (mbase.mbaseHeader.HDMREC == "Y"){
+                    responseMessage.param_Header_01.PagingInfo.Paging.HasMoreRecord = true;
+                }else{
+                    responseMessage.param_Header_01.PagingInfo.Paging.HasMoreRecord = false;
+                }
+                
+                responseMessage.param_Header_01.PagingInfo.Paging.NextPageIndicator = mbase.mbaseHeader.HDVFMT;
+                strToInt(responseMessage.param_Header_01.PagingInfo.Paging.NumberOfRecord, mbase.mbaseHeader.HDNREC);
+                strToInt(responseMessage.param_Header_01.PagingInfo.Paging.PageSize,"20");
+        
+            }else{
+                //Rejected
+                //Get Mbase Reject
+                list<MBASE_Reject_With_Payload_TI> aRejected = listCreate(MBASE_Reject_With_Payload_TI);
+                udrDecode("MBASE_Reject_With_Payload_Decode", aRejected, mbase.data);
+                MBASE_Reject_With_Payload_TI rejected = listGet(aRejected,0);
+                
+                responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = rejected.mbaseReject.ErrorCode;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = baToStr(rejected.errorDesc, "IBM-Thai");
+            }
+        }else{
+                if(strStartsWith(tcpResponse.I13MSTA, ".DSP")){
+                    //Response Stattus Info
+                    string responseCodeDSP = strREReplaceAll(tcpResponse.I13MSTA, "\\.", "");
+                    responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = responseCodeDSP;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = getDSPErrorDesc(responseCodeDSP);       
+                }
+                else{
+                    //DSP Service down 
+                    responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = "CBS8999";
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Unknow data format (Invalid response from host)";     
+                }
+        }
+    }else{
+            //Response Header
+            responseMessage.param_Header_01 = udrCreate(InquiryCustomerByIDResponse$Header);
+            date responseTransactinDatetime = dateCreateCopy(responseMessage.param_Header.TransactionDateTime);
+            dateSetTimeZone(responseTransactinDatetime, "GMT+7");       
+            responseMessage.param_Header_01.ReferenceNo = responseMessage.param_Header.ReferenceNo;
+            responseMessage.param_Header_01.TransactionDateTime = responseTransactinDatetime;
+            responseMessage.param_Header_01.ChannelID = responseMessage.param_Header.ChannelID;
+            //Response StatusInfo
+            responseMessage.param_Header_01.StatusInfo = udrCreate(InquiryCustomerByIDResponse$Header$StatusInfo);
+            responseMessage.param_Header_01.StatusInfo.Status = udrCreate(InquiryCustomerByIDResponse$Header$StatusInfo$Status);
+            responseMessage.param_Header_01.StatusInfo.Status.UsageTime = dateCreateNowMilliseconds()-requestMillisec;
+            responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+            responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = "CBS8990";
+            responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Connection to CBS lost";
+    }    
+    return responseMessage;
+}
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// 
+
+bytearray createContentMessageCFC150040_InquiryCustomerByAccount(string uniqKey,WSCycle_inquiryCustomerByAccount request){
+   //DSP Header
+    DSP_Header_TgIn dspHeader = createDefaultDSPHeader();
+    dspHeader.SKTMLEN = sizeOf_DSPHeader + sizeOf_MBaseHeader + sizeOf_CFC150040 - 9;
+    dspHeader.I13FMID = "MBASE";  
+    dspHeader.I13DID = "CIFI";
+    dspHeader.I13SID = request.param_Header.ChannelID + "##";
+    //dspHeader.I13ACQN = uniqKey;  
+    dspHeader.I13ACQN = strSubstring(uniqKey, 0, 12);  
+    dspHeader.I13TMNO = strSubstring(uniqKey, 12, 16);
+         
+    //MBASE Header
+    MBASE_Header_TI mbaseHeader = createDefaultMBASEHeader();
+    mbaseHeader.HDTCOD = "CFC150040";
+    mbaseHeader.HDDSID = "ESB";
+    mbaseHeader.HDACCD = "I";
+    mbaseHeader.HDNREC = "20"; // record max 20 
+    mbaseHeader.HDUSID = request.param_Header.ChannelID + "USR";
+    if (request.param_Paging.NextPageIndicator != ""){
+        mbaseHeader.HDMREC = "Y"; 
+        mbaseHeader.HDVFMT = request.param_Paging.NextPageIndicator;    
+    }
+
+    //Request Data
+    MBASE_CFC150040_RQ_TI mbaseRequest = udrCreate(MBASE_CFC150040_RQ_TI);
+    mbaseRequest.WSERCH_SearchType = "";
+    mbaseRequest.WEXACT_ExactSearchIndicator = "";
+    mbaseRequest.ACCTNO_AccountNumber = request.param_Data.AccountNumber;
+    mbaseRequest.ACTYPE_AccountType = request.param_Data.AccountType;
+    mbaseRequest.WEXCLS_ExcludeClosedAccount = request.param_Data.ExcludeClosedAccountFlag;
+    
+    //Build Socket Message
+    bytearray outgoing = udrEncode("DSP_Header_Encoder", dspHeader);
+    outgoing = baAppend(outgoing, udrEncode("MBASE_Header_Encode", mbaseHeader));
+    outgoing = baAppend(outgoing, udrEncode("MBASE_CFC150040_RQ_Encode", mbaseRequest));
+    return outgoing;
+}
+
+WSCycle_inquiryCustomerByAccount responseMessage_InquiryCustomerByAccount(WSCycle_inquiryCustomerByAccount responseMessage,DSP_Header_TgIn tcpResponse,long requestMillisec,boolean errorUDR){
+    if(errorUDR==false){
+        list<MBASE_Header_With_Payload_TI> aList = listCreate(MBASE_Header_With_Payload_TI);
+        udrDecode("MBASE_Header_With_Payload_Decode", aList, tcpResponse.data);
+        MBASE_Header_With_Payload_TI mbase = listGet(aList,0);
+        //debug(baToStr(mbase.data, "IBM-Thai")); 
+        
+        bytearray refilled = refillTrimedColumn(mbase.data,346);   
+        debug(baToStr(refilled, "IBM-Thai")); 
+        
+        //Response Header
+        responseMessage.param_Header_01 = udrCreate(InquiryCustomerByAccountResponse$Header);
+        date responseTransactinDatetime = dateCreateCopy(responseMessage.param_Header.TransactionDateTime);
+        dateSetTimeZone(responseTransactinDatetime, "GMT+7");       
+        responseMessage.param_Header_01.ReferenceNo = responseMessage.param_Header.ReferenceNo;
+        responseMessage.param_Header_01.TransactionDateTime = responseTransactinDatetime;
+        responseMessage.param_Header_01.ChannelID = responseMessage.param_Header.ChannelID;
+        
+        //Response StatusInfo
+        responseMessage.param_Header_01.StatusInfo = udrCreate(InquiryCustomerByAccountResponse$Header$StatusInfo);
+        responseMessage.param_Header_01.StatusInfo.Status = udrCreate(InquiryCustomerByAccountResponse$Header$StatusInfo$Status);
+        responseMessage.param_Header_01.StatusInfo.Status.UsageTime = dateCreateNowMilliseconds()-requestMillisec;
+        
+        //Request Data 
+        if(!strStartsWith(tcpResponse.I13MSTA, ".DSP")){
+            if(mbase.mbaseHeader.HDRIND == "AA"){
+                //Success
+                debug("AA");
+                //debug("mbase length : " + baSize(refilled));
+                
+                responseMessage.param_Header_01.CustomerList = udrCreate(InquiryCustomerByAccountResponse$Header$CustomerList);
+                responseMessage.param_Header_01.CustomerList.Customer = listCreate(InquiryCustomerByAccountResponse$Header$CustomerList$Customer);
+                
+                //response content list
+                list<MBASE_CFC150040_RS_TI> CustomerList = listCreate(MBASE_CFC150040_RS_TI);
+                udrDecode("MBASE_CFC150040_RS_Decode", CustomerList, refilled);
+                
+                for(MBASE_CFC150040_RS_TI customer: CustomerList){
+                    InquiryCustomerByAccountResponse$Header$CustomerList$Customer cust = udrCreate(InquiryCustomerByAccountResponse$Header$CustomerList$Customer);   
+                
+                    cust.CustomerNumber = getStringValue(customer.CFCIFN_CustomerNumber);
+                    cust.AccountType = getStringValue(customer.WNMALS_NameAiasIndicator);
+                    cust.CustomerName = getStringValue(customer.WCFNA11_PrimaryName);
+                    cust.AlternateName = getStringValue(customer.WCFNA12_AlternateName);
+                    cust.IDAliasIndicator = getStringValue(customer.WIDALS_IDAliasIndicator);
+                    cust.IDNumber = getStringValue(customer.CFSSNO_IDNumber);
+                    cust.IDTypeCode = getStringValue(customer.CFSSCD_IDTypeCode);
+                    cust.IDIssueCountryCode = getStringValue(customer.CFCIDT_IDIssueCountryCode);
+                    cust.CustomerCategory = getStringValue(customer.CFCLAS_CustomerCategory);
+                    strToDate(cust.BirthDate, getStringValue(customer.CFBIR8_DateOfBirth), "yyyyMMdd", "GMT+7");
+                    cust.CountryOfCitizenship = getStringValue(customer.CFCITZ_CountryOfCitizenship);
+                    cust.SegmentCode = getStringValue(customer.CFSEGC_SegmentCode);
+                    cust.InsiderCode = getStringValue(customer.CFINSC_InsiderCode);
+                    cust.AccountNumber = responseMessage.param_Data.AccountNumber;
+                    cust.AccountType = getStringValue(customer.ACTYPE_AccountType);
+                    cust.FormattedAccountNumber = getStringValue(customer.WACCTN_FormattedAccountNumber);
+                    cust.CustomerType = getStringValue(customer.CFINDI_CustomerType);
+                    cust.RelationshipCode = getStringValue(customer.CFRREL_RelationshipCode);
+                    strToDate(cust.CustomerOriginalCreationDate, getStringValue(customer.CFORG8_CustomerOriginalCreateionDate), "yyyyMMdd", "GMT+7");
+                    cust.OfficerCode = getStringValue(customer.CFOFID_OfficerCode);
+                    cust.OfficerShortName = getStringValue(customer.SSOSNA_OfficerShortName);
+                    cust.AuthorizedFlag = getStringValue(customer.WAUTOK_AuthorizedFlag);
+                	listAdd(responseMessage.param_Header_01.CustomerList.Customer,cust);
+                }
+                    
+                //Response Status Info
+                responseMessage.param_Header_01.StatusInfo.Status.Success = true;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = mbase.mbaseHeader.HDRIND;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Success";
+                
+                //Response Paging Info
+                responseMessage.param_Header_01.PagingInfo = udrCreate(InquiryCustomerByAccountResponse$Header$PagingInfo);
+                responseMessage.param_Header_01.PagingInfo.Paging = udrCreate(InquiryCustomerByAccountResponse$Header$PagingInfo$Paging);
+                if (mbase.mbaseHeader.HDMREC == "Y"){
+                    responseMessage.param_Header_01.PagingInfo.Paging.HasMoreRecord = true;
+                }else{
+                    responseMessage.param_Header_01.PagingInfo.Paging.HasMoreRecord = false;
+                }
+                
+                responseMessage.param_Header_01.PagingInfo.Paging.NextPageIndicator = mbase.mbaseHeader.HDVFMT;
+                strToInt(responseMessage.param_Header_01.PagingInfo.Paging.NumberOfRecord, mbase.mbaseHeader.HDNREC);
+                strToInt(responseMessage.param_Header_01.PagingInfo.Paging.PageSize,"20");
+        
+            }else{
+                //Rejected
+                //Get Mbase Reject
+                list<MBASE_Reject_With_Payload_TI> aRejected = listCreate(MBASE_Reject_With_Payload_TI);
+                udrDecode("MBASE_Reject_With_Payload_Decode", aRejected, mbase.data);
+                MBASE_Reject_With_Payload_TI rejected = listGet(aRejected,0);
+                
+                responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = rejected.mbaseReject.ErrorCode;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = baToStr(rejected.errorDesc, "IBM-Thai");
+            }
+        }else{
+                if(strStartsWith(tcpResponse.I13MSTA, ".DSP")){
+                    //Response Stattus Info
+                    string responseCodeDSP = strREReplaceAll(tcpResponse.I13MSTA, "\\.", "");
+                    responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = responseCodeDSP;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = getDSPErrorDesc(responseCodeDSP);       
+                }
+                else{
+                    //DSP Service down 
+                    responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = "CBS8999";
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Unknow data format (Invalid response from host)";     
+                }
+        }
+    }else{
+            //Response Header
+            responseMessage.param_Header_01 = udrCreate(InquiryCustomerByAccountResponse$Header);
+            date responseTransactinDatetime = dateCreateCopy(responseMessage.param_Header.TransactionDateTime);
+            dateSetTimeZone(responseTransactinDatetime, "GMT+7");       
+            responseMessage.param_Header_01.ReferenceNo = responseMessage.param_Header.ReferenceNo;
+            responseMessage.param_Header_01.TransactionDateTime = responseTransactinDatetime;
+            responseMessage.param_Header_01.ChannelID = responseMessage.param_Header.ChannelID;
+            //Response StatusInfo
+            responseMessage.param_Header_01.StatusInfo = udrCreate(InquiryCustomerByAccountResponse$Header$StatusInfo);
+            responseMessage.param_Header_01.StatusInfo.Status = udrCreate(InquiryCustomerByAccountResponse$Header$StatusInfo$Status);
+            responseMessage.param_Header_01.StatusInfo.Status.UsageTime = dateCreateNowMilliseconds()-requestMillisec;
+            responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+            responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = "CBS8990";
+            responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Connection to CBS lost";
+    }    
+    return responseMessage;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+bytearray createContentMessageCFC150090_InquiryCustomerByContact(string uniqKey,WSCycle_inquiryCustomerByContact request){
+   //DSP Header
+    DSP_Header_TgIn dspHeader = createDefaultDSPHeader();
+    dspHeader.SKTMLEN = sizeOf_DSPHeader + sizeOf_MBaseHeader + sizeOf_CFC150090 - 9;
+    dspHeader.I13FMID = "MBASE";  
+    dspHeader.I13DID = "CIFI";
+    dspHeader.I13SID = request.param_Header.ChannelID + "##";
+    //dspHeader.I13ACQN = uniqKey;  
+    dspHeader.I13ACQN = strSubstring(uniqKey, 0, 12);  
+    dspHeader.I13TMNO = strSubstring(uniqKey, 12, 16);
+         
+    //MBASE Header
+    MBASE_Header_TI mbaseHeader = createDefaultMBASEHeader();
+    mbaseHeader.HDTCOD = "CFC150090";
+    mbaseHeader.HDDSID = "ESB";
+    mbaseHeader.HDACCD = "I";
+    mbaseHeader.HDNREC = "20"; // record max 20 
+    mbaseHeader.HDUSID = request.param_Header.ChannelID + "USR";
+    if (request.param_Paging.NextPageIndicator != ""){
+        mbaseHeader.HDMREC = "Y"; 
+        mbaseHeader.HDVFMT = request.param_Paging.NextPageIndicator;    
+    }
+
+    //Request Data
+    MBASE_CFC150090_RQ_TI mbaseRequest = udrCreate(MBASE_CFC150090_RQ_TI);
+    mbaseRequest.WSERCH_SearchType = "09";
+    mbaseRequest.WEXACT_ExactSearchIndicator = request.param_Data.ExactSearchFlag;
+    mbaseRequest.CFEADD_ElectronicAddress = request.param_Data.ElectronicAddress;
+    mbaseRequest.CFEADC_ElectronicAddressCode = request.param_Data.ElectronicAddressCode;
+    mbaseRequest.CFCOUN_CountryCode = request.param_Data.CountryCode;
+    
+    //Build Socket Message
+    bytearray outgoing = udrEncode("DSP_Header_Encoder", dspHeader);
+    outgoing = baAppend(outgoing, udrEncode("MBASE_Header_Encode", mbaseHeader));
+    outgoing = baAppend(outgoing, udrEncode("MBASE_CFC150090_RQ_Encode", mbaseRequest));
+    return outgoing;
+}
+
+WSCycle_inquiryCustomerByContact responseMessage_InquiryCustomerByContact(WSCycle_inquiryCustomerByContact responseMessage,DSP_Header_TgIn tcpResponse,long requestMillisec,boolean errorUDR){
+    if(errorUDR==false){
+        list<MBASE_Header_With_Payload_TI> aList = listCreate(MBASE_Header_With_Payload_TI);
+        udrDecode("MBASE_Header_With_Payload_Decode", aList, tcpResponse.data);
+        MBASE_Header_With_Payload_TI mbase = listGet(aList,0);
+        //debug(baToStr(mbase.data, "IBM-Thai")); 
+        
+        bytearray refilled = refillTrimedColumn(mbase.data,390);   
+        debug(baToStr(refilled, "IBM-Thai")); 
+        
+        //Response Header
+        responseMessage.param_Header_01 = udrCreate(InquiryCustomerByContactResponse$Header);
+        date responseTransactinDatetime = dateCreateCopy(responseMessage.param_Header.TransactionDateTime);
+        dateSetTimeZone(responseTransactinDatetime, "GMT+7");       
+        responseMessage.param_Header_01.ReferenceNo = responseMessage.param_Header.ReferenceNo;
+        responseMessage.param_Header_01.TransactionDateTime = responseTransactinDatetime;
+        responseMessage.param_Header_01.ChannelID = responseMessage.param_Header.ChannelID;
+        
+        //Response StatusInfo
+        responseMessage.param_Header_01.StatusInfo = udrCreate(InquiryCustomerByContactResponse$Header$StatusInfo);
+        responseMessage.param_Header_01.StatusInfo.Status = udrCreate(InquiryCustomerByContactResponse$Header$StatusInfo$Status);
+        responseMessage.param_Header_01.StatusInfo.Status.UsageTime = dateCreateNowMilliseconds()-requestMillisec;
+        
+        //Request Data 
+        if(!strStartsWith(tcpResponse.I13MSTA, ".DSP")){
+            if(mbase.mbaseHeader.HDRIND == "AA"){
+                //Success
+                debug("AA");
+                //debug("mbase length : " + baSize(refilled));
+                
+                responseMessage.param_Header_01.CustomerList = udrCreate(InquiryCustomerByContactResponse$Header$CustomerList);
+                responseMessage.param_Header_01.CustomerList.Customer = listCreate(InquiryCustomerByContactResponse$Header$CustomerList$Customer);
+                
+                //response content list
+                list<MBASE_CFC150090_RS_TI> CustomerList = listCreate(MBASE_CFC150090_RS_TI);
+                udrDecode("MBASE_CFC150090_RS_Decode", CustomerList, refilled);
+                
+                for(MBASE_CFC150090_RS_TI customer: CustomerList){
+                    InquiryCustomerByContactResponse$Header$CustomerList$Customer cust = udrCreate(InquiryCustomerByContactResponse$Header$CustomerList$Customer);  
+                   
+                    cust.AlternateName = getStringValue(customer.WCFNA12_AlternateName);
+                    cust.AuthorizedFlag = getStringValue(customer.WAUTOK_AuthorizedFlag);
+                    strToDate(cust.BirthDate,getStringValue(customer.CFBIR8_DateOfBirthIncorporation), "yyyyMMdd", "GMT+7");
+                    cust.CountryOfCitizenship = getStringValue(customer.CFCITZ_CountryOfCitizenship);
+                    cust.CustomerCategory = getStringValue(customer.CFCLAS_CustomerCategory);
+                    cust.CustomerName = getStringValue(customer.WCFNA11_PrimaryName);
+                    cust.CustomerNumber = getStringValue(customer.CFCIFN_CustomerNumber);
+                    strToDate(cust.CustomerOriginalCreationDate,getStringValue(customer.CFORG8_CustomerOriginalCreationDat), "yyyyMMdd", "GMT+7");
+                    cust.CustomerType = getStringValue(customer.CFINDI_CustomerType);
+                    cust.IDIssueCountryCode = getStringValue(customer.CFCIDT_IDIssueCountryCode);
+                    cust.IDNumber = getStringValue(customer.CFSSNO_IDNumber);
+                    cust.IDTypeCode = getStringValue(customer.CFSSCD_IDTypeCode);
+                    cust.InsiderCode = getStringValue(customer.CFINSC_InsiderCode);
+                    cust.NameAliasIndicator = getStringValue(customer.WNMALS_NameAliasIndicator);
+                    cust.OfficerCode = getStringValue(customer.CFOFID_OfficerCode);
+                    cust.OfficerShortName = getStringValue(customer.SSOSNA_OfficerShortname);
+                    cust.SegmentCode = getStringValue(customer.CFSEGC_SegmentCode);
+                    
+                	listAdd(responseMessage.param_Header_01.CustomerList.Customer,cust);
+                }
+                    
+                //Response Status Info
+                responseMessage.param_Header_01.StatusInfo.Status.Success = true;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = mbase.mbaseHeader.HDRIND;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Success";
+                
+                //Response Paging Info
+                responseMessage.param_Header_01.PagingInfo = udrCreate(InquiryCustomerByContactResponse$Header$PagingInfo);
+                responseMessage.param_Header_01.PagingInfo.Paging = udrCreate(InquiryCustomerByContactResponse$Header$PagingInfo$Paging);
+                if (mbase.mbaseHeader.HDMREC == "Y"){
+                    responseMessage.param_Header_01.PagingInfo.Paging.HasMoreRecord = true;
+                }else{
+                    responseMessage.param_Header_01.PagingInfo.Paging.HasMoreRecord = false;
+                }
+                
+                responseMessage.param_Header_01.PagingInfo.Paging.NextPageIndicator = mbase.mbaseHeader.HDVFMT;
+                strToInt(responseMessage.param_Header_01.PagingInfo.Paging.NumberOfRecord, mbase.mbaseHeader.HDNREC);
+                strToInt(responseMessage.param_Header_01.PagingInfo.Paging.PageSize,"20");
+        
+            }else{
+                //Rejected
+                //Get Mbase Reject
+                list<MBASE_Reject_With_Payload_TI> aRejected = listCreate(MBASE_Reject_With_Payload_TI);
+                udrDecode("MBASE_Reject_With_Payload_Decode", aRejected, mbase.data);
+                MBASE_Reject_With_Payload_TI rejected = listGet(aRejected,0);
+                
+                responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = rejected.mbaseReject.ErrorCode;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = baToStr(rejected.errorDesc, "IBM-Thai");
+            }
+        }else{
+                if(strStartsWith(tcpResponse.I13MSTA, ".DSP")){
+                    //Response Stattus Info
+                    string responseCodeDSP = strREReplaceAll(tcpResponse.I13MSTA, "\\.", "");
+                    responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = responseCodeDSP;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = getDSPErrorDesc(responseCodeDSP);       
+                }
+                else{
+                    //DSP Service down 
+                    responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = "CBS8999";
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Unknow data format (Invalid response from host)";     
+                }
+        }
+    }else{
+            //Response Header
+            responseMessage.param_Header_01 = udrCreate(InquiryCustomerByContactResponse$Header);
+            date responseTransactinDatetime = dateCreateCopy(responseMessage.param_Header.TransactionDateTime);
+            dateSetTimeZone(responseTransactinDatetime, "GMT+7");       
+            responseMessage.param_Header_01.ReferenceNo = responseMessage.param_Header.ReferenceNo;
+            responseMessage.param_Header_01.TransactionDateTime = responseTransactinDatetime;
+            responseMessage.param_Header_01.ChannelID = responseMessage.param_Header.ChannelID;
+            //Response StatusInfo
+            responseMessage.param_Header_01.StatusInfo = udrCreate(InquiryCustomerByContactResponse$Header$StatusInfo);
+            responseMessage.param_Header_01.StatusInfo.Status = udrCreate(InquiryCustomerByContactResponse$Header$StatusInfo$Status);
+            responseMessage.param_Header_01.StatusInfo.Status.UsageTime = dateCreateNowMilliseconds()-requestMillisec;
+            responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+            responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = "CBS8990";
+            responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Connection to CBS lost";
+    }
+    return responseMessage;
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+bytearray createContentMessageCFC150190_InquiryCustomerContact(string uniqKey,WSCycle_inquiryCustomerContact request){
+   //DSP Header
+    DSP_Header_TgIn dspHeader = createDefaultDSPHeader();
+    dspHeader.SKTMLEN = sizeOf_DSPHeader + sizeOf_MBaseHeader + sizeOf_CFC150190 - 9;
+    dspHeader.I13FMID = "MBASE";  
+    dspHeader.I13DID = "CIFI";
+    dspHeader.I13SID = request.param_Header.ChannelID + "##";
+    //dspHeader.I13ACQN = uniqKey;  
+    dspHeader.I13ACQN = strSubstring(uniqKey, 0, 12);  
+    dspHeader.I13TMNO = strSubstring(uniqKey, 12, 16);
+         
+    //MBASE Header
+    MBASE_Header_TI mbaseHeader = createDefaultMBASEHeader();
+    mbaseHeader.HDTCOD = "CFC150190";
+    mbaseHeader.HDDSID = "ESB";
+    mbaseHeader.HDACCD = "I";
+    mbaseHeader.HDNREC = "20"; // record max 20 
+    mbaseHeader.HDUSID = request.param_Header.ChannelID + "USR";
+    if (request.param_Paging.NextPageIndicator != ""){
+        mbaseHeader.HDMREC = "Y"; 
+        mbaseHeader.HDVFMT = request.param_Paging.NextPageIndicator;    
+    }
+
+    //Request Data
+    MBASE_CFC150190_RQ_TI mbaseRequest = udrCreate(MBASE_CFC150190_RQ_TI);
+    mbaseRequest.CFCIFN_CustomerNumber = request.param_Data.CustomerNumber;
+    mbaseRequest.CFCATC_CategoryCode = request.param_Data.CategoryCode;
+   // mbaseRequest.ACCTNO_AccountNumber = "1910000036";
+   // mbaseRequest.ACTYPE_AccountType = "S";
+    mbaseRequest.WKOPTN_Option = request.param_Data.InquiryMode;
+    
+    //Build Socket Message
+    bytearray outgoing = udrEncode("DSP_Header_Encoder", dspHeader);
+    outgoing = baAppend(outgoing, udrEncode("MBASE_Header_Encode", mbaseHeader));
+    outgoing = baAppend(outgoing, udrEncode("MBASE_CFC150190_RQ_Encode", mbaseRequest));
+    return outgoing;
+}
+
+WSCycle_inquiryCustomerContact responseMessage_InquiryCustomerContact(WSCycle_inquiryCustomerContact responseMessage,DSP_Header_TgIn tcpResponse,long requestMillisec,boolean errorUDR){
+    if(errorUDR==false){
+        list<MBASE_Header_With_Payload_TI> aList = listCreate(MBASE_Header_With_Payload_TI);
+        udrDecode("MBASE_Header_With_Payload_Decode", aList, tcpResponse.data);
+        MBASE_Header_With_Payload_TI mbase = listGet(aList,0);
+        //debug(baToStr(mbase.data, "IBM-Thai")); 
+        
+        bytearray refilled = refillTrimedColumn(mbase.data,246);   
+        debug(baToStr(refilled, "IBM-Thai")); 
+        
+        //Response Header
+        responseMessage.param_Header_01 = udrCreate(InquiryCustomerContactResponse$Header);
+        date responseTransactinDatetime = dateCreateCopy(responseMessage.param_Header.TransactionDateTime);
+        dateSetTimeZone(responseTransactinDatetime, "GMT+7");       
+        responseMessage.param_Header_01.ReferenceNo = responseMessage.param_Header.ReferenceNo;
+        responseMessage.param_Header_01.TransactionDateTime = responseTransactinDatetime;
+        responseMessage.param_Header_01.ChannelID = responseMessage.param_Header.ChannelID;
+        
+        //Response StatusInfo
+        responseMessage.param_Header_01.StatusInfo = udrCreate(InquiryCustomerContactResponse$Header$StatusInfo);
+        responseMessage.param_Header_01.StatusInfo.Status = udrCreate(InquiryCustomerContactResponse$Header$StatusInfo$Status);
+        responseMessage.param_Header_01.StatusInfo.Status.UsageTime = dateCreateNowMilliseconds()-requestMillisec;
+        
+        //Request Data 
+        if(!strStartsWith(tcpResponse.I13MSTA, ".DSP")){
+            if(mbase.mbaseHeader.HDRIND == "AA"){
+                //Success
+                debug("AA");
+                //debug("mbase length : " + baSize(refilled));
+                
+                responseMessage.param_Header_01.ContactList = udrCreate(InquiryCustomerContactResponse$Header$ContactList);
+                responseMessage.param_Header_01.ContactList.Contact = listCreate(InquiryCustomerContactResponse$Header$ContactList$Contact);
+                
+                //response content list
+                list<MBASE_CFC150190_RS_TI> ContactList = listCreate(MBASE_CFC150190_RS_TI);
+                udrDecode("MBASE_CFC150190_RS_Decode", ContactList, refilled);
+                
+                for(MBASE_CFC150190_RS_TI contact: ContactList){
+                    InquiryCustomerContactResponse$Header$ContactList$Contact cont = udrCreate(InquiryCustomerContactResponse$Header$ContactList$Contact);  
+                    
+                    cont.AccountLinkFlag = getStringValue(contact.WACCTL_AccountLinkIndicator);
+                    cont.AddressLinkFlag = getStringValue(contact.WADDRL_AddressLinkIndicator);
+                    cont.AreaCode = getStringValue(contact.CFAREA_AreaCode);
+                    cont.ContactCode = getStringValue(contact.CFEADC_EContactCode);
+                    cont.ContactDetail = getStringValue(contact.WKEADD_EContactDetail);    
+                    cont.ContactExtensionNumber = getStringValue(contact.CFEEXT_ContactExtension);
+                    cont.ContactName = getStringValue(contact.CFEAN1_ContactName);      
+                    cont.CountryCode = getStringValue(contact.CFCOUN_CountryCode);       
+                    //cont.CreationDate = "";
+                    //cont.CreationTime = "";         
+                    //cont.CreationUserID = "";           
+                    //cont.CreationWorkstationID = "";
+                    cont.InsufficientAddressContact = getStringValue(contact.CFBADA_InsufficientAddress);
+                    cont.InternationalDirectDiallingCode = getStringValue(contact.SSIDDC_IntDirectDiallingCode);
+                    cont.JobTitle = getStringValue(contact.CFEJCD_JobTitle);         
+                    //cont.LastMaintenanceDate = "";
+                    //cont.LastMaintenanceTime = "";    
+                    //cont.LastMaintenanceUserID = "";
+                    //cont.LastMainWorkstation = "";    
+                    cont.Priority = getStringValue(contact.CFPRFR_Priority);          
+                    cont.Seq = getStringValue(contact.CFEASQ_ElectronicAddressSeq);          
+                    
+                    listAdd(responseMessage.param_Header_01.ContactList.Contact,cont);
+                }
+                    
+                //Response Status Info
+                responseMessage.param_Header_01.StatusInfo.Status.Success = true;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = mbase.mbaseHeader.HDRIND;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Success";
+                
+                //Response Paging Info
+                responseMessage.param_Header_01.PagingInfo = udrCreate(InquiryCustomerContactResponse$Header$PagingInfo);
+                responseMessage.param_Header_01.PagingInfo.Paging = udrCreate(InquiryCustomerContactResponse$Header$PagingInfo$Paging);
+                if (mbase.mbaseHeader.HDMREC == "Y"){
+                    responseMessage.param_Header_01.PagingInfo.Paging.HasMoreRecord = true;
+                }else{
+                    responseMessage.param_Header_01.PagingInfo.Paging.HasMoreRecord = false;
+                }
+                
+                responseMessage.param_Header_01.PagingInfo.Paging.NextPageIndicator = mbase.mbaseHeader.HDVFMT;
+                strToInt(responseMessage.param_Header_01.PagingInfo.Paging.NumberOfRecord, mbase.mbaseHeader.HDNREC);
+                strToInt(responseMessage.param_Header_01.PagingInfo.Paging.PageSize,"20");
+        
+            }else{
+                //Rejected
+                //Get Mbase Reject
+                list<MBASE_Reject_With_Payload_TI> aRejected = listCreate(MBASE_Reject_With_Payload_TI);
+                udrDecode("MBASE_Reject_With_Payload_Decode", aRejected, mbase.data);
+                MBASE_Reject_With_Payload_TI rejected = listGet(aRejected,0);
+                
+                responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = rejected.mbaseReject.ErrorCode;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = baToStr(rejected.errorDesc, "IBM-Thai");
+            }
+        }else{
+                if(strStartsWith(tcpResponse.I13MSTA, ".DSP")){
+                    //Response Stattus Info
+                    string responseCodeDSP = strREReplaceAll(tcpResponse.I13MSTA, "\\.", "");
+                    responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = responseCodeDSP;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = getDSPErrorDesc(responseCodeDSP);       
+                }
+                else{
+                    //DSP Service down 
+                    responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = "CBS8999";
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Unknow data format (Invalid response from host)";     
+                }
+        }
+    }else{
+            //Response Header
+            responseMessage.param_Header_01 = udrCreate(InquiryCustomerContactResponse$Header);
+            date responseTransactinDatetime = dateCreateCopy(responseMessage.param_Header.TransactionDateTime);
+            dateSetTimeZone(responseTransactinDatetime, "GMT+7");       
+            responseMessage.param_Header_01.ReferenceNo = responseMessage.param_Header.ReferenceNo;
+            responseMessage.param_Header_01.TransactionDateTime = responseTransactinDatetime;
+            responseMessage.param_Header_01.ChannelID = responseMessage.param_Header.ChannelID;
+            //Response StatusInfo
+            responseMessage.param_Header_01.StatusInfo = udrCreate(InquiryCustomerContactResponse$Header$StatusInfo);
+            responseMessage.param_Header_01.StatusInfo.Status = udrCreate(InquiryCustomerContactResponse$Header$StatusInfo$Status);
+            responseMessage.param_Header_01.StatusInfo.Status.UsageTime = dateCreateNowMilliseconds()-requestMillisec;
+            responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+            responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = "CBS8990";
+            responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Connection to CBS lost";
+    }    
+    return responseMessage;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+bytearray createContentMessageCFC150200_InquiryCustomerAddress(string uniqKey,WSCycle_inquiryCustomerAddress request){
+   //DSP Header
+    DSP_Header_TgIn dspHeader = createDefaultDSPHeader();
+    dspHeader.SKTMLEN = sizeOf_DSPHeader + sizeOf_MBaseHeader + sizeOf_CFC150200 - 9;
+    dspHeader.I13FMID = "MBASE";  
+    dspHeader.I13DID = "CIFI";
+    dspHeader.I13SID = request.param_Header.ChannelID + "##";
+    //dspHeader.I13ACQN = uniqKey;  
+    dspHeader.I13ACQN = strSubstring(uniqKey, 0, 12);  
+    dspHeader.I13TMNO = strSubstring(uniqKey, 12, 16); 
+         
+    //MBASE Header
+    MBASE_Header_TI mbaseHeader = createDefaultMBASEHeader();
+    mbaseHeader.HDTCOD = "CFC150200";
+    mbaseHeader.HDDSID = "ESB";
+    mbaseHeader.HDACCD = "I";
+    mbaseHeader.HDNREC = "20"; // record max 20 
+    mbaseHeader.HDUSID = request.param_Header.ChannelID + "USR";
+    if (request.param_Paging.NextPageIndicator != ""){
+        mbaseHeader.HDMREC = "Y"; 
+        mbaseHeader.HDVFMT = request.param_Paging.NextPageIndicator;    
+    }
+
+    //Request Data
+    MBASE_CFC150200_RQ_TI mbaseRequest = udrCreate(MBASE_CFC150200_RQ_TI);
+    mbaseRequest.CFCIFN_CustomerNumber = request.param_Data.CustomerNumber;
+    mbaseRequest.CFCATC_CategoryCode = request.param_Data.CategoryCode;
+    mbaseRequest.CFEASQ_ElectronicAddressSeq = (string) request.param_Data.Seq;
+    mbaseRequest.WKOPTN_Option = request.param_Data.InquiryMode;
+    
+    //Build Socket Message
+    bytearray outgoing = udrEncode("DSP_Header_Encoder", dspHeader);
+    outgoing = baAppend(outgoing, udrEncode("MBASE_Header_Encode", mbaseHeader));
+    outgoing = baAppend(outgoing, udrEncode("MBASE_CFC150200_RQ_Encode", mbaseRequest));
+    return outgoing;
+}
+
+WSCycle_inquiryCustomerAddress responseMessage_InquiryCustomerAddress(WSCycle_inquiryCustomerAddress responseMessage,DSP_Header_TgIn tcpResponse,long requestMillisec,boolean errorUDR){
+    if(errorUDR==false){
+        list<MBASE_Header_With_Payload_TI> aList = listCreate(MBASE_Header_With_Payload_TI);
+        udrDecode("MBASE_Header_With_Payload_Decode", aList, tcpResponse.data);
+        MBASE_Header_With_Payload_TI mbase = listGet(aList,0);
+        //debug(baToStr(mbase.data, "IBM-Thai")); 
+        debug(mbase);
+        
+        bytearray refilled = refillTrimedColumn(mbase.data,347);   
+        debug(baToStr(refilled, "IBM-Thai")); 
+        
+        //Response Header
+        responseMessage.param_Header_01 = udrCreate(InquiryCustomerAddressResponse$Header);
+        date responseTransactinDatetime = dateCreateCopy(responseMessage.param_Header.TransactionDateTime);
+        dateSetTimeZone(responseTransactinDatetime, "GMT+7");       
+        responseMessage.param_Header_01.ReferenceNo = responseMessage.param_Header.ReferenceNo;
+        responseMessage.param_Header_01.TransactionDateTime = responseTransactinDatetime;
+        responseMessage.param_Header_01.ChannelID = responseMessage.param_Header.ChannelID;
+        
+        //Response StatusInfo
+        responseMessage.param_Header_01.StatusInfo = udrCreate(InquiryCustomerAddressResponse$Header$StatusInfo);
+        responseMessage.param_Header_01.StatusInfo.Status = udrCreate(InquiryCustomerAddressResponse$Header$StatusInfo$Status);
+        responseMessage.param_Header_01.StatusInfo.Status.UsageTime = dateCreateNowMilliseconds()-requestMillisec;
+        
+        //Request Data 
+        if(!strStartsWith(tcpResponse.I13MSTA, ".DSP")){
+            if(mbase.mbaseHeader.HDRIND == "AA"){
+                //Success
+                debug("AA");
+                //debug("mbase length : " + baSize(refilled));
+                
+                responseMessage.param_Header_01.AddressList = udrCreate(InquiryCustomerAddressResponse$Header$AddressList);
+                responseMessage.param_Header_01.AddressList.Address = listCreate(InquiryCustomerAddressResponse$Header$AddressList$Address);
+                
+                //response content list
+                list<MBASE_CFC150200_RS_TI> AddressList = listCreate(MBASE_CFC150200_RS_TI);
+                udrDecode("MBASE_CFC150200_RS_Decode", AddressList, refilled);
+                
+                for(MBASE_CFC150200_RS_TI address: AddressList){
+                    InquiryCustomerAddressResponse$Header$AddressList$Address addr = udrCreate(InquiryCustomerAddressResponse$Header$AddressList$Address);   
+                   
+                    addr.AccountLinked = getStringValue(address.WACLNK_AccountLinked);
+                    addr.AddressFormat = getStringValue(address.CFADFM_AddressFormat);
+                    addr.AddressLine1 = getStringValue(address.CFNA2_AddressLine1);
+                    addr.AddressLine2 = getStringValue(address.CFNA3_AddressLine2);
+                    addr.AddressLine3 = getStringValue(address.CFNA4_AddressLine3);
+                    addr.AddressLine4 = getStringValue(address.CFNA5_AddressLine4);
+                    addr.AddressLine5 = getStringValue(address.CFNA6_AddressLine5);
+                    addr.AddressLine6 = getStringValue(address.CFNA7_AddressLine6);
+                    addr.AddressLine7 = getStringValue(address.CFNA8_AddressLine7);
+                    addr.AddressType = getStringValue(address.CFADTP_AddressType);
+                    //addr.ConsolidateStatement = "";
+                    //addr.ContactLinkFlag = "";
+                    addr.CountryCode = getStringValue(address.CFCOUN_CountryCode);
+                    addr.DefaultAddress = getStringValue(address.WDEFLT_DefaultAddress);
+                    addr.InsufficientAddress = getStringValue(address.CFBADA_InsufficientAddress);
+                    addr.PostalCode = getStringValue(address.CFRMKS_PostalCode);
+                    addr.Remarks = getStringValue(address.CFRMKS_Remark);
+                    strToLong(addr.Seq, getStringValue(address.CFZSEQ_SequenceNumber));
+                    addr.StateCode = getStringValue(address.CFSTAT_StateCode);
+                      
+                    listAdd(responseMessage.param_Header_01.AddressList.Address,addr);
+                }
+                    
+                //Response Status Info
+                responseMessage.param_Header_01.StatusInfo.Status.Success = true;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = mbase.mbaseHeader.HDRIND;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Success";
+                
+                //Response Paging Info
+                responseMessage.param_Header_01.PagingInfo = udrCreate(InquiryCustomerAddressResponse$Header$PagingInfo);
+                responseMessage.param_Header_01.PagingInfo.Paging = udrCreate(InquiryCustomerAddressResponse$Header$PagingInfo$Paging);
+                if (mbase.mbaseHeader.HDMREC == "Y"){
+                    responseMessage.param_Header_01.PagingInfo.Paging.HasMoreRecord = true;
+                }else{
+                    responseMessage.param_Header_01.PagingInfo.Paging.HasMoreRecord = false;
+                }
+                
+                responseMessage.param_Header_01.PagingInfo.Paging.NextPageIndicator = mbase.mbaseHeader.HDVFMT;
+                strToInt(responseMessage.param_Header_01.PagingInfo.Paging.NumberOfRecord, mbase.mbaseHeader.HDNREC);
+                strToInt(responseMessage.param_Header_01.PagingInfo.Paging.PageSize,"20");
+        
+            }else{
+                //Rejected
+                //Get Mbase Reject
+                list<MBASE_Reject_With_Payload_TI> aRejected = listCreate(MBASE_Reject_With_Payload_TI);
+                udrDecode("MBASE_Reject_With_Payload_Decode", aRejected, mbase.data);
+                MBASE_Reject_With_Payload_TI rejected = listGet(aRejected,0);
+                
+                responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = rejected.mbaseReject.ErrorCode;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = baToStr(rejected.errorDesc, "IBM-Thai");
+            }
+        }else{
+                if(strStartsWith(tcpResponse.I13MSTA, ".DSP")){
+                    //Response Stattus Info
+                    string responseCodeDSP = strREReplaceAll(tcpResponse.I13MSTA, "\\.", "");
+                    responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = responseCodeDSP;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = getDSPErrorDesc(responseCodeDSP);       
+                }
+                else{
+                    //DSP Service down 
+                    responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = "CBS8999";
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Unknow data format (Invalid response from host)";     
+                }
+        } 
+    }else{
+            //Response Header
+            responseMessage.param_Header_01 = udrCreate(InquiryCustomerAddressResponse$Header);
+            date responseTransactinDatetime = dateCreateCopy(responseMessage.param_Header.TransactionDateTime);
+            dateSetTimeZone(responseTransactinDatetime, "GMT+7");       
+            responseMessage.param_Header_01.ReferenceNo = responseMessage.param_Header.ReferenceNo;
+            responseMessage.param_Header_01.TransactionDateTime = responseTransactinDatetime;
+            responseMessage.param_Header_01.ChannelID = responseMessage.param_Header.ChannelID;
+            //Response StatusInfo
+            responseMessage.param_Header_01.StatusInfo = udrCreate(InquiryCustomerAddressResponse$Header$StatusInfo);
+            responseMessage.param_Header_01.StatusInfo.Status = udrCreate(InquiryCustomerAddressResponse$Header$StatusInfo$Status);
+            responseMessage.param_Header_01.StatusInfo.Status.UsageTime = dateCreateNowMilliseconds()-requestMillisec;
+            responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+            responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = "CBS8990";
+            responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Connection to CBS lost";
+    }   
+    return responseMessage;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+bytearray createContentMessageCFC152120_GetCustomerDetail(string uniqKey,WSCycle_getCustomerDetail request, string VariableFormat){
+   //DSP Header
+    DSP_Header_TgIn dspHeader = createDefaultDSPHeader();
+    dspHeader.SKTMLEN = sizeOf_DSPHeader + sizeOf_MBaseHeader + sizeOf_CFC152120 - 9;
+    dspHeader.I13FMID = "MBASE";  
+    dspHeader.I13DID = "CIFI";
+    dspHeader.I13SID = request.param_Header.ChannelID + "##";
+    //dspHeader.I13ACQN = uniqKey;  
+    dspHeader.I13ACQN = strSubstring(uniqKey, 0, 12);  
+    dspHeader.I13TMNO = strSubstring(uniqKey, 12, 16);  
+         
+    //MBASE Header
+    MBASE_Header_TI mbaseHeader = createDefaultMBASEHeader();
+    mbaseHeader.HDTCOD = "CFC152120";
+    mbaseHeader.HDDSID = "ESB";
+    mbaseHeader.HDACCD = "I";
+    mbaseHeader.HDNREC = "1"; // record max 20 
+    mbaseHeader.HDUSID = request.param_Header.ChannelID + "USR";
+    if (VariableFormat != ""){
+        mbaseHeader.HDMREC = "Y"; 
+        mbaseHeader.HDVFMT = VariableFormat;    
+    }
+
+    //Request Data
+    MBASE_CFC152120_RQ_TI mbaseRequest = udrCreate(MBASE_CFC152120_RQ_TI);
+    mbaseRequest.CFCIFN_CustomerNumber = request.param_Data.CustomerNumber;
+    mbaseRequest.CFORFN_OriginationFromReferenceNumber = request.param_Data.OriginationFromReferenceNumber;
+    //mbaseRequest.CFORSQ_OriginationSequenceNumber = request.param_Data.OriginationSequenceNumber;
+    /*mbaseRequest.CFCIFN_CustomerNumber = "300111061";
+    mbaseRequest.CFORFN_OriginationFromReferenceNumber = "301909793";
+    mbaseRequest.CFORSQ_OriginationSequenceNumber = "2664045";
+    */
+    
+    //Build Socket Message
+    bytearray outgoing = udrEncode("DSP_Header_Encoder", dspHeader);
+    outgoing = baAppend(outgoing, udrEncode("MBASE_Header_Encode", mbaseHeader));
+    outgoing = baAppend(outgoing, udrEncode("MBASE_CFC152120_RQ_Encode", mbaseRequest));
+    return outgoing;
+}
+
+WSCycle_getCustomerDetail responseMessage_GetCustomerDetail(WSCycle_getCustomerDetail responseMessage,DSP_Header_TgIn tcpResponse,long requestMillisec,boolean errorUDR){
+    if(errorUDR==false){
+        list<MBASE_Header_With_Payload_TI> aList = listCreate(MBASE_Header_With_Payload_TI);
+        udrDecode("MBASE_Header_With_Payload_Decode", aList, tcpResponse.data);
+        MBASE_Header_With_Payload_TI mbase = listGet(aList,0);
+        //debug(baToStr(mbase.data, "IBM-Thai")); 
+        bytearray refilled = refillTrimedColumn(mbase.data,8430);   
+        debug(baToStr(refilled, "IBM-Thai")); 
+        
+        //Response Header
+        responseMessage.param_Header_01 = udrCreate(GetCustomerDetailResponse$Header);
+        date responseTransactinDatetime = dateCreateCopy(responseMessage.param_Header.TransactionDateTime);
+        dateSetTimeZone(responseTransactinDatetime, "GMT+7");       
+        responseMessage.param_Header_01.ReferenceNo = responseMessage.param_Header.ReferenceNo;
+        responseMessage.param_Header_01.TransactionDateTime = responseTransactinDatetime;
+        responseMessage.param_Header_01.ChannelID = responseMessage.param_Header.ChannelID;
+        
+        //Response StatusInfo
+        responseMessage.param_Header_01.StatusInfo = udrCreate(GetCustomerDetailResponse$Header$StatusInfo);
+        responseMessage.param_Header_01.StatusInfo.Status = udrCreate(GetCustomerDetailResponse$Header$StatusInfo$Status);
+        responseMessage.param_Header_01.StatusInfo.Status.UsageTime = dateCreateNowMilliseconds()-requestMillisec;
+        debug("HDRIND");
+        //Request Data 
+        if(!strStartsWith(tcpResponse.I13MSTA, ".DSP")){
+            if(mbase.mbaseHeader.HDRIND == "AA"){
+                //Success
+                debug("AA");
+                //debug("mbase length : " + baSize(refilled));
+                
+                responseMessage.param_Header_01.CustomerInfo = udrCreate(GetCustomerDetailResponse$Header$CustomerInfo);
+                responseMessage.param_Header_01.CustomerInfo.Customer = udrCreate(GetCustomerDetailResponse$Header$CustomerInfo$Customer);
+                
+                //response content list
+                list<MBASE_CFC152120_RS_TI> CustomerList = listCreate(MBASE_CFC152120_RS_TI);
+                udrDecode("MBASE_CFC152120_RS_Decode", CustomerList, refilled);
+                MBASE_CFC152120_RS_TI customer = listGet(CustomerList,0);
+        
+                    GetCustomerDetailResponse$Header$CustomerInfo$Customer cust = udrCreate(GetCustomerDetailResponse$Header$CustomerInfo$Customer);   
+                    
+                    cust.CustomerNameInfo = udrCreate(GetCustomerDetailResponse$Header$CustomerInfo$Customer$CustomerNameInfo);   
+                    cust.CustomerNameInfo.CustomerName = udrCreate(GetCustomerDetailResponse$Header$CustomerInfo$Customer$CustomerNameInfo$CustomerName);
+                    cust.IDInfo = udrCreate(GetCustomerDetailResponse$Header$CustomerInfo$Customer$IDInfo);   
+                    cust.IDInfo.ID = udrCreate(GetCustomerDetailResponse$Header$CustomerInfo$Customer$IDInfo$ID);
+                    cust.AddressInfo = udrCreate(GetCustomerDetailResponse$Header$CustomerInfo$Customer$AddressInfo);   
+                    cust.AddressInfo.Address = udrCreate(GetCustomerDetailResponse$Header$CustomerInfo$Customer$AddressInfo$Address);
+                    cust.LocalAddressInfo = udrCreate(GetCustomerDetailResponse$Header$CustomerInfo$Customer$LocalAddressInfo);   
+                    cust.LocalAddressInfo.LocalAddress = udrCreate(GetCustomerDetailResponse$Header$CustomerInfo$Customer$LocalAddressInfo$LocalAddress);
+                    cust.EmploymentInfo = udrCreate(GetCustomerDetailResponse$Header$CustomerInfo$Customer$EmploymentInfo);   
+                    cust.EmploymentInfo.Employment = udrCreate(GetCustomerDetailResponse$Header$CustomerInfo$Customer$EmploymentInfo$Employment);
+                    cust.CentralBankCodeInfo = udrCreate(GetCustomerDetailResponse$Header$CustomerInfo$Customer$CentralBankCodeInfo);   
+                    cust.CentralBankCodeInfo.CentralBankCode = udrCreate(GetCustomerDetailResponse$Header$CustomerInfo$Customer$CentralBankCodeInfo$CentralBankCode);
+                    cust.RelationshipInfo = udrCreate(GetCustomerDetailResponse$Header$CustomerInfo$Customer$RelationshipInfo);   
+                    cust.RelationshipInfo.Relationship = udrCreate(GetCustomerDetailResponse$Header$CustomerInfo$Customer$RelationshipInfo$Relationship);
+                    cust.EducationInfo = udrCreate(GetCustomerDetailResponse$Header$CustomerInfo$Customer$EducationInfo);   
+                    cust.EducationInfo.Education = udrCreate(GetCustomerDetailResponse$Header$CustomerInfo$Customer$EducationInfo$Education);
+                    cust.AdditionalInfo = udrCreate(GetCustomerDetailResponse$Header$CustomerInfo$Customer$AdditionalInfo);   
+                    cust.AdditionalInfo.Additional = udrCreate(GetCustomerDetailResponse$Header$CustomerInfo$Customer$AdditionalInfo$Additional);
+                    
+                    
+                    cust.ContactList = udrCreate(GetCustomerDetailResponse$Header$CustomerInfo$Customer$ContactList);
+                    cust.ContactList.Contact = listCreate(GetCustomerDetailResponse$Header$CustomerInfo$Customer$ContactList$Contact);
+                    cust.SOARemarkList = udrCreate(GetCustomerDetailResponse$Header$CustomerInfo$Customer$SOARemarkList);
+                    cust.SOARemarkList.SOARemark = listCreate(GetCustomerDetailResponse$Header$CustomerInfo$Customer$SOARemarkList$SOARemark);
+                    cust.SourceOfFundInfo = udrCreate(GetCustomerDetailResponse$Header$CustomerInfo$Customer$SourceOfFundInfo);
+                    cust.SourceOfFundInfo.SourceOfFund = listCreate(GetCustomerDetailResponse$Header$CustomerInfo$Customer$SourceOfFundInfo$SourceOfFund);
+                    cust.UserCodeList = udrCreate(GetCustomerDetailResponse$Header$CustomerInfo$Customer$UserCodeList);
+                    cust.UserCodeList.UserCode = listCreate(GetCustomerDetailResponse$Header$CustomerInfo$Customer$UserCodeList$UserCode);
+                    /*******************************        Mapping         **********************************/
+                        
+                        //cust.AdditionalInfo.Additional.AccountMode = getStringValue(customer.CFAMOD_AccountMode);
+                        cust.AdditionalInfo.Additional.AdditionalCurrencyCode = getStringValue(customer.WCFCURR_CurrencyCode);
+                        cust.AdditionalInfo.Additional.DefaultCode01 = getStringValue(customer.CFDFC1_DefaultCode1);
+                        cust.AdditionalInfo.Additional.DefaultCode02 = getStringValue(customer.CFDFC2_DefaultCode2);
+                        cust.AdditionalInfo.Additional.DefaultCode03 = getStringValue(customer.CFDFC3_DefaultCode3);
+                        cust.AdditionalInfo.Additional.DefaultCode04 = getStringValue(customer.CFDFC4_DefaultCode4); 
+                        strToDate(cust.EducationInfo.Education.LastMaintenanceDateTime, getStringValue(customer.AMLTIM_LastMaintenanceUserTime), "yyyyMMdd", "GMT+7"); 
+                        cust.AdditionalInfo.Additional.LastMaintenanceUserID = getStringValue(customer.AMLUID_LastMaintenanceUserID);
+                        strToDouble(cust.AdditionalInfo.Additional.OpeningAmountApprovedLimit,convertToNumberic(customer.CFORAM_OpeningAmountApprovedLimit,17,2));
+                        cust.AdditionalInfo.Additional.OriginationType = getStringValue(customer.CFORTY_OriginationType);
+                        cust.AdditionalInfo.Additional.StrategicBusinessUnit = getStringValue(customer.CFSBUC_StrategicBusinessUnit);
+                        cust.AdditionalInfo.Additional.SystemID = getStringValue(customer.CFCHNL_SystemID);
+                        cust.AdditionalInfo.Additional.ValidApplication = getStringValue(customer.WVLDAPP_ValidApplication);   
+                     
+                    cust.AddressFormat = getStringValue(customer.CFADFM_AddressFormat);        
+                        cust.AddressInfo.Address.AddressLine01 = getStringValue(customer.CFNA2_AddressLine1);
+                        cust.AddressInfo.Address.AddressLine02 = getStringValue(customer.CFNA3_AddressLine2);
+                        cust.AddressInfo.Address.AddressLine03 = getStringValue(customer.CFNA4_AddressLine3);
+                        cust.AddressInfo.Address.AddressLine04 = getStringValue(customer.CFNA5_AddressLine4);
+                        cust.AddressInfo.Address.AddressLine05 = getStringValue(customer.CFNA6_AddressLine5);
+                        cust.AddressInfo.Address.AddressLine06 = getStringValue(customer.CFNA7_AddressLine6);
+                        cust.AddressInfo.Address.AddressLine07 = getStringValue(customer.CFNA8_AddressLine7);
+                        cust.AddressInfo.Address.CountryCode = getStringValue(customer.CFCOUN_CountryCode);
+                        strToDate(cust.AddressInfo.Address.LastMaintenanceDateTime, getStringValue(customer.ANLTIM_LastMaintenanceTime), "yyyyMMdd", "GMT+7"); 
+                        cust.AddressInfo.Address.LastMaintenanceUserID = getStringValue(customer.ANLUID_LastMaintenanceUser);
+                        cust.AddressInfo.Address.PostalCode = getStringValue(customer.CFZIP_PostalCode); 
+                        //cust.AddressInfo.Address.SequenceNumber = "";
+                        cust.AddressInfo.Address.StateCode = getStringValue(customer.CFSTAT_StateCode);
+                    cust.AddressProofFlag = getStringValue(customer.CFADPR_AddressProof);
+                    cust.AddressSequenceNumber = getStringValue(customer.CFZSEQ_AddressSequenceNumber);                
+                    cust.AddressType = getStringValue(customer.CFADTP_AddressType);
+                    cust.AMLOrCFTFlag = getStringValue(customer.CFCSPR_AMLCFT);
+                    strToDouble(cust.AuthorizedCapitalAmount,convertToNumberic(customer.CFCAPL_AuthorizedCapital,17,2));   
+                    strToDate(cust.AuthorizedCapitalDate, getStringValue(customer.CFACP8_AuthorizedCapitalDate), "yyyyMMdd", "GMT+7"); 
+                    cust.BankCompanyIDCode = getStringValue(customer.CFZCOM_BankCompanyIDCode);
+                    cust.BankEmployeeDepartmentCode = getStringValue(customer.CFZDEP_BankEmployeeDepartmentCode);
+                    cust.BankEmployeeID = getStringValue(customer.CFZEMP_BankEmployeeID);
+                    strToDate(cust.BirthDate, customer.CFBIR8_DateOfBirthIncorporation, "yyyyMMdd", "GMT+7");   
+                    //cust.BlickListFlag = "";
+                    strToDate(cust.BusinessCommencementDate, getStringValue(customer.CFCOM8_BusinessCommencementDate), "yyyyMMdd", "GMT+7");  
+                    cust.BusinessOperationCountryCode = getStringValue(customer.CFCOPR_ResidentBusinessOperationCo);       
+                    cust.BusinessSectorCode = getStringValue(customer.CFSECC_BusinessOccupationSector);
+                    cust.BusinessSize = getStringValue(customer.CFBSZE_BusinessSize);
+                    cust.CashIncomeFlag = getStringValue(customer.CFICSH_CashIncome);
+                        //central bank code
+                        cust.CentralBankCodeInfo.CentralBankCode.BOIFlag = getStringValue(customer.CFBOIF_BOIFlag);            
+                        cust.CentralBankCodeInfo.CentralBankCode.CentralBankCode01 = getStringValue(customer.CFCB01_CentralBankCode01);
+                        cust.CentralBankCodeInfo.CentralBankCode.CentralBankCode02 = getStringValue(customer.CFCB02_CentralBankCode02);
+                        cust.CentralBankCodeInfo.CentralBankCode.CentralBankCode03 = getStringValue(customer.CFCB03_CentralBankCode03);
+                        cust.CentralBankCodeInfo.CentralBankCode.CentralBankCode04 = getStringValue(customer.CFCB04_CentralBankCode04);
+                        cust.CentralBankCodeInfo.CentralBankCode.CentralBankCode05 = getStringValue(customer.CFCB05_CentralBankCode05);
+                        cust.CentralBankCodeInfo.CentralBankCode.HeadingCode = getStringValue(customer.CFHCB0_HeadingCode);
+                        strToDate(cust.CentralBankCodeInfo.CentralBankCode.LastMaintenanceDateTime, getStringValue(customer.CBLTIM_LastMaintenanceUserTime), "yyyyMMdd", "GMT+7"); 
+                        cust.CentralBankCodeInfo.CentralBankCode.LastMaintenanceUserID = getStringValue(customer.CBLUID_LastMaintenanceUserID);
+                    cust.ChosenCustomerCode = getStringValue(customer.CFCHSC_ChosenCustomerCode);
+                    strToLong(cust.CombinedStatementCycle,getStringValue(customer.CFCCYC_CombinedStatementCycle));   
+                    cust.CombinedStatementFlag = getStringValue(customer.CFCOMB_CombinedStatement);
+                    cust.ComplexCompanyStructureFlag = getStringValue(customer.CFCPLX_ComplexCompanyStructure);
+                    cust.ConnectedPartyFlag = getStringValue(customer.CFCONP_ConnectedParty);
+                       for(int ls_Contact=0;ls_Contact<5;ls_Contact++){
+                           GetCustomerDetailResponse$Header$CustomerInfo$Customer$ContactList$Contact contactlistarray = udrCreate(GetCustomerDetailResponse$Header$CustomerInfo$Customer$ContactList$Contact);               
+                            if(ls_Contact == 0){
+                                contactlistarray.AreaCode = getStringValue(customer.CFAREA_AreaCode);
+                                contactlistarray.ContactExtensionNumber = getStringValue(customer.CFEEXT_ContactExtensionNo);
+                                contactlistarray.EContactCode = getStringValue(customer.CFEADC_EContactCode);
+                                contactlistarray.EContactDetail = getStringValue(customer.CFEADD_EContactDetail);
+                                strToDate(contactlistarray.LastMaintenanceDateTime, getStringValue(customer.C1LTIM_LastMaintenanceTime), "yyyyMMdd", "GMT+7"); 
+                                contactlistarray.LastMaintenanceUserID = getStringValue(customer.C1LUID_LastMaintenanceUser);
+                                strToLong(contactlistarray.Seq,customer.CFZSEQ2_SequenceNumber);
+                            }else if(ls_Contact == 1){
+                                contactlistarray.AreaCode = getStringValue(customer.CFARE2_AreaCode2);
+                                contactlistarray.ContactExtensionNumber = getStringValue(customer.CFEEX2_ContactExtensionNumber);
+                                contactlistarray.EContactCode = getStringValue(customer.CFEAD2_EContactCode2);
+                                contactlistarray.EContactDetail = getStringValue(customer.CFEDD2_EContactDetail2);
+                                strToDate(contactlistarray.LastMaintenanceDateTime, getStringValue(customer.C2LTIM_LastMaintenanceUserTime), "yyyyMMdd", "GMT+7"); 
+                                contactlistarray.LastMaintenanceUserID = getStringValue(customer.C2LUID_LastMaintenanceUserID);
+                                strToLong(contactlistarray.Seq,customer.CFZSEQ3_SequenceNumber);
+                            }else if(ls_Contact == 2){
+                                contactlistarray.AreaCode = getStringValue(customer.CFARE3_AreaCode3);
+                                contactlistarray.ContactExtensionNumber = getStringValue(customer.CFEEX3_ContactExtensionNumber);
+                                contactlistarray.EContactCode = getStringValue(customer.CFEAD3_EContactCode3);
+                                contactlistarray.EContactDetail = getStringValue(customer.CFEDD3_EContactDetail3);
+                                strToDate(contactlistarray.LastMaintenanceDateTime, getStringValue(customer.C3LTIM_LastMaintenanceUserTime), "yyyyMMdd", "GMT+7"); 
+                                contactlistarray.LastMaintenanceUserID = getStringValue(customer.C3LUID_LastMaintenanceUserID);
+                                strToLong(contactlistarray.Seq,customer.CFZSEQ4_SequenceNumber);
+                            }else if(ls_Contact == 3){
+                                contactlistarray.AreaCode = getStringValue(customer.CFARE4_AreaCode4);
+                                contactlistarray.ContactExtensionNumber = getStringValue(customer.CFEEX4_ContactExtensionNumber);
+                                contactlistarray.EContactCode = getStringValue(customer.CFEAD4_EContactCode4);
+                                contactlistarray.EContactDetail = getStringValue(customer.CFEDD4_EContactDetail4);
+                                strToDate(contactlistarray.LastMaintenanceDateTime, getStringValue(customer.C4LTIM_LastMaintenanceUserTime), "yyyyMMdd", "GMT+7"); 
+                                contactlistarray.LastMaintenanceUserID = getStringValue(customer.C4LUID_LastMaintenanceUserID);
+                                strToLong(contactlistarray.Seq,customer.CFZSEQ5_SequenceNumber);
+                            }else{
+                                contactlistarray.AreaCode = getStringValue(customer.CFARE5_AreaCode5);
+                                contactlistarray.ContactExtensionNumber = getStringValue(customer.CFEEX5_ContactExtensionNumber);
+                                contactlistarray.EContactCode = getStringValue(customer.CFEAD5_EContactCode5);
+                                contactlistarray.EContactDetail = getStringValue(customer.CFEDD5_EContactDetail5);
+                                strToDate(contactlistarray.LastMaintenanceDateTime, getStringValue(customer.C5LTIM_LastMaintenanceUserTime), "yyyyMMdd", "GMT+7"); 
+                                contactlistarray.LastMaintenanceUserID = getStringValue(customer.C5LUID_LastMaintenanceUserID);
+                                strToLong(contactlistarray.Seq,customer.CFZSEQ6_SequenceNumber);
+                            }
+                            listAdd(cust.ContactList.Contact,contactlistarray);
+                        }
+                      
+                    strToLong(cust.CostCenter,getStringValue(customer.CFCOST_CostCenter));   
+                    cust.CostFlag = getStringValue(customer.CFPCOS_CostIndicator);
+                    cust.CountryOfCitizenship = getStringValue(customer.CFCITZ_CountryOfCitizenshipIncorpo);              
+                    cust.CountryOfExposure = getStringValue(customer.CFEXPS_CountryOfExposure); 
+                    cust.CountrySourceOfFund = getStringValue(customer.CFSCOU_CountrySourceOfFund);
+                    strToLong(cust.CreationBankNumber,getStringValue(customer.CFBNKN_CreationBankNumber));
+                    strToLong(cust.CreationBranchNumber,getStringValue(customer.CFBRNN_CreationBranchNumber));
+                    strToDate(cust.CreationDate, getStringValue(customer.MNCDT8_CreationDate), "yyyyMMdd", "GMT+7"); 
+                    cust.CreationSource = getStringValue(customer.MNCSRC_CreationSource);
+                    strToDate(cust.CreationTime, getStringValue(customer.WMNCTIM_CreationTime), "yyyyMMdd", "GMT+7"); 
+                    cust.CreationUserID = getStringValue(customer.MNCUID_CreationUserID);
+                    cust.CreditRating = getStringValue(customer.CFCRAT_CreditRating);
+                    strToDate(cust.CreditRatingReviewDate, getStringValue(customer.CFCRV8_CreditRatingReviewDate), "yyyyMMdd", "GMT+7");   
+                    strToLong(cust.CreditRatingReviewTerm,getStringValue(customer.CFCRTM_CreditRatingReviewTerm)); 
+                    cust.CreditRatingReviewTermCode = getStringValue(customer.CFCRTC_CreditRatingReviewTermCode);
+                    cust.CurrencyCode = getStringValue(customer.CFCURR_CurrencyCode);
+                    cust.CurrentKYCRuleReasonCode = getStringValue(customer.CFCKYR_CurrentKYCRuleReasonCode);
+                    strToDouble(cust.CurrentSalesTurnover,convertToNumberic(customer.CFATOR_CurrentSalesTurnover,17,2));   
+                    cust.CustomerCategory = getStringValue(customer.CFCLAS_CustomerCategory);     
+                        //customer info 
+                        cust.CustomerNameInfo.CustomerName.AlternateCustomerName = getStringValue(customer.WFAFNM_AlternateFormattedName);
+                        cust.CustomerNameInfo.CustomerName.AlternateFirstName = "";
+                        cust.CustomerNameInfo.CustomerName.AlternateFormattedNameCode = "";
+                        cust.CustomerNameInfo.CustomerName.AlternateLastName = "";
+                        cust.CustomerNameInfo.CustomerName.AlternateMiddleName = "";
+                        cust.CustomerNameInfo.CustomerName.AlternateReserveName = "";
+                        cust.CustomerNameInfo.CustomerName.AlternateTitleCode = getStringValue(customer.WCFZBFN_Title);
+                        cust.CustomerNameInfo.CustomerName.CustomerName =  getStringValue(customer.WCFFNMS_FormattedNameForSorting); // WFFNMS_PrimaryCustomerFormattedName;
+                        strToLong(cust.CustomerNameInfo.CustomerName.CustomerPriorStatus,"");
+                        cust.CustomerNameInfo.CustomerName.FirstName = "";
+                        cust.CustomerNameInfo.CustomerName.FormattedNameCode = getStringValue(customer.CFMNIN_NameFormat);
+                        cust.CustomerNameInfo.CustomerName.LastName = "";
+                        cust.CustomerNameInfo.CustomerName.MiddleName = "";
+                        cust.CustomerNameInfo.CustomerName.ReserveName = "";
+                        cust.CustomerNameInfo.CustomerName.TitleCode = getStringValue(customer.CFZBFN_Title);
+                        cust.CustomerNameInfo.CustomerName.TitleType = getStringValue(customer.CFZSAT_TitleType);
+                    cust.CustomerNumber = getStringValue(customer.CFCIFN_CustomerNumber);   
+                    strToDate(cust.CustomerOriginalCreationDate, getStringValue(customer.CFORG8_CustomerOriginalCreationDat), "yyyyMMdd", "GMT+7");     
+                    strToLong(cust.CustomerPriorStatus,getStringValue(customer.CFPSTS_CustomerPriorStatus));      
+                    strToDate(cust.CustomerReviewDate, getStringValue(customer.CFRVW8_CustomerReviewDate), "yyyyMMdd", "GMT+7"); 
+                    strToLong(cust.CustomerReviewTerm,getStringValue(customer.CFRVTR_CustomerReviewTerm));   
+                    cust.CustomerReviewTermCode = getStringValue(customer.CFRVTC_CustomerReviewTermCode);   
+                    strToLong(cust.CustomerStatus,getStringValue(customer.CFCSTS_CustomerStatus));      
+                    cust.CustomerSubClass = getStringValue(customer.CFSCLA_SubClass); 
+                    strToLong(cust.CustomerSubType,getStringValue(customer.CFCCAT_CustomerSubType));      
+                    cust.CustomerTemplateCode = getStringValue(customer.CFCIFT_CustomerTemplateCode);
+                    cust.CustomerType = getStringValue(customer.CFINDI_CustomerType); 
+                    strToDate(cust.DeceasedOrDissolvedDate, getStringValue(customer.CFDCD8_DeceasedDissolvedDate), "yyyyMMdd", "GMT+7");        
+                    cust.DeceasedOrDissolvedFlag = getStringValue(customer.CFDEAD_DeceasedDissolved);     
+                    cust.DocumentProofFlag = getStringValue(customer.CFDCPR_DocumentProof);
+                    cust.DPAFlag = getStringValue(customer.CFDPAI_DPAIndicator); 
+                        //education
+                        cust.EducationInfo.Education.EducationLevelCode = getStringValue(customer.CFEDLV_EducationLevelCode);
+                        strToDate(cust.EducationInfo.Education.LastMaintenanceDateTime, getStringValue(customer.CVLTIM_LastMaintenanceUserTime), "yyyyMMdd", "GMT+7"); 
+                        cust.EducationInfo.Education.LastMaintenanceUserID = getStringValue(customer.CVLUID_LastMaintenanceUserID);
+                        //employment
+                        cust.EmploymentInfo.Employment.EmployerName = getStringValue(customer.CFENA1_EmployerNameForOther);
+                        strToDate(cust.EmploymentInfo.Employment.EmploymentStartDate, getStringValue(customer.CFEES8_EmploymentStartDate), "yyyyMMdd", "GMT+7"); 
+                        strToDate(cust.EmploymentInfo.Employment.LastMaintenanceDateTime, getStringValue(customer.CELTIM_LastMaintenanceUserTime), "yyyyMMdd", "GMT+7");     
+                        cust.EmploymentInfo.Employment.LastMaintenanceUserID = getStringValue(customer.CELUID_LastMaintenanceUserID);
+                        cust.EmploymentInfo.Employment.MonthlyIncomeRange = getStringValue(customer.CFEINR_MontlyIncomeRange);
+                    //cust.EstimateAssetRangeCode = "";
+                    strToDouble(cust.EstimateAssetValue,convertToNumberic(customer.CFEASV_EstimateAssetValue,17,2)); 
+                    cust.ExceedAnnualDonationIncomeFlag = getStringValue(customer.CFIDPR_ExceedAnnualDonationIncome);
+                    cust.FamilyOwnedFlag = getStringValue(customer.CFFOWN_FamilyOwned);    
+                    cust.FATFFlag = getStringValue(customer.CFMTBA_FATF); 
+                    strToDate(cust.FedWHChangeDate, getStringValue(customer.CFWHD8_FedWHChangeDate), "yyyyMMdd", "GMT+7");    
+                    strToLong(cust.FedWHCode,getStringValue(customer.CFWHCD_FedWHCode));   
+                    strToLong(cust.FinancialYearEnd,getStringValue(customer.CFTREN_FinancialYearEnd));   
+                    cust.FoundInPEPList = getStringValue(customer.WNPEPI_FoundInPEPList);
+                    cust.Gender = getStringValue(customer.CFSEX_Gender);
+                    cust.GSTRegisteredFlag = getStringValue(customer.CFGSTI_GSTRegisteredIndicator);
+                    cust.HomeCode = getStringValue(customer.CFOWNT_HomeCode);
+                        //ID info
+                        //cust.IDInfo.IDObj.AlternateIDExpiryDate = "";
+                        cust.IDInfo.ID.AlternateIDIssuanceCountry = getStringValue(customer.CFSNDT_AlternateIDIssuanceCountry);       
+                        //cust.IDInfo.IDObj.AlternateIDIssuedDate = "";
+                        cust.IDInfo.ID.AlternateIDNumber = getStringValue(customer.CFSNNO_AlternateIDNumber);  
+                        cust.IDInfo.ID.AlternateIDType = getStringValue(customer.CFSNCD_AlternateIDType);       
+                        cust.IDInfo.ID.IDDocumentSource = getStringValue(customer.CFDSRC_IDDocumentSource);    
+                        //cust.IDInfo.IDObj.IDExpiryDate = "";
+                        cust.IDInfo.ID.IDIssueCountryCode = getStringValue(customer.CFCIDT_IDIssueCountryCode);            
+                        //cust.IDInfo.IDObj.IDIssuedDate = "";    
+                        cust.IDInfo.ID.IDNumber = getStringValue(customer.CFSSNO_IDNumber);
+                        cust.IDInfo.ID.IDTypeCode = getStringValue(customer.CFSSCD_IDTypeCode);    
+                    cust.InformationDisclosureFlag = getStringValue(customer.CFDISF_InformationDisclosure);   
+                    cust.InquiryCode = getStringValue(customer.CFINQC_InquiryCode); 
+                    cust.InsiderCode = getStringValue(customer.CFINSC_InsiderCode);
+                    cust.IntroducerCode = getStringValue(customer.CFINDC_IntroducerCode);
+                    cust.IntroducerCompany = getStringValue(customer.WCFZCOM_IntroducerCompany);     
+                    cust.IntroducerCustomerNumber = getStringValue(customer.WKCIFN_IntroducerCIFNumber);          
+                    cust.IntroducerDepartment = getStringValue(customer.WCFZDEP_IntroducerDepartment);               
+                    cust.IntroducerName = getStringValue(customer.WCFINNM_IntroducerName);                              
+                    cust.IslamicFlag = getStringValue(customer.CFCISM_ConventionalIslamicIndicator);                         
+                    cust.KYCGrade = getStringValue(customer.CFKYCR_KYCGrade);          
+                    strToDate(cust.KYCReviewDate, getStringValue(customer.CFKYC8_KYCReviewDate), "yyyyMMdd", "GMT+7"); 
+                    strToDate(cust.LastCreditRatingReviewDate, getStringValue(customer.CFLCR8_LastCreditRatingReviewDate), "yyyyMMdd", "GMT+7");   
+                    strToDate(cust.LastMaintenanceDate, getStringValue(customer.MNLDT8_LastMaintenanceDate), "yyyyMMdd", "GMT+7"); 
+                    strToDate(cust.LastMaintenanceDateTime, getStringValue(customer.WMNLTIM_LastMaintenanceTime), "yyyyMMdd", "GMT+7");          
+                    cust.LastMaintenanceSource = getStringValue(customer.MNLSRC_LastMaintenanceSource);                                    
+                    cust.LastMaintenanceUserID = getStringValue(customer.MNLUID_LastMaintenanceUserID);
+                    strToDate(cust.LastOBGReviewDate, getStringValue(customer.CFLOR8_LastOBGReviewDate), "yyyyMMdd", "GMT+7"); 
+                    strToDate(cust.LastRetentionCheckDate, getStringValue(customer.CFLST8_LastStatusChangeDate), "yyyyMMdd", "GMT+7");                                     
+                    strToDate(cust.LastReviewDate, getStringValue(customer.CFLRW8_LastReviewDate), "yyyyMMdd", "GMT+7");                                                
+                    strToDate(cust.LastStatusChangeDate, getStringValue(customer.CFLST8_LastStatusChangeDate), "yyyyMMdd", "GMT+7");                                                                
+                    cust.ListedCompany = getStringValue(customer.CFRSET_ListedCompany);      
+                        //Local Address 
+                        /*cust.LocalAddressInfo.LocalAddress.Building = "";
+                        cust.LocalAddressInfo.LocalAddress.CountryCode = "";
+                        cust.LocalAddressInfo.LocalAddress.DistrictCode = "";
+                        cust.LocalAddressInfo.LocalAddress.FloorNumber = "";
+                        cust.LocalAddressInfo.LocalAddress.FloorNumberLabel = "";
+                        cust.LocalAddressInfo.LocalAddress.HouseNumber = "";
+                        cust.LocalAddressInfo.LocalAddress.Moo = "";
+                        cust.LocalAddressInfo.LocalAddress.MooLebel = "";
+                        cust.LocalAddressInfo.LocalAddress.PostalCode = "";
+                        cust.LocalAddressInfo.LocalAddress.ProvinceCode = "";
+                        cust.LocalAddressInfo.LocalAddress.Road = "";
+                        cust.LocalAddressInfo.LocalAddress.RoadLebel = "";
+                        cust.LocalAddressInfo.LocalAddress.RoomNumber = "";
+                        cust.LocalAddressInfo.LocalAddress.RoomNumberLebel = "";
+                        cust.LocalAddressInfo.LocalAddress.Soi = "";
+                        cust.LocalAddressInfo.LocalAddress.SoiLebel = "";
+                        cust.LocalAddressInfo.LocalAddress.SubDistrictCode = "";*/
+                  
+                    cust.LocalBusinessOperate = getStringValue(customer.CFRESD_ResidentLocalBusinessOperat);   
+                    cust.MailDeliveryMode = getStringValue(customer.CFMDMD_MailDeliveryMode); 
+                    cust.MailingCode = getStringValue(customer.CFHLDM_MailingCode); 
+                    cust.MailingCollectionBranch = getStringValue(customer.CFMBRN_MailingCollectionBranch);       
+                    cust.MaritalStatusCode = getStringValue(customer.CFMARS_MaritalStatus);
+                    strToDate(cust.MaritalStatusDate, customer.CFMAR8_MaritalStatusDate, "yyyyMMdd", "GMT+7");    
+                    cust.NonProfitOrganizationFlag = getStringValue(customer.CFNPOR_NonProfitOrganization);
+                    cust.NonUSPersonFlag = getStringValue(customer.WKNUSP_NONUSPerson); 
+                    strToLong(cust.NumberOfDependentKid,customer.CFNDPS_NumberOfDependentKid);   
+                    strToLong(cust.NumberOfDependentTeenager,customer.CFNDPB_NumberOfDependentTeenager);   
+                    cust.ObligorRiskGrade = getStringValue(customer.CFOBLG_ObligorRiskGrade);
+                    cust.OccupationCode = getStringValue(customer.CFBUST_OccupationCode);
+                    cust.OfficerCode = getStringValue(customer.CFOFID_OfficerCode);     
+                    cust.OfficerShortName = getStringValue(customer.SSOSNA_OfficerShortName);
+                    cust.OffshoreBusinessFlag = getStringValue(customer.CFOFFS_OffshoreBusiness);    
+                    strToDouble(cust.OtherExpense,convertToNumberic(customer.CFOEXP_OtherExpense,17,2));   
+                    strToDouble(cust.OtherIncome,convertToNumberic(customer.CFOINC_OtherIncome,17,2));   
+                    strToDate(cust.PaidCapitalDate, getStringValue(customer.CFPPD8_PaidCapitalDate), "yyyyMMdd", "GMT+7"); 
+                    strToDouble(cust.PaidUpCapital,convertToNumberic(customer.CFPCAP_PaidUpCapital,17,2));   
+                    cust.PayTaxFlag = getStringValue(customer.CFPTAX_PayTax);
+                    cust.PoliticalExposedPerson = getStringValue(customer.CFPEPS_PoliticalExposedPerson);
+                    cust.PoliticalRelationship = getStringValue(customer.CFREPO_PoliticalRelationship);
+                    cust.PowerToBorrowArticleNumber = getStringValue(customer.CFBART_PowerToBorrowArticleNo);
+                    cust.PowerToGuaranteeArticleNumber = getStringValue(customer.CFGART_PowerToGuaranteeArticleNo);
+                    cust.PreferredLanguage = getStringValue(customer.CFLGID_PreferredLanguage);
+                    cust.PreviousCreditRating = getStringValue(customer.CFPCRT_PreviousCreditRating);
+                    cust.PreviousKYCRating = getStringValue(customer.CFPKYC_PreviousKYCRating);
+                    strToDate(cust.PreviousKYCReviewDate, customer.CFPKR8_PreviousKYCReviewDate, "yyyyMMdd", "GMT+7");   
+                    cust.PreviousKYCRuleReasonCode = getStringValue(customer.CFPKYR_PreviousKYCRuleReasonCode);
+                    cust.PreviousObligorRiskGrade = getStringValue(customer.CFPOBG_PreviousObligorRiskGrade);
+                    cust.ProfitabilityAnalysis = getStringValue(customer.CFPROA_ProfitabilityAnalysis);
+                    strToDate(cust.ProfitabilityReviewDate, getStringValue(customer.CFPLD8_ProfitabilityReviewDate), "yyyyMMdd", "GMT+7");        
+                    cust.ProfitFlag = getStringValue(customer.CFPPFT_ProfitIndicator);
+                    cust.PromotionMailingCode = getStringValue(customer.CFHLDP_PromotionalMailingCode);
+                    strToLong(cust.PromotionMailingCollectionB,customer.CFPBRN_PromotionMailingCollectionB);   
+                    cust.PromotionMailingDeliveryMod = getStringValue(customer.CFPMMD_PromotionMailingDeliveryMod);
+                    cust.RaceCode =  getStringValue(customer.CFRACE_RaceBusinessOewershipCode);
+                        //Relationship Info
+                        strToDate(cust.RelationshipInfo.Relationship.LastMaintenanceDateTime, getStringValue(customer.CCLTIM_LastMaintenanceUserTime), "yyyyMMdd", "GMT+7"); 
+                        cust.RelationshipInfo.Relationship.LastMaintenanceUserID = getStringValue(customer.CCLUID_LastMaintenanceUserID);
+                        cust.RelationshipInfo.Relationship.RelationshipCode = getStringValue(customer.CFCREL_RelationshipCodeOwner);
+                    strToDate(cust.RelationshipStartDate, getStringValue(customer.CFRLS8_RelationshipStartDate), "yyyyMMdd", "GMT+7"); 
+                    cust.RelationshipTypeForOfficer = getStringValue(customer.CFOTYP_RelationshipTypeForOfficer);     
+                    cust.ReligionCode =   getStringValue(customer.CFRELI_Religion);
+                    strToLong(cust.RetentionCycle,getStringValue(customer.CFRETN_RetentionCycle));
+                    cust.ReturnedMailAssessment = getStringValue(customer.CFRTNM_ReturnedMailAssessment);
+                    cust.RevenueFlag = getStringValue(customer.CFPREV_RevenueIndicator);
+                    cust.SegmentCode = getStringValue(customer.CFSEGC_SegmentCode);
+                    cust.SMEFlag = getStringValue(customer.CFSMEI_SMEIndicator);
+                    cust.SMSAlertFlag = getStringValue(customer.CFSMSA_SMSAlert);
+                    
+                       for(int ls_SOARemark=0;ls_SOARemark<10;ls_SOARemark++){
+                            GetCustomerDetailResponse$Header$CustomerInfo$Customer$SOARemarkList$SOARemark soaremarklistarray = udrCreate(GetCustomerDetailResponse$Header$CustomerInfo$Customer$SOARemarkList$SOARemark);               
+                            if(ls_SOARemark == 0){
+                                soaremarklistarray.SOARemark = getStringValue(customer.WCFRM01_SOARemark01);
+                            }else if(ls_SOARemark == 1){
+                                soaremarklistarray.SOARemark = getStringValue(customer.WCFRM02_SOARemark02);
+                            }else if(ls_SOARemark == 2){
+                                soaremarklistarray.SOARemark = getStringValue(customer.WCFRM03_SOARemark03);
+                            }else if(ls_SOARemark == 3){
+                                soaremarklistarray.SOARemark = getStringValue(customer.WCFRM04_SOARemark04);
+                            }else if(ls_SOARemark == 4){
+                                soaremarklistarray.SOARemark = getStringValue(customer.WCFRM05_SOARemark05);
+                            }else if(ls_SOARemark == 5){
+                                soaremarklistarray.SOARemark = getStringValue(customer.WCFRM06_SOARemark06);
+                            }else if(ls_SOARemark == 6){
+                                soaremarklistarray.SOARemark = getStringValue(customer.WCFRM07_SOARemark07);
+                            }else if(ls_SOARemark == 7){
+                                soaremarklistarray.SOARemark = getStringValue(customer.WCFRM08_SOARemark08);
+                            }else if(ls_SOARemark == 8){
+                                soaremarklistarray.SOARemark = getStringValue(customer.WCFRM09_SOARemark09);
+                            }else{
+                                soaremarklistarray.SOARemark = getStringValue(customer.WCFRM10_SOARemark10);
+                            }
+                            if(soaremarklistarray.SOARemark!=null){
+                                listAdd(cust.SOARemarkList.SOARemark,soaremarklistarray);
+                            }
+                            
+                        }
+                        
+                        for(int ls_SOF=0;ls_SOF<10;ls_SOF++){
+                            GetCustomerDetailResponse$Header$CustomerInfo$Customer$SourceOfFundInfo$SourceOfFund sourceoffundlistarray = udrCreate(GetCustomerDetailResponse$Header$CustomerInfo$Customer$SourceOfFundInfo$SourceOfFund);
+                            if(ls_SOF == 0){
+                                sourceoffundlistarray.SourceOfFund = getStringValue(customer.WCF6M01_SourceOfAsset1);
+                            }else if(ls_SOF == 1){
+                                sourceoffundlistarray.SourceOfFund = getStringValue(customer.WCF6M02_SourceOfAsset2);
+                            }else if(ls_SOF == 2){
+                                sourceoffundlistarray.SourceOfFund = getStringValue(customer.WCF6M03_SourceOfAsset3);
+                            }else if(ls_SOF == 3){
+                                sourceoffundlistarray.SourceOfFund = getStringValue(customer.WCF6M04_SourceOfAsset4);
+                            }else if(ls_SOF == 4){
+                                sourceoffundlistarray.SourceOfFund = getStringValue(customer.WCF6M05_SourceOfAsset5);
+                            }else if(ls_SOF == 5){
+                                sourceoffundlistarray.SourceOfFund = getStringValue(customer.WCF6M06_SourceOfAsset6);
+                            }else if(ls_SOF == 6){
+                                sourceoffundlistarray.SourceOfFund = getStringValue(customer.WCF6M07_SourceOfAsset7);
+                            }else if(ls_SOF == 7){
+                                sourceoffundlistarray.SourceOfFund = getStringValue(customer.WCF6M08_SourceOfAsset8);
+                            }else if(ls_SOF == 8){
+                                sourceoffundlistarray.SourceOfFund = getStringValue(customer.WCF6M09_SourceOfAsset9);
+                            }else{
+                                sourceoffundlistarray.SourceOfFund = getStringValue(customer.WCF6M10_SourceOfAsset10);
+                            }
+                            if(sourceoffundlistarray.SourceOfFund!=null){
+                                listAdd(cust.SourceOfFundInfo.SourceOfFund,sourceoffundlistarray);
+                            }
+                        }
+                    
+                    cust.StaffBenefitFlag = getStringValue(customer.CFBENE_StaffBenefit);
+                    strToLong(cust.StaffExecutiveLevelNumber,getStringValue(customer.CFEXCL_NoStaffExecutiveLevel));   
+                    cust.StaffGrade = getStringValue(customer.CFSTAF_StaffGrade);
+                    strToLong(cust.StaffManagerialLevelNumber,getStringValue(customer.CFMNGL_NoStaffManagerialLevel));   
+                    strToLong(cust.StaffOtherLevelNumber,getStringValue(customer.CFOTHL_NoStaffOtherLevel));   
+                    strToDate(cust.StateWHChangeDate, getStringValue(customer.CFSWH8_StateWHChangeDate), "yyyyMMdd", "GMT+7"); 
+                    strToLong(cust.StateWHCode,getStringValue(customer.CFWHPR_StateWHCode));   
+                    strToDate(cust.StaySince, getStringValue(customer.CFSTY8_StaySince), "yyyyMMdd", "GMT+7"); 
+                    cust.SubSegmentCode = getStringValue(customer.CFSSEG_SubSegmentCode);
+                    cust.SubVIPCode = getStringValue(customer.CFVIPC_SubVIPCode);
+                       for(int ls_UserCode=0;ls_UserCode<10;ls_UserCode++){
+                            GetCustomerDetailResponse$Header$CustomerInfo$Customer$UserCodeList$UserCode usercodelistarray = udrCreate(GetCustomerDetailResponse$Header$CustomerInfo$Customer$UserCodeList$UserCode);
+                            if(ls_UserCode == 0){
+                                usercodelistarray.UserCodeFlag = getStringValue(customer.WCF6MI1_UsercodeIndicator1);
+                            }else if(ls_UserCode == 1){
+                                usercodelistarray.UserCodeFlag = getStringValue(customer.WCF6MI2_UsercodeIndicator2);
+                            }else if(ls_UserCode == 2){
+                                usercodelistarray.UserCodeFlag = getStringValue(customer.WCF6MI3_UsercodeIndicator3);
+                            }else if(ls_UserCode == 3){
+                                usercodelistarray.UserCodeFlag = getStringValue(customer.WCF6MI4_UsercodeIndicator4);
+                            }else if(ls_UserCode == 4){
+                                usercodelistarray.UserCodeFlag = getStringValue(customer.WCF6MI5_UsercodeIndicator5);
+                            }else if(ls_UserCode == 5){
+                                usercodelistarray.UserCodeFlag = getStringValue(customer.WCF6MI6_UsercodeIndicator6);
+                            }else if(ls_UserCode == 6){
+                                usercodelistarray.UserCodeFlag = getStringValue(customer.WCF6MI7_UsercodeIndicator7);
+                            }else if(ls_UserCode == 7){
+                                usercodelistarray.UserCodeFlag = getStringValue(customer.WCF6MI8_UsercodeIndicator8);
+                            }else if(ls_UserCode == 8){
+                                usercodelistarray.UserCodeFlag = getStringValue(customer.WCF6MI9_UsercodeIndicator9);
+                            }else{
+                                usercodelistarray.UserCodeFlag = getStringValue(customer.WCF6MI0_UsercodeIndicator10);
+                            }
+                            if(usercodelistarray.UserCodeFlag!=null){
+                                listAdd(cust.UserCodeList.UserCode,usercodelistarray); 
+                            }
+                            
+                        }
+                    cust.USPersonFlag = getStringValue(customer.CFUSP_USPerson);   
+                    cust.VIPFlag = getStringValue(customer.CFVIPI_VIPIndicator);     
+        
+                    //listAdd(responseMessage.param_Header_01.CustomerList.Customer,cust);
+                    responseMessage.param_Header_01.CustomerInfo.Customer = cust;
+                   
+                //Response Status Info
+                responseMessage.param_Header_01.StatusInfo.Status.Success = true;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = mbase.mbaseHeader.HDRIND;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Success";
+                
+               
+        
+            }else{
+                //Rejected
+                //Get Mbase Reject
+                list<MBASE_Reject_With_Payload_TI> aRejected = listCreate(MBASE_Reject_With_Payload_TI);
+                udrDecode("MBASE_Reject_With_Payload_Decode", aRejected, mbase.data);
+                MBASE_Reject_With_Payload_TI rejected = listGet(aRejected,0);
+                
+                responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = rejected.mbaseReject.ErrorCode;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = baToStr(rejected.errorDesc, "IBM-Thai");
+            }
+         }else{
+                if(strStartsWith(tcpResponse.I13MSTA, ".DSP")){
+                    //Response Stattus Info
+                    string responseCodeDSP = strREReplaceAll(tcpResponse.I13MSTA, "\\.", "");
+                    responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = responseCodeDSP;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = getDSPErrorDesc(responseCodeDSP);       
+                }
+                else{
+                    //DSP Service down 
+                    responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = "CBS8999";
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Unknow data format (Invalid response from host)";     
+                }
+        }
+    }else{
+            //Response Header
+            responseMessage.param_Header_01 = udrCreate(GetCustomerDetailResponse$Header);
+            date responseTransactinDatetime = dateCreateCopy(responseMessage.param_Header.TransactionDateTime);
+            dateSetTimeZone(responseTransactinDatetime, "GMT+7");       
+            responseMessage.param_Header_01.ReferenceNo = responseMessage.param_Header.ReferenceNo;
+            responseMessage.param_Header_01.TransactionDateTime = responseTransactinDatetime;
+            responseMessage.param_Header_01.ChannelID = responseMessage.param_Header.ChannelID;
+            //Response StatusInfo
+            responseMessage.param_Header_01.StatusInfo = udrCreate(GetCustomerDetailResponse$Header$StatusInfo);
+            responseMessage.param_Header_01.StatusInfo.Status = udrCreate(GetCustomerDetailResponse$Header$StatusInfo$Status);
+            responseMessage.param_Header_01.StatusInfo.Status.UsageTime = dateCreateNowMilliseconds()-requestMillisec;
+            responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+            responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = "CBS8990";
+            responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Connection to CBS lost";
+    }
+     //debug(responseMessage);
+    return responseMessage;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Create Content Message GetContactDetail
+bytearray createContentMessageCFC152020_GetContactDetail(string uniqKey,MBASE_CFC152020_RQ_TI mbaseRequest){
+   //DSP Header
+    DSP_Header_TgIn dspHeader = createDefaultDSPHeader();
+    dspHeader.SKTMLEN = sizeOf_DSPHeader + sizeOf_MBaseHeader + sizeOf_CFC152020 - 9;
+    dspHeader.I13FMID = "MBASE";  
+    dspHeader.I13DID = "CIFI";
+    //dspHeader.I13SID = request.param_Header.ChannelID + "##";
+    //dspHeader.I13ACQN = uniqKey;  
+    dspHeader.I13ACQN = strSubstring(uniqKey, 0, 12);  
+    dspHeader.I13TMNO = strSubstring(uniqKey, 12, 16);  
+         
+    //MBASE Header
+    MBASE_Header_TI mbaseHeader = createDefaultMBASEHeader();
+    mbaseHeader.HDTCOD = "CFC152020";
+    mbaseHeader.HDDSID = "ESB";
+    mbaseHeader.HDACCD = "I";
+    mbaseHeader.HDNREC = "1"; // record max 20 
+
+    //Build Socket Message
+    bytearray outgoing = udrEncode("DSP_Header_Encoder", dspHeader);
+    outgoing = baAppend(outgoing, udrEncode("MBASE_Header_Encode", mbaseHeader));
+    outgoing = baAppend(outgoing, udrEncode("MBASE_CFC152020_RQ_Encode", mbaseRequest));
+    return outgoing;    
+}
+
+//Response GetContactDetail
+bytearray responseByteArray_GetContactDetail(DSP_Header_TgIn tcpResponse){
+    bytearray returnGetContactDetail;
+    list<MBASE_Header_With_Payload_TI> aList = listCreate(MBASE_Header_With_Payload_TI);
+    udrDecode("MBASE_Header_With_Payload_Decode", aList, tcpResponse.data);
+    MBASE_Header_With_Payload_TI mbase = listGet(aList,0);
+    bytearray refilled = refillTrimedColumn(mbase.data,509);
+    
+    //Request Data ContactDetail 
+    if(mbase.mbaseHeader.HDRIND == "AA"){
+        returnGetContactDetail = refilled;
+    }
+    
+    return returnGetContactDetail;
+}]]></string>
+</exportmultiplex>

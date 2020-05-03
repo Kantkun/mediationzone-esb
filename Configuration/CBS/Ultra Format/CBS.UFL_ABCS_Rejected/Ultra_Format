@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Ultra_Format" ref_path="ultra_format[Internal]/storable[ultra_format]/storable[Data]">
+   <string name="Definition"><![CDATA[external ABCS_Rejected_Header : identified_by(RSPCOD_ResponseCode == "41") {
+	bcd RSPLEN_ResponseLength	: static_size(2), align(right);
+	ascii RSPCOD_ResponseCode : character_encoding("cp838"), static_size(2), align(left), padded_with(0x40);
+	ascii TLTXCD_TransactionCode : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii TLXMNE_CodeField3 : character_encoding("cp838"), static_size(3), align(left), padded_with(0x40);
+	bcd TLBSEQ_JournalSeq	: static_size(5), align(right);
+	ascii TLBID_TellerID : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii TLBCUD_ControlUnit : character_encoding("cp838"), static_size(7), align(left), padded_with(0x40);
+	ascii TLBWS_WorkStationID : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii HOVREQ_HighestOverrideReq : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	bcd ER_NumberOfErrors	: static_size(2), align(right);
+};
+
+in_map ABCS_Rejected_Header_InMap: external(ABCS_Rejected_Header), target_internal(ABCS_Rejected_Header_TgIn) {automatic;};
+out_map ABCS_Rejected_Header_OutMap: external(ABCS_Rejected_Header), internal(ABCS_Rejected_Header_TgIn) {automatic;};
+decoder ABCS_Rejected_Header_Decoder: in_map(ABCS_Rejected_Header_InMap);
+encoder ABCS_Rejected_Header_Encoder: out_map(ABCS_Rejected_Header_OutMap);
+
+external ABCS_Rejected_Details : identified_by(RSPCOD_ResponseCode == "42") {
+	bcd RSPLEN_ResponseLength	: static_size(2), align(right);
+	ascii RSPCOD_ResponseCode : character_encoding("cp838"), static_size(2), align(left), padded_with(0x40);
+	bcd ERN1_ErrorCode	: static_size(2), align(right);
+	ascii ERO1_OverrideReq : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	bcd APL1_ApplicationLineNum	: static_size(2), align(right);
+	ascii APT1_ApplicationType : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii ADT1_AddlDataType : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii ADF1_AddlDataField : character_encoding("cp838"), static_size(19), align(left), padded_with(0x40);
+	ascii AEC1_AddlErrorCode : character_encoding("cp838"), static_size(3), align(left), padded_with(0x40);
+	ascii VAPP_ApplicationCode : character_encoding("cp838"), static_size(2), align(left), padded_with(0x40);
+	bcd VSCD_SubErrorCode	: static_size(2), align(right);
+	ascii VMSG_ErrorMsgText : character_encoding("cp838"), static_size(60), align(left), padded_with(0x40);
+	ascii AVAILB_AvlBalATM : character_encoding("cp838"), static_size(17), align(right), padded_with(0xf0);
+};
+
+in_map ABCS_Rejected_Details_InMap: external(ABCS_Rejected_Details), target_internal(ABCS_Rejected_Details_TgIn) {automatic;};
+out_map ABCS_Rejected_Details_OutMap: external(ABCS_Rejected_Details), internal(ABCS_Rejected_Details_TgIn) {automatic;};
+decoder ABCS_Rejected_Details_Decoder: in_map(ABCS_Rejected_Details_InMap);
+encoder ABCS_Rejected_Details_Encoder: out_map(ABCS_Rejected_Details_OutMap);
+
+external ABCS_Rejected_Header_With_Details : terminated_by(EOF) {
+	ABCS_Rejected_Header ABCS_Rejected_Header;
+    ABCS_Rejected_Details ABCS_Rejected_Details;
+    bytearray data: dynamic_size(remaining_size);
+};
+
+in_map ABCS_Rejected_Header_With_Details_InMap: external(ABCS_Rejected_Header_With_Details), target_internal(ABCS_Rejected_Header_With_Details_TgIn) {automatic;};
+out_map ABCS_Rejected_Header_With_Details_OutMap: external(ABCS_Rejected_Header_With_Details), internal(ABCS_Rejected_Header_With_Details_TgIn) {automatic;};
+decoder ABCS_Rejected_Header_With_Details_Decoder: in_map(ABCS_Rejected_Header_With_Details_InMap);
+encoder ABCS_Rejected_Header_With_Details_Encoder: out_map(ABCS_Rejected_Header_With_Details_OutMap);
+]]></string>
+   <boolean name="IsValid" value="true"/>
+</exportmultiplex>

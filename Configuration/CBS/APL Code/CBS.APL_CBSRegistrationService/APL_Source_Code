@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="APL_Source_Code" ref_path="apl_script[Internal]/storable[apl_script]/storable[Data]">
+   <string name="Definition"><![CDATA[import ultra.ws.CBS.PRF_WS_CBSRegistrationService.cycles;
+import ultra.ws.CBS.PRF_WS_CBSRegistrationService.tns;
+import ultra.CBS.UFL_DSP_Header;
+import ultra.CBS.UFL_MBASE_Header;
+import apl.Common.APL_Common_MBASE;
+import ultra.Ultra.UFL_MBASE_CFC800730;
+import ultra.Ultra.UFL_MBASE_Reject;
+import apl.Common.APL_Common_Utilities;
+
+final int sizeOf_CFC800730 = 199;
+
+string mapping_CRATYP(string acctype){
+    string CRATYP = "";
+    if(acctype=="D"){
+        CRATYP = "CUR";
+    }else if(acctype=="S"){
+        CRATYP = "SAV";
+    }else if(acctype=="L"){
+        CRATYP = "LNS";
+    }
+    return CRATYP;
+}
+
+string mapping_CFSYID(string acctype){
+    string CFSYID = "";
+    if(acctype=="D"){
+        CFSYID = "DEP";
+    }else if(acctype=="S"){
+        CFSYID = "DEP";
+    }else if(acctype=="L"){
+        CFSYID = "LNS";
+    }
+    return CFSYID;
+}
+
+bytearray createContentMessageCFC800730_RegisterServiceWithBank(string uniqKey,WSCycle_registerServiceWithBank request){
+    //DSP Header
+    DSP_Header_TgIn dspHeader = createDefaultDSPHeader();
+    dspHeader.SKTMLEN = sizeOf_DSPHeader + sizeOf_MBaseHeader + sizeOf_CFC800730 - 9;
+    dspHeader.I13FMID = "MBASE";  
+    dspHeader.I13DID = "CIFM";
+    dspHeader.I13SID = request.param_Header.ChannelID + "##";
+    //dspHeader.I13ACQN = uniqKey;  
+    dspHeader.I13ACQN = strSubstring(uniqKey, 0, 12);  
+    dspHeader.I13TMNO = strSubstring(uniqKey, 12, 16);   
+         
+    //MBASE Header
+    MBASE_Header_TI mbaseHeader = createDefaultMBASEHeader();
+    mbaseHeader.HDTCOD = "CFC800730";
+    mbaseHeader.HDDSID = "ESB";
+    mbaseHeader.HDACCD = "A";
+    mbaseHeader.HDNREC = "1";
+    mbaseHeader.HDUSID = request.param_Header.ChannelID + "USR";
+    
+    //Request Data
+    MBASE_CFC800730_RQ_TI mbaseRequest = udrCreate(MBASE_CFC800730_RQ_TI);
+    mbaseRequest.CFCIFN = request.param_Data.CustomerNumber;
+    mbaseRequest.CFCHNL = request.param_Data.SystemID;
+    mbaseRequest.CFCARN = request.param_Data.ProxyID;
+    mbaseRequest.ACCTNO = request.param_Data.AccountNumber;
+    mbaseRequest.ACTYPE = request.param_Data.AccountType;
+    mbaseRequest.ACCREF = request.param_Data.ReferenceNumber;
+    mbaseRequest.CFATYP = mapping_CRATYP(request.param_Data.AccountType);
+    mbaseRequest.CFSYID = mapping_CFSYID(request.param_Data.AccountType);
+    mbaseRequest.CFUSTS = "1";
+    mbaseRequest.CFPROD = "00000";
+    mbaseRequest.CFPDES = "";
+    mbaseRequest.CFSREL = "P";
+    mbaseRequest.CFMAIN = "Y";
+    mbaseRequest.MNLUID = "IMBUSR";
+    mbaseRequest.MNLTIM = "";
+    
+    //Build Socket Message
+    bytearray outgoing = udrEncode("DSP_Header_Encoder", dspHeader);
+    outgoing = baAppend(outgoing, udrEncode("MBASE_Header_Encode", mbaseHeader));
+    outgoing = baAppend(outgoing, udrEncode("MBASE_CFC800730_RQ_Encode", mbaseRequest));
+    return outgoing;
+}
+
+bytearray createContentMessageCFC800730_DeRegisterServiceWithBank(string uniqKey,WSCycle_deRegisterServiceWithBank request){
+    //DSP Header
+    DSP_Header_TgIn dspHeader = createDefaultDSPHeader();
+    dspHeader.SKTMLEN = sizeOf_DSPHeader + sizeOf_MBaseHeader + sizeOf_CFC800730 - 9;
+    dspHeader.I13FMID = "MBASE";  
+    dspHeader.I13DID = "CIFM";
+    dspHeader.I13SID = request.param_Header.ChannelID + "##";
+    //dspHeader.I13ACQN = uniqKey;  
+    dspHeader.I13ACQN = strSubstring(uniqKey, 0, 12);  
+    dspHeader.I13TMNO = strSubstring(uniqKey, 12, 16);   
+         
+    //MBASE Header
+    MBASE_Header_TI mbaseHeader = createDefaultMBASEHeader();
+    mbaseHeader.HDTCOD = "CFC800730";
+    mbaseHeader.HDDSID = "ESB";
+    mbaseHeader.HDACCD = "D";
+    mbaseHeader.HDNREC = "1";
+    mbaseHeader.HDUSID = request.param_Header.ChannelID + "USR";
+    
+    //Request Data
+    MBASE_CFC800730_RQ_TI mbaseRequest = udrCreate(MBASE_CFC800730_RQ_TI);
+    mbaseRequest.CFCIFN = request.param_Data.CustomerNumber;
+    mbaseRequest.CFCHNL = request.param_Data.SystemID;
+    mbaseRequest.CFCARN = request.param_Data.ProxyID;
+    mbaseRequest.ACCTNO = request.param_Data.AccountNumber;
+    mbaseRequest.ACTYPE = request.param_Data.AccountType;
+    mbaseRequest.ACCREF = request.param_Data.ReferenceNumber;
+    mbaseRequest.CFATYP = mapping_CRATYP(request.param_Data.AccountType);
+    mbaseRequest.CFSYID = mapping_CFSYID(request.param_Data.AccountType);
+    mbaseRequest.CFUSTS = "9";
+    mbaseRequest.CFPROD = "00000";
+    mbaseRequest.CFPDES = "";
+    mbaseRequest.CFSREL = "P";
+    mbaseRequest.CFMAIN = "Y";
+    mbaseRequest.MNLUID = "IMBUSR";
+    mbaseRequest.MNLTIM = "";
+    
+    bytearray outgoing = udrEncode("DSP_Header_Encoder", dspHeader);
+    outgoing = baAppend(outgoing, udrEncode("MBASE_Header_Encode", mbaseHeader));
+    outgoing = baAppend(outgoing, udrEncode("MBASE_CFC800730_RQ_Encode", mbaseRequest));
+    return outgoing;
+}
+
+WSCycle_registerServiceWithBank responseMessage_RegisterServiceWithBank(WSCycle_registerServiceWithBank responseMessage,DSP_Header_TgIn tcpResponse,date requestDatetime,long requestMillisec,boolean errorUDR){
+    if(errorUDR==false){
+        long endTime = dateCreateNowMilliseconds();
+        list<MBASE_Header_With_Payload_TI> aList = listCreate(MBASE_Header_With_Payload_TI);
+        udrDecode("MBASE_Header_With_Payload_Decode", aList, tcpResponse.data);
+        MBASE_Header_With_Payload_TI mbase = listGet(aList,0);
+        
+        //Declare Response object
+        responseMessage.param_Header_01 = udrCreate(RegisterServiceWithBankResponse$Header);
+        
+        //Response Header
+        date responseTransactinDatetime = dateCreateCopy(responseMessage.param_Header.TransactionDateTime);
+        dateSetTimeZone(responseTransactinDatetime, "GMT+7");       
+        responseMessage.param_Header_01.ReferenceNo = responseMessage.param_Header.ReferenceNo;
+        responseMessage.param_Header_01.TransactionDateTime = responseTransactinDatetime;
+        responseMessage.param_Header_01.ChannelID = responseMessage.param_Header.ChannelID;
+        
+        //Response StatusInfo
+        responseMessage.param_Header_01.StatusInfo = udrCreate(RegisterServiceWithBankResponse$Header$StatusInfo);
+        responseMessage.param_Header_01.StatusInfo.Status = udrCreate(RegisterServiceWithBankResponse$Header$StatusInfo$Status);
+        responseMessage.param_Header_01.StatusInfo.Status.UsageTime = endTime - requestMillisec;
+        
+        if(!strStartsWith(tcpResponse.I13MSTA, ".DSP")){
+            if (mbase.mbaseHeader.HDRIND == "AA") {
+                responseMessage.param_Header_01.StatusInfo.Status.Success = true;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = mbase.mbaseHeader.HDRIND;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Success";
+            }else{
+                //Get Mbase Reject
+                list<MBASE_Reject_With_Payload_TI> aRejected = listCreate(MBASE_Reject_With_Payload_TI);
+                udrDecode("MBASE_Reject_With_Payload_Decode", aRejected, mbase.data);
+                MBASE_Reject_With_Payload_TI rejected = listGet(aRejected,0);
+                
+                responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = rejected.mbaseReject.ErrorCode;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = baToStr(rejected.errorDesc, "IBM-Thai");
+                
+                
+                
+            }
+        }else{
+                if(strStartsWith(tcpResponse.I13MSTA, ".DSP")){
+                    //Response Stattus Info
+                    string responseCodeDSP = strREReplaceAll(tcpResponse.I13MSTA, "\\.", "");
+                    responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = responseCodeDSP;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = getDSPErrorDesc(responseCodeDSP);       
+                }
+                else{
+                    //DSP Service down 
+                    responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = "CBS8999";
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Unknow data format (Invalid response from host)";     
+                }
+        }    
+    }else{
+            //Response Header
+            responseMessage.param_Header_01 = udrCreate(RegisterServiceWithBankResponse$Header);
+            date responseTransactinDatetime = dateCreateCopy(responseMessage.param_Header.TransactionDateTime);
+            dateSetTimeZone(responseTransactinDatetime, "GMT+7");       
+            responseMessage.param_Header_01.ReferenceNo = responseMessage.param_Header.ReferenceNo;
+            responseMessage.param_Header_01.TransactionDateTime = responseTransactinDatetime;
+            responseMessage.param_Header_01.ChannelID = responseMessage.param_Header.ChannelID;
+            //Response StatusInfo
+            responseMessage.param_Header_01.StatusInfo = udrCreate(RegisterServiceWithBankResponse$Header$StatusInfo);
+            responseMessage.param_Header_01.StatusInfo.Status = udrCreate(RegisterServiceWithBankResponse$Header$StatusInfo$Status);
+            responseMessage.param_Header_01.StatusInfo.Status.UsageTime = dateCreateNowMilliseconds()-requestMillisec;
+            responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+            responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = "CBS8990";
+            responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Connection to CBS lost";
+    }    
+    //list<MBASE_CFC800730_RS_TI> aList = listCreate(MBASE_CFC800730_RS_TI);
+    //debug(udrDecode("MBASE_CFC800730_RS_Decode", aList, socketMessageResponse));
+        
+    return responseMessage;
+}
+
+WSCycle_deRegisterServiceWithBank responseMessage_DeRegisterServiceWithBank(WSCycle_deRegisterServiceWithBank responseMessage,DSP_Header_TgIn tcpResponse,date requestDatetime,long requestMillisec,boolean errorUDR){
+    if(errorUDR==false){
+            long endTime = dateCreateNowMilliseconds();
+            list<MBASE_Header_With_Payload_TI> aList = listCreate(MBASE_Header_With_Payload_TI);
+            udrDecode("MBASE_Header_With_Payload_Decode", aList, tcpResponse.data);
+            MBASE_Header_With_Payload_TI mbase = listGet(aList,0);
+            
+            //Declare Response object
+            responseMessage.param_Header_01 = udrCreate(DeRegisterServiceWithBankResponse$Header);
+            
+            //Response Header
+            date responseTransactinDatetime = dateCreateCopy(responseMessage.param_Header.TransactionDateTime);
+            dateSetTimeZone(responseTransactinDatetime, "GMT+7");       
+            responseMessage.param_Header_01.ReferenceNo = responseMessage.param_Header.ReferenceNo;
+            responseMessage.param_Header_01.TransactionDateTime = responseTransactinDatetime;
+            responseMessage.param_Header_01.ChannelID = responseMessage.param_Header.ChannelID;
+            
+            //Response StatusInfo
+            responseMessage.param_Header_01.StatusInfo = udrCreate(DeRegisterServiceWithBankResponse$Header$StatusInfo);
+            responseMessage.param_Header_01.StatusInfo.Status = udrCreate(DeRegisterServiceWithBankResponse$Header$StatusInfo$Status);
+            responseMessage.param_Header_01.StatusInfo.Status.UsageTime = endTime - requestMillisec;
+            
+            if(!strStartsWith(tcpResponse.I13MSTA, ".DSP")){
+                if (mbase.mbaseHeader.HDRIND == "AA") {
+                    responseMessage.param_Header_01.StatusInfo.Status.Success = true;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = mbase.mbaseHeader.HDRIND;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Success";
+                }else{
+                    //Get Mbase Reject
+                    list<MBASE_Reject_With_Payload_TI> aRejected = listCreate(MBASE_Reject_With_Payload_TI);
+                    udrDecode("MBASE_Reject_With_Payload_Decode", aRejected, mbase.data);
+                    MBASE_Reject_With_Payload_TI rejected = listGet(aRejected,0);
+                    
+                    responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = rejected.mbaseReject.ErrorCode;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = baToStr(rejected.errorDesc, "IBM-Thai");
+                }
+            }else{
+                    if(strStartsWith(tcpResponse.I13MSTA, ".DSP")){
+                        //Response Stattus Info
+                        string responseCodeDSP = strREReplaceAll(tcpResponse.I13MSTA, "\\.", "");
+                        responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                        responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = responseCodeDSP;
+                        responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = getDSPErrorDesc(responseCodeDSP);       
+                    }
+                    else{
+                        //DSP Service down 
+                        responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                        responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = "CBS8999";
+                        responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Unknow data format (Invalid response from host)";     
+                    }
+            }
+        }else{
+            //Response Header
+            responseMessage.param_Header_01 = udrCreate(DeRegisterServiceWithBankResponse$Header);
+            date responseTransactinDatetime = dateCreateCopy(responseMessage.param_Header.TransactionDateTime);
+            dateSetTimeZone(responseTransactinDatetime, "GMT+7");       
+            responseMessage.param_Header_01.ReferenceNo = responseMessage.param_Header.ReferenceNo;
+            responseMessage.param_Header_01.TransactionDateTime = responseTransactinDatetime;
+            responseMessage.param_Header_01.ChannelID = responseMessage.param_Header.ChannelID;
+            //Response StatusInfo
+            responseMessage.param_Header_01.StatusInfo = udrCreate(DeRegisterServiceWithBankResponse$Header$StatusInfo);
+            responseMessage.param_Header_01.StatusInfo.Status = udrCreate(DeRegisterServiceWithBankResponse$Header$StatusInfo$Status);
+            responseMessage.param_Header_01.StatusInfo.Status.UsageTime = dateCreateNowMilliseconds()-requestMillisec;
+            responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+            responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = "CBS8990";
+            responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Connection to CBS lost";
+        }
+        return responseMessage;
+    }
+    
+    //Validate field for RegisterServiceWithBank/DeregisterServiceWithBank
+    boolean validateRegisterServiceWithBank(WSCycle_registerServiceWithBank request){
+        boolean isGoodParameter = true;
+        string fieldName = "";
+    
+        //check parameter    
+        //AccountNumber
+        if(isGoodParameter == true && !checkRequestParameter(request.param_Data.AccountNumber,"string")){
+            isGoodParameter = false;
+            fieldName = "AccountNumber";
+        }
+        
+        if(isGoodParameter == true && !checkRequestParameter(request.param_Data.AccountType,"string")){
+            isGoodParameter = false;
+            fieldName = "AccountType";
+        }
+        
+        if(isGoodParameter == true && !checkRequestParameter(request.param_Data.ReferenceNumber,"string")){
+            isGoodParameter = false;
+            fieldName = "ReferenceNumber";
+        }
+        
+        if(isGoodParameter == true && !checkRequestParameter(request.param_Data.LastMaintenanceUserID,"string")){
+            isGoodParameter = false;
+            fieldName = "LastMaintenanceUserID";
+        }
+        
+        if(!isGoodParameter){
+            //Rejected
+            
+            //Response Header
+            request.param_Header_01 = udrCreate(RegisterServiceWithBankResponse$Header);
+            date responseTransactinDatetime = dateCreateCopy(request.param_Header.TransactionDateTime);
+            dateSetTimeZone(responseTransactinDatetime, "GMT+7");       
+            request.param_Header_01.ReferenceNo = request.param_Header.ReferenceNo;
+            request.param_Header_01.TransactionDateTime = responseTransactinDatetime;
+            request.param_Header_01.ChannelID = request.param_Header.ChannelID;
+            
+            //Response StatusInfo
+            request.param_Header_01.StatusInfo = udrCreate(RegisterServiceWithBankResponse$Header$StatusInfo);
+            request.param_Header_01.StatusInfo.Status = udrCreate(RegisterServiceWithBankResponse$Header$StatusInfo$Status);
+            request.param_Header_01.StatusInfo.Status.UsageTime = 0;
+            
+            request.param_Header_01.StatusInfo.Status.Success = false;
+            request.param_Header_01.StatusInfo.Status.ResponseCode = "ESB0001";
+            request.param_Header_01.StatusInfo.Status.ResponseMessage = "Field input required [" + fieldName + "]";
+            
+        }
+        
+        return isGoodParameter;        
+        
+    }
+    
+    boolean validateDeRegisterServiceWithBank(WSCycle_deRegisterServiceWithBank request){
+        boolean isGoodParameter = true;
+        string fieldName = "";
+    
+        //check parameter    
+        //AccountNumber
+        if(isGoodParameter == true && !checkRequestParameter(request.param_Data.AccountNumber,"string")){
+            isGoodParameter = false;
+            fieldName = "AccountNumber";
+        }
+        
+        if(isGoodParameter == true && !checkRequestParameter(request.param_Data.AccountType,"string")){
+            isGoodParameter = false;
+            fieldName = "AccountType";
+        }
+        
+        if(isGoodParameter == true && !checkRequestParameter(request.param_Data.ReferenceNumber,"string")){
+            isGoodParameter = false;
+            fieldName = "ReferenceNumber";
+        }
+        
+        if(isGoodParameter == true && !checkRequestParameter(request.param_Data.LastMaintenanceUserID,"string")){
+            isGoodParameter = false;
+            fieldName = "LastMaintenanceUserID";
+        }
+        
+        if(!isGoodParameter){
+            //Rejected
+            
+            //Response Header
+            request.param_Header_01 = udrCreate(DeRegisterServiceWithBankResponse$Header);
+            date responseTransactinDatetime = dateCreateCopy(request.param_Header.TransactionDateTime);
+            dateSetTimeZone(responseTransactinDatetime, "GMT+7");       
+            request.param_Header_01.ReferenceNo = request.param_Header.ReferenceNo;
+            request.param_Header_01.TransactionDateTime = responseTransactinDatetime;
+            request.param_Header_01.ChannelID = request.param_Header.ChannelID;
+            
+            //Response StatusInfo
+            request.param_Header_01.StatusInfo = udrCreate(DeRegisterServiceWithBankResponse$Header$StatusInfo);
+            request.param_Header_01.StatusInfo.Status = udrCreate(DeRegisterServiceWithBankResponse$Header$StatusInfo$Status);
+            request.param_Header_01.StatusInfo.Status.UsageTime = 0;
+            
+            request.param_Header_01.StatusInfo.Status.Success = false;
+            request.param_Header_01.StatusInfo.Status.ResponseCode = "ESB0001";
+            request.param_Header_01.StatusInfo.Status.ResponseMessage = "Field input required [" + fieldName + "]";  
+            
+        }
+    
+    return isGoodParameter;        
+    
+}
+//End validate]]></string>
+</exportmultiplex>

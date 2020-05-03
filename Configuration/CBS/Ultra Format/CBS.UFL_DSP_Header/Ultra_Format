@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Ultra_Format" ref_path="ultra_format[Internal]/storable[ultra_format]/storable[Data]">
+   <string name="Definition"><![CDATA[external DSP_Header: dynamic_size (SKTMLEN + 9) {
+    ascii SKTMLEN       : int(base10), character_encoding("cp838"), static_size(9), align(right), padded_with(0xf0);
+    ascii SKTHEAD       : character_encoding("cp838"), static_size(5), align(left), padded_with(0x40);
+    ascii SKTDEVN       : character_encoding("cp838"), static_size(15), align(left), padded_with(0x40);
+    ascii SKTSKNB       : character_encoding("cp838"), static_size(9), align(right), padded_with(0xf0);
+    ascii SKTPORT       : character_encoding("cp838"), static_size(5), align(right), padded_with(0xf0);
+    ascii SKTFILL       : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+    ascii I13HLEN       : character_encoding("cp838"), static_size(4), align(right), padded_with(0xf0);
+    ascii I13MLEN       : character_encoding("cp838"), static_size(6), align(right), padded_with(0xf0);
+    ascii I13VERS       : character_encoding("cp838"), static_size(4), align(right), padded_with(0xf0);
+    ascii I13HFMID      : character_encoding("cp838"), static_size(4), align(left), padded_with(0x40);
+    ascii I13FMID       : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+    ascii I13SID        : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+    ascii I13DID        : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+    ascii I13RTGN       : character_encoding("cp838"), static_size(6), align(left), padded_with(0x40);
+    ascii I13MSTA       : character_encoding("cp838"), static_size(8), align(left), padded_with(0x40);
+    ascii I13BIN        : character_encoding("cp838"), static_size(11), align(right), padded_with(0xf0);
+    ascii I13NODE       : character_encoding("cp838"), static_size(2), align(right), padded_with(0xf0);
+    ascii I13XID        : character_encoding("cp838"), static_size(20), align(left), padded_with(0x40);
+    ascii I13SSNO       : character_encoding("cp838"), static_size(16), align(left), padded_with(0x40);
+    ascii I13TRCD       : character_encoding("cp838"), static_size(4), align(left), padded_with(0xf0);
+    ascii I13RRNO       : character_encoding("cp838"), static_size(22), align(left), padded_with(0x40);
+    ascii I13ACQN       : character_encoding("cp838"), static_size(12), align(left), padded_with(0x40);
+    //ascii I13TMNO       : character_encoding("cp838"), static_size(4), align(right), padded_with(0xf0); //numeric
+    ascii I13TMNO       : character_encoding("cp838"), static_size(4); //string
+    ascii I13NREC       : character_encoding("cp838"), static_size(4), align(right), padded_with(0xf0);
+    ascii I13NERR       : character_encoding("cp838"), static_size(4), align(right), padded_with(0xf0);
+    ascii I13USER       : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+    ascii I13TMID       : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40); //Terminal ID
+    ascii I13SUPV       : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+    ascii I13MORE       : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+    ascii I13CUTO       : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+    ascii I13UDTA       : character_encoding("cp838"), static_size(20), align(left), padded_with(0x40);
+    ascii I13SDTA       : character_encoding("cp838"), static_size(36), align(left), padded_with(0x40);
+    ascii I13TTYP       : character_encoding("cp838"), static_size(2), align(left), padded_with(0x40);
+    ascii I13RCNF       : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+    ascii I13RCNM       : character_encoding("cp838"), static_size(16), align(left), padded_with(0x40);
+    bytearray data      : dynamic_size(remaining_size);
+};
+
+in_map DSP_Header_InMap: external (DSP_Header), target_internal(DSP_Header_TgIn) {automatic;};
+out_map DSP_Header_OutMap: external (DSP_Header), internal(DSP_Header_TgIn) {automatic;};
+decoder DSP_Header_Decoder: in_map(DSP_Header_InMap);
+encoder DSP_Header_Encoder: out_map(DSP_Header_OutMap);
+]]></string>
+   <boolean name="IsValid" value="true"/>
+</exportmultiplex>

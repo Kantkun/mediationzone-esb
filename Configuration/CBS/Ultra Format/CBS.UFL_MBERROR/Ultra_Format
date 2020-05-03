@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Ultra_Format" ref_path="ultra_format[Internal]/storable[ultra_format]/storable[Data]">
+   <string name="Definition"><![CDATA[external MBASE_MBERROR_RQ{
+    ascii ERCODE_ErrorCode : static_size(7),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii ERTYPE_ErrorIndicator : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii ERSEVE_ErrorSeverity : static_size(2),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii ERFLDN_ErrorField : static_size(10),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii EROVRB_OverideBitPosition : static_size(3),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii ERDESC_ErrorDescription : static_size(150),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii EREXTN_ExtendedData : static_size(83),character_encoding("cp838"),padded_with(0x40),align(right);
+};
+
+//Input Encoder
+in_map MBASE_MBERROR_RQ_InMap : external(MBASE_MBERROR_RQ), target_internal(MBASE_MBERROR_RQ_TI){automatic;};
+out_map MBASE_MBERROR_RQ_OutMap : external(MBASE_MBERROR_RQ), internal(MBASE_MBERROR_RQ_TI){automatic;};
+encoder MBASE_MBERROR_RQ_Encode : out_map(MBASE_MBERROR_RQ_OutMap); ]]></string>
+   <boolean name="IsValid" value="true"/>
+</exportmultiplex>

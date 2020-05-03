@@ -1,0 +1,489 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE webservices_profile SYSTEM "jar:/mz/dtd/webservices_profile.dtd">
+<webservices_profile category="Internal">
+   <storable name="webservices_profile" storable-id="dr.Configuration" ver="6.0">
+      <array classname="java.lang.String" name="Access Groups -read -write -execute" size="3">
+         <string name="0" value="All"/>
+         <string name="1" value="Administrator"/>
+         <string name="2" value="All"/>
+      </array>
+      <storable name="Auxiliary Data" null="true"/>
+      <string name="Current Comment" null="true"/>
+      <storable name="Data" storable-id="dr.WSProfileConfig" ver="15.0">
+         <string name="Binding name" value="CcmsServiceServiceSoapBinding"/>
+         <boolean name="Disable Underscore Binding Mode" value="false"/>
+         <boolean name="Disable Wrapper Style" value="false"/>
+         <boolean name="Enable JAAS" value="false"/>
+         <boolean name="Enable Username Token" value="false"/>
+         <boolean name="Enable WS Addressing" value="false"/>
+         <boolean name="Enforce RM" value="false"/>
+         <string name="JAAS Module" value="File Login Module"/>
+         <string name="JAAS Properties"><![CDATA[passwordFile /etc/passwd
+debug true
+]]></string>
+         <string name="Max Enum Members" value="256"/>
+         <boolean name="Populate OriginalData Field" value="false"/>
+         <string name="Port type" value="CcmsService"/>
+         <boolean name="Process Implicit SOAP Headers" value="false"/>
+         <string name="RM Store" value="In Memory"/>
+         <string name="Schema Bindings" value=""/>
+         <boolean name="Security Enabled" value="false"/>
+         <storable name="Security Settings" storable-id="dr.SecuritySettings" ver="2.0">
+            <boolean name="ENABLE_WS_SECURITY_ENCRYPTION" value="false"/>
+            <boolean name="ENABLE_WS_SECURITY_SIGNING" value="false"/>
+            <boolean name="ENABLE_WS_SECURITY_TIMESTAMP" value="false"/>
+            <password name="KEY_PASSWORD" value="DR_DEFAULT_KEY-017BB0B8FB061C1876D43DD75468AA40"/>
+            <string name="KEY_STORE_ALIAS" value=""/>
+            <bytearray name="KEY_STORE_CONTENT"><![CDATA[
+`
+]]></bytearray>
+            <string name="KEY_STORE_FILE" value=""/>
+            <password name="KEY_STORE_PWD" value="DR_DEFAULT_KEY-017BB0B8FB061C1876D43DD75468AA40"/>
+         </storable>
+         <string name="Service Port name" value="CcmsServicePort"/>
+         <boolean name="Simple Mode Enabled" value="false"/>
+         <string name="TLS keystore file" value="ghbccmspr01.it.ghbank.co.th.crt"/>
+         <bytearray name="TLS keystore file content"><![CDATA[
+M+2TM+2U"14=)3B!#15)4249)0T%412TM+2TM"DU)241E5$-#06U'9T%W24)!
+M9TE*04Q5<S539W%E>D=B34$P1T-3<4=326(S1%%%0D-W54%-1DUX0WI!2D)G
+M3E8*0D%95$%L4DE-4D%W1&=91%9144E$061#454U2%,P.4Q-47=W0V=91%91
+M44M$04Y(4T5)>$I$06E"9TY60D%-30I',F1O66U.:F)83G=C:D%X3&UL,$QM
+M9&]9;49U87DU:F)Y-3!A1$%E1G<P>$YZ03%->D%W3GI5-4UJ0F%&=S!Y"DYZ
+M03%-:F=W3GI5-4UJ0F%-1DUX0WI!2D)G3E9"05E406Q224U207=$9UE$5E%1
+M241!9$-1535(4S`Y3$U1=W<*0V=91%9144M$04Y(4T5)>$I$06E"9TY60D%-
+M34<R9&]9;4YJ8EA.=V-J07A,;6PP3&UD;UEM1G5A>35J8GDU,`IA1$-#05-)
+M=T1164I+;UI):'9C3D%114)"44%$9V=%4$%$0T-!46]#9V=%0D%.>G!7<68R
+M2%1T>C9);7)%,6-*"D(Y36%U;W)R1&]:2T0R07EV6'18;T)E=G5%2BMD3W)X
+M4FLK2%9U<VQ9>'1O6E8V9W-18T=7,E)H:VAE3DA&:R\*1&9N:U=S<#A-<&EF
+M5TUD8D9"04U/1D=L1#-H*U=9:FUY<F)&<55Q,E!);3%86F9K=W$K6%9W*S9N
+M>D=Y3TU$2@IO1$4V;VU6.7-2>3DY-4$Y:6Y21%)(650S0W9P2VPX*U):.&=T
+M>5)03G1.<7%0349C0D=-=4)L,S(Q.4-Z6$%C"C,V0G)#:71,9G)K<'5),F%1
+M.$A6,BM,2TAQ-UE-5WA*=BMG56MR<E1U-DTS5D5':'EV.'IO.%<P-'DS9SEP
+M=4H*3&YL2$MF3'ET*VEP6$YB>FU,4E8W2FI+5C%T-DAW65I$,UAW+S=&5G-C
+M.5-F875854MG-39Y;%)";4E/.$E$9`I.=D5#07=%04%A3E%-131W2%%91%92
+M,$]"0EE%1DED:DEE2F]C44M6>'AR<C%854LS654R8SAJ=DU".$=!,55D"DEW
+M45E-0F%!1DED:DEE2F]C44M6>'AR<C%854LS654R8SAJ=DU!=T=!,55D17=1
+M1DU!34)!9CAW1%%92DMO6DD*:'9C3D%114Q"44%$9V=%0D%"8V).0BM(2C@T
+M>5I25UA#8S5D2V5*:$A,8FIR4C!,<%DO9%=$,DQ(56%1=6YH4@HK64(O46U.
+M;&%C3G%-3$EY0W9%2E9%*W%G1'E0>F%6=6-8-6AA0VAH<V-)=VQ7;E5312MQ
+M,S9P-UE:26(S;W`U"FQK0T)D.6$W*TMP+T]C2WA+-$90;$0P>$1::$I.+W5I
+M5U1L.3`K9"](4V,K9U,W2E(V;V])9V)D9E,S<TYJ=G`*5T%A0U)Z3&9Z<W=%
+M1W$P57%K*U0T=$-(.$MF-$9%,"]W>7)E:7IF>E)G1V%B:D=++V$W3&M.=T=!
+M1#)D15<U:@I!+VEA.2]7<'1C065N=D,W94]/5DE&135,17-D>E@S,&=A9S9H
+M<U1R-RME3D9"<6LP5U9C9C5$85)O4W5,8TE1"E1A;E=Y:W)U1DQP;4AY+W!O
+M,DI8>C`V:$]89GAL5DE64V$U6F$Q9ST*+2TM+2U%3D0@0T525$E&24-!5$4M
+%+2TM+0H`
+`
+]]></bytearray>
+         <password name="TLS keystore password" value="DR_DEFAULT_KEY-18E0FBDD6B4A6EB03B2107E59D5BD4815AA201EE374C2529BABD9820CBBD677A3977EBE5A12FB407E1F4EC21A94A3DCA70B740DECE0F307F79CE51A3CE9D593C017BB0B8FB061C1876D43DD75468AA40"/>
+         <password name="Username Token Password" value="DR_DEFAULT_KEY-017BB0B8FB061C1876D43DD75468AA40"/>
+         <string name="Username Token Username" value=""/>
+         <list classname="java.util.LinkedList" name="concatenationFilePathList"/>
+         <string name="helper_class" value="ws.CCMS.PRF_WS_CCMSService.WSHelperImpl"/>
+         <list classname="java.util.LinkedList" name="includeFiles"/>
+         <string name="inputAndOutputTypeName"><![CDATA[ws.CCMS.PRF_WS_CCMSService.udr.AbstractCcmsServiceWSCycle]]></string>
+         <string name="properties"><![CDATA[# Advanced XML binding options can be customized here. If the properties are commented out, default values are used.
+
+#Enable JAXB Simple Binding Mode
+# When true, XSD Schemas of loaded WSDL files are compiled into Java code using the experimental "Simple and better binding mode". This is necessary for some complex types, for instance when duplicate element names are used within the same complex type.
+enable_JAXB_simple_binding false
+
+#Disable JAXWS Wrapper style Mode
+# When true, the cycle UDR will contain request and response parameters that wrap all the arguments in request and response UDRs.
+disable_JAXWS_wrapper_mode false
+
+#Enable Processing Of Implicit Soap Header
+# When true, any SOAP headers defined in the binding section of WSDL files are compiled into Java code. This is necessary in order to manipulate the SOAP headers in outgoing Web Service requests. 
+enable_processing_of_implicit_SOAP_header false
+
+#Disable Underscore Binding Mode
+# When false, underscore binding mode is true, JAXB will not strip underscore from the element names when converting a WSDL file to Java.
+disable_under_score_binding false
+
+#Populate originaldata field
+# When true the OriginalData field in the WSCycleUDR will be populated with the content of the SOAP request
+populate_originaldata_field false
+
+#Max enum members
+# Sets the value for the typesafeEnumMaxMembers jaxb global variable which controls the maximum number of allowed enum members
+max_enum_members 256
+
+#Schema level bindings
+# Sets the jaxb schema level bindings per xsd file. The format is [filename.xsd]:package=[packageSuffix],[transformationType]-prefix=prefix,suffix=suffix;
+schema_level_bindings 
+
+#Enable fault stack trace in response
+# When true stack trace information will be available in error responses
+fault_stack_trace_enabled false
+
+#Allow HEAD
+# When true HTTP method HEAD is allowed
+allow_head false
+
+]]></string>
+         <boolean name="singleWSDLFile" value="true"/>
+         <string name="transport" value="HTTP"/>
+         <map classname="java.util.HashMap" name="typeNamespaceToPrefixMap" size="1">
+            <string name="key_0" value="http://ccmsservice.ws.ccms.isc.com/"/>
+            <string name="value_0" value="tns"/>
+         </map>
+         <string name="unique_name" value="com.digitalroute.ws.ws1520508570039"/>
+         <string name="wsdlFileContent" quoted="true"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>\u000d
+<wsdl:definitions name="CcmsServiceService" targetNamespace="http://ccmsservice.ws.ccms.isc.com/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://ccmsservice.ws.ccms.isc.com/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">\u000d
+  <wsdl:types>\u000d
+<xs:schema xmlns:tns="http://ccmsservice.ws.ccms.isc.com/" xmlns:xs="http://www.w3.org/2001/XMLSchema" attributeFormDefault="unqualified" elementFormDefault="unqualified" targetNamespace="http://ccmsservice.ws.ccms.isc.com/">
+  <xs:complexType name="inquiryStockCardReq">
+    <xs:sequence>
+      <xs:element name="RequesterSystem" type="xs:string"/>
+      <xs:element name="RequestReferenceNo" type="xs:string"/>
+      <xs:element name="OriginalRequesterSystem" type="xs:string"/>
+      <xs:element name="TransactionDateTime" type="xs:dateTime"/>
+      <xs:element name="TeamCode" type="xs:string"/>
+      <xs:element name="UserId" type="xs:string"/>
+      <xs:element minOccurs="0" name="CardNo" type="xs:string"/>
+      <xs:element minOccurs="0" name="CardReferenceNo" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="inquiryStockCardRes">
+    <xs:sequence>
+      <xs:element name="RequesterSystem" type="xs:string"/>
+      <xs:element name="RequestReferenceNo" type="xs:string"/>
+      <xs:element name="OriginalRequesterSystem" type="xs:string"/>
+      <xs:element name="TransactionDateTime" type="xs:dateTime"/>
+      <xs:element name="TeamCode" type="xs:string"/>
+      <xs:element name="UserId" type="xs:string"/>
+      <xs:element name="CcmsReferenceNumber" type="xs:string"/>
+      <xs:element name="ResponseCode" type="xs:string"/>
+      <xs:element name="ResponseDesc" type="xs:string"/>
+      <xs:element minOccurs="0" name="CardNo" type="xs:string"/>
+      <xs:element name="CardReferenceNo" type="xs:string"/>
+      <xs:element minOccurs="0" name="TellerBranch" type="xs:string"/>
+      <xs:element name="CardType" type="xs:string"/>
+      <xs:element name="PinMailerRefNo" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="replaceCardReq">
+    <xs:sequence>
+      <xs:element name="RequesterSystem" type="xs:string"/>
+      <xs:element name="RequestReferenceNo" type="xs:string"/>
+      <xs:element name="OriginalRequesterSystem" type="xs:string"/>
+      <xs:element name="TransactionDateTime" type="xs:dateTime"/>
+      <xs:element name="TeamCode" type="xs:string"/>
+      <xs:element name="UserId" type="xs:string"/>
+      <xs:element minOccurs="0" name="CardNo" type="xs:string"/>
+      <xs:element minOccurs="0" name="CardReferenceNo" type="xs:string"/>
+      <xs:element minOccurs="0" name="NewCardNo" type="xs:string"/>
+      <xs:element minOccurs="0" name="NewCardReferenceNo" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="replaceCardRes">
+    <xs:sequence>
+      <xs:element name="RequesterSystem" type="xs:string"/>
+      <xs:element name="RequestReferenceNo" type="xs:string"/>
+      <xs:element name="OriginalRequesterSystem" type="xs:string"/>
+      <xs:element name="TransactionDateTime" type="xs:dateTime"/>
+      <xs:element name="TeamCode" type="xs:string"/>
+      <xs:element name="UserId" type="xs:string"/>
+      <xs:element name="CcmsReferenceNumber" type="xs:string"/>
+      <xs:element name="ResponseCode" type="xs:string"/>
+      <xs:element name="ResponseDesc" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="inquiryCardReq">
+    <xs:sequence>
+      <xs:element name="RequesterSystem" type="xs:string"/>
+      <xs:element name="RequestReferenceNo" type="xs:string"/>
+      <xs:element name="OriginalRequesterSystem" type="xs:string"/>
+      <xs:element name="TransactionDateTime" type="xs:dateTime"/>
+      <xs:element name="TeamCode" type="xs:string"/>
+      <xs:element name="UserId" type="xs:string"/>
+      <xs:element minOccurs="0" name="CardNo" type="xs:string"/>
+      <xs:element minOccurs="0" name="CardReferenceNo" type="xs:string"/>
+      <xs:element minOccurs="0" name="AcctNo" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="inquiryCardRes">
+    <xs:sequence>
+      <xs:element name="RequesterSystem" type="xs:string"/>
+      <xs:element name="RequestReferenceNo" type="xs:string"/>
+      <xs:element name="OriginalRequesterSystem" type="xs:string"/>
+      <xs:element name="TransactionDateTime" type="xs:dateTime"/>
+      <xs:element name="TeamCode" type="xs:string"/>
+      <xs:element name="UserId" type="xs:string"/>
+      <xs:element name="CcmsReferenceNumber" type="xs:string"/>
+      <xs:element name="ResponseCode" type="xs:string"/>
+      <xs:element name="ResponseDesc" type="xs:string"/>
+      <xs:element minOccurs="0" name="CardNo" type="xs:string"/>
+      <xs:element minOccurs="0" name="CardReferenceNo" type="xs:string"/>
+      <xs:element minOccurs="0" name="PinMailerRefNo" type="xs:string"/>
+      <xs:element name="CustomerNo" type="xs:string"/>
+      <xs:element name="TitleNameTh" type="xs:string"/>
+      <xs:element name="NameTh" type="xs:string"/>
+      <xs:element minOccurs="0" name="DateOfBirth" type="xs:string"/>
+      <xs:element name="CifNo" type="xs:string"/>
+      <xs:element name="CifTypeCode" type="xs:string"/>
+      <xs:element minOccurs="0" name="IdIssueCountryCode" type="xs:string"/>
+      <xs:element name="OriginalFeeDate" type="xs:string"/>
+      <xs:element name="IssueBranch" type="xs:string"/>
+      <xs:element name="CardStatusCode" type="xs:string"/>
+      <xs:element name="LastUsedDate" type="xs:string"/>
+      <xs:element name="NoOfBadPinTries" type="xs:string"/>
+      <xs:element name="ExtensionBadPinFlag" type="xs:string"/>
+      <xs:element name="CardCreatedDate" type="xs:string"/>
+      <xs:element name="CardIssueDate" type="xs:string"/>
+      <xs:element name="CardUpdatedDate" type="xs:string"/>
+      <xs:element name="NumberOfAccount" type="xs:string"/>
+      <xs:element name="AccountList">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="accountList" nillable="true" type="tns:account"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="account">
+    <xs:sequence>
+      <xs:element name="AcctNo" type="xs:string"/>
+      <xs:element name="AcctTypeCode" type="xs:string"/>
+      <xs:element name="AcctBranchCode" type="xs:string"/>
+      <xs:element name="AcctCategoryCode" type="xs:string"/>
+      <xs:element name="AccountAction" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="updateRelatedAccountsReq">
+    <xs:sequence>
+      <xs:element name="RequesterSystem" type="xs:string"/>
+      <xs:element name="RequestReferenceNo" type="xs:string"/>
+      <xs:element name="OriginalRequesterSystem" type="xs:string"/>
+      <xs:element name="TransactionDateTime" type="xs:dateTime"/>
+      <xs:element name="TeamCode" type="xs:string"/>
+      <xs:element name="UserId" type="xs:string"/>
+      <xs:element minOccurs="0" name="CardNo" type="xs:string"/>
+      <xs:element minOccurs="0" name="CardReferenceNo" type="xs:string"/>
+      <xs:element name="NumberOfAccount" type="xs:string"/>
+      <xs:element name="AccountList">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="accountList" nillable="true" type="tns:account"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="updateRelatedAccountsRes">
+    <xs:sequence>
+      <xs:element name="RequesterSystem" type="xs:string"/>
+      <xs:element name="RequestReferenceNo" type="xs:string"/>
+      <xs:element name="OriginalRequesterSystem" type="xs:string"/>
+      <xs:element name="TransactionDateTime" type="xs:dateTime"/>
+      <xs:element name="TeamCode" type="xs:string"/>
+      <xs:element name="UserId" type="xs:string"/>
+      <xs:element name="CcmsReferenceNumber" type="xs:string"/>
+      <xs:element name="ResponseCode" type="xs:string"/>
+      <xs:element name="ResponseDesc" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="addInstantCardReq">
+    <xs:sequence>
+      <xs:element name="RequesterSystem" type="xs:string"/>
+      <xs:element name="RequestReferenceNo" type="xs:string"/>
+      <xs:element name="OriginalRequesterSystem" type="xs:string"/>
+      <xs:element name="TransactionDateTime" type="xs:dateTime"/>
+      <xs:element name="TeamCode" type="xs:string"/>
+      <xs:element name="UserId" type="xs:string"/>
+      <xs:element minOccurs="0" name="CardNo" type="xs:string"/>
+      <xs:element minOccurs="0" name="CardReferenceNo" type="xs:string"/>
+      <xs:element name="PinMailerRefNo" type="xs:string"/>
+      <xs:element name="CustomerNo" type="xs:string"/>
+      <xs:element name="TitleNameTh" type="xs:string"/>
+      <xs:element name="NameTh" type="xs:string"/>
+      <xs:element name="TitleNameEn" type="xs:string"/>
+      <xs:element name="NameEn" type="xs:string"/>
+      <xs:element name="DateOfBirth" type="xs:string"/>
+      <xs:element name="CifNo" type="xs:string"/>
+      <xs:element name="CifTypeCode" type="xs:string"/>
+      <xs:element name="CustomerTypeCode" type="xs:string"/>
+      <xs:element name="IdIssueCountryCode" type="xs:string"/>
+      <xs:element name="CardStatusCode" type="xs:string"/>
+      <xs:element name="NumberOfAccount" type="xs:string"/>
+      <xs:element name="AccountList">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element maxOccurs="unbounded" minOccurs="0" name="accountList" nillable="true" type="tns:account"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="addInstantCardRes">
+    <xs:sequence>
+      <xs:element name="RequesterSystem" type="xs:string"/>
+      <xs:element name="RequestReferenceNo" type="xs:string"/>
+      <xs:element name="OriginalRequesterSystem" type="xs:string"/>
+      <xs:element name="TransactionDateTime" type="xs:dateTime"/>
+      <xs:element name="TeamCode" type="xs:string"/>
+      <xs:element name="UserId" type="xs:string"/>
+      <xs:element name="CcmsReferenceNumber" type="xs:string"/>
+      <xs:element name="ResponseCode" type="xs:string"/>
+      <xs:element name="ResponseDesc" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="inquiryStockCardRequest" nillable="true" type="tns:inquiryStockCardReq"/>
+  <xs:element name="inquiryStockCardResponse" nillable="true" type="tns:inquiryStockCardRes"/>
+  <xs:element name="ReplaceCardRequest" nillable="true" type="tns:replaceCardReq"/>
+  <xs:element name="replaceCardResponse" nillable="true" type="tns:replaceCardRes"/>
+  <xs:element name="InquiryCardRequest" nillable="true" type="tns:inquiryCardReq"/>
+  <xs:element name="inquiryCardResponse" nillable="true" type="tns:inquiryCardRes"/>
+  <xs:element name="updateRelatedAccounts" nillable="true" type="tns:updateRelatedAccountsReq"/>
+  <xs:element name="updateRelatedAccountsResponse" nillable="true" type="tns:updateRelatedAccountsRes"/>
+  <xs:element name="AddInstantCardRequest" nillable="true" type="tns:addInstantCardReq"/>
+  <xs:element name="addInstantCardResponse" nillable="true" type="tns:addInstantCardRes"/>
+</xs:schema>
+  </wsdl:types>\u000d
+  <wsdl:message name="replaceCard">\u000d
+    <wsdl:part name="req" element="tns:ReplaceCardRequest">\u000d
+    </wsdl:part>\u000d
+  </wsdl:message>\u000d
+  <wsdl:message name="inquiryCard">\u000d
+    <wsdl:part name="req" element="tns:InquiryCardRequest">\u000d
+    </wsdl:part>\u000d
+  </wsdl:message>\u000d
+  <wsdl:message name="replaceCardResponse">\u000d
+    <wsdl:part name="replaceCardResponse" element="tns:replaceCardResponse">\u000d
+    </wsdl:part>\u000d
+  </wsdl:message>\u000d
+  <wsdl:message name="addInstantCard">\u000d
+    <wsdl:part name="req" element="tns:AddInstantCardRequest">\u000d
+    </wsdl:part>\u000d
+  </wsdl:message>\u000d
+  <wsdl:message name="updateRelatedAccountsResponse">\u000d
+    <wsdl:part name="updateRelatedAccountsResponse" element="tns:updateRelatedAccountsResponse">\u000d
+    </wsdl:part>\u000d
+  </wsdl:message>\u000d
+  <wsdl:message name="inquiryStockCard">\u000d
+    <wsdl:part name="req" element="tns:inquiryStockCardRequest">\u000d
+    </wsdl:part>\u000d
+  </wsdl:message>\u000d
+  <wsdl:message name="inquiryCardResponse">\u000d
+    <wsdl:part name="inquiryCardResponse" element="tns:inquiryCardResponse">\u000d
+    </wsdl:part>\u000d
+  </wsdl:message>\u000d
+  <wsdl:message name="inquiryStockCardResponse">\u000d
+    <wsdl:part name="inquiryStockCardResponse" element="tns:inquiryStockCardResponse">\u000d
+    </wsdl:part>\u000d
+  </wsdl:message>\u000d
+  <wsdl:message name="updateRelatedAccounts">\u000d
+    <wsdl:part name="req" element="tns:updateRelatedAccounts">\u000d
+    </wsdl:part>\u000d
+  </wsdl:message>\u000d
+  <wsdl:message name="addInstantCardResponse">\u000d
+    <wsdl:part name="addInstantCardResponse" element="tns:addInstantCardResponse">\u000d
+    </wsdl:part>\u000d
+  </wsdl:message>\u000d
+  <wsdl:portType name="CcmsService">\u000d
+    <wsdl:operation name="inquiryStockCard">\u000d
+      <wsdl:input name="inquiryStockCard" message="tns:inquiryStockCard">\u000d
+    </wsdl:input>\u000d
+      <wsdl:output name="inquiryStockCardResponse" message="tns:inquiryStockCardResponse">\u000d
+    </wsdl:output>\u000d
+    </wsdl:operation>\u000d
+    <wsdl:operation name="replaceCard">\u000d
+      <wsdl:input name="replaceCard" message="tns:replaceCard">\u000d
+    </wsdl:input>\u000d
+      <wsdl:output name="replaceCardResponse" message="tns:replaceCardResponse">\u000d
+    </wsdl:output>\u000d
+    </wsdl:operation>\u000d
+    <wsdl:operation name="inquiryCard">\u000d
+      <wsdl:input name="inquiryCard" message="tns:inquiryCard">\u000d
+    </wsdl:input>\u000d
+      <wsdl:output name="inquiryCardResponse" message="tns:inquiryCardResponse">\u000d
+    </wsdl:output>\u000d
+    </wsdl:operation>\u000d
+    <wsdl:operation name="updateRelatedAccounts">\u000d
+      <wsdl:input name="updateRelatedAccounts" message="tns:updateRelatedAccounts">\u000d
+    </wsdl:input>\u000d
+      <wsdl:output name="updateRelatedAccountsResponse" message="tns:updateRelatedAccountsResponse">\u000d
+    </wsdl:output>\u000d
+    </wsdl:operation>\u000d
+    <wsdl:operation name="addInstantCard">\u000d
+      <wsdl:input name="addInstantCard" message="tns:addInstantCard">\u000d
+    </wsdl:input>\u000d
+      <wsdl:output name="addInstantCardResponse" message="tns:addInstantCardResponse">\u000d
+    </wsdl:output>\u000d
+    </wsdl:operation>\u000d
+  </wsdl:portType>\u000d
+  <wsdl:binding name="CcmsServiceServiceSoapBinding" type="tns:CcmsService">\u000d
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>\u000d
+    <wsdl:operation name="inquiryStockCard">\u000d
+      <soap:operation soapAction="" style="document"/>\u000d
+      <wsdl:input name="inquiryStockCard">\u000d
+        <soap:body use="literal"/>\u000d
+      </wsdl:input>\u000d
+      <wsdl:output name="inquiryStockCardResponse">\u000d
+        <soap:body use="literal"/>\u000d
+      </wsdl:output>\u000d
+    </wsdl:operation>\u000d
+    <wsdl:operation name="replaceCard">\u000d
+      <soap:operation soapAction="" style="document"/>\u000d
+      <wsdl:input name="replaceCard">\u000d
+        <soap:body use="literal"/>\u000d
+      </wsdl:input>\u000d
+      <wsdl:output name="replaceCardResponse">\u000d
+        <soap:body use="literal"/>\u000d
+      </wsdl:output>\u000d
+    </wsdl:operation>\u000d
+    <wsdl:operation name="inquiryCard">\u000d
+      <soap:operation soapAction="" style="document"/>\u000d
+      <wsdl:input name="inquiryCard">\u000d
+        <soap:body use="literal"/>\u000d
+      </wsdl:input>\u000d
+      <wsdl:output name="inquiryCardResponse">\u000d
+        <soap:body use="literal"/>\u000d
+      </wsdl:output>\u000d
+    </wsdl:operation>\u000d
+    <wsdl:operation name="updateRelatedAccounts">\u000d
+      <soap:operation soapAction="" style="document"/>\u000d
+      <wsdl:input name="updateRelatedAccounts">\u000d
+        <soap:body use="literal"/>\u000d
+      </wsdl:input>\u000d
+      <wsdl:output name="updateRelatedAccountsResponse">\u000d
+        <soap:body use="literal"/>\u000d
+      </wsdl:output>\u000d
+    </wsdl:operation>\u000d
+    <wsdl:operation name="addInstantCard">\u000d
+      <soap:operation soapAction="" style="document"/>\u000d
+      <wsdl:input name="addInstantCard">\u000d
+        <soap:body use="literal"/>\u000d
+      </wsdl:input>\u000d
+      <wsdl:output name="addInstantCardResponse">\u000d
+        <soap:body use="literal"/>\u000d
+      </wsdl:output>\u000d
+    </wsdl:operation>\u000d
+  </wsdl:binding>\u000d
+  <wsdl:service name="CcmsServiceService">\u000d
+    <wsdl:port name="CcmsServicePort" binding="tns:CcmsServiceServiceSoapBinding">\u000d
+      <soap:address location="http://localhost:9090/CcmsServicePort"/>\u000d
+    </wsdl:port>\u000d
+  </wsdl:service>\u000d
+</wsdl:definitions>\u000d
+]]></string>
+         <string name="wsdlFileName" value="ccmsservice.wsdl"/>
+         <string name="wsdl_file" value="C:\Users\TBN-TUE\Downloads"/>
+      </storable>
+      <string name="Folder" value="CCMS"/>
+      <boolean name="Is Dirty" value="false"/>
+      <boolean name="Is Encrypted" value="false"/>
+      <boolean name="Is Locked" value="false"/>
+      <boolean name="Is Valid" value="true"/>
+      <string name="Key" value="MZ1520533806266"/>
+      <string name="Modified By" value="mzadmin"/>
+      <long name="Modified Date" value="1538733219142"/>
+      <string name="Name" value="PRF_WS_CCMSService"/>
+      <string name="Owner" value="mzadmin"/>
+      <string name="Type" value="WS Profile"/>
+      <int name="Version" value="1"/>
+      <string name="documentation" value=""/>
+      <string name="parameters" value=""/>
+   </storable>
+</webservices_profile>

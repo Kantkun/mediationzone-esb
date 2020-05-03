@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Ultra_Format" ref_path="ultra_format[Internal]/storable[ultra_format]/storable[Data]">
+   <string name="Definition"><![CDATA[import CBS.UFL_DSP_Header;
+
+//from/to external
+external ABCS_Header {
+    bcd     ICLEN	:	static_size(4),	align(right);
+    ascii	ICHEAD	:	character_encoding("cp838"),	static_size(5), padded_with(0x40);
+    ascii	ICCOMQ	:	character_encoding("cp838"),	static_size(10), padded_with(0x40);
+    ascii	ICCMLIB	:	character_encoding("cp838"),	static_size(10), padded_with(0x40);
+    ascii	TMTIMIN	:	character_encoding("cp838"),    static_size(6),	align(right), padded_with(0xF0);
+    ascii	TMTXTYP	:	character_encoding("cp838"),	static_size(5), padded_with(0x40);
+    ascii	ICDSPK	:	character_encoding("cp838"),	static_size(22), padded_with(0x40);
+    ascii	ICDSND	:	character_encoding("cp838"),	static_size(2), padded_with(0x40);
+    ascii	ICIBKRF	:	character_encoding("cp838"),	static_size(19), padded_with(0x40);
+    ascii	ICTXREG	:	character_encoding("cp838"),	static_size(6), padded_with(0x40);
+    ascii	ICFMT	:	character_encoding("cp838"),	static_size(4), padded_with(0x40);
+    ascii	ICRSV1	:	character_encoding("cp838"),	static_size(4), padded_with(0x40);
+    ascii	ICRSV2	:	character_encoding("cp838"),	static_size(5), padded_with(0x40);
+    ascii	ICEOM	:	character_encoding("cp838"),	static_size(4), padded_with(0x40);
+};
+
+in_map ABCS_Header_InMap: external(ABCS_Header), target_internal(ABCS_Header_TgIn){automatic;};
+out_map ABCS_Header_OutMap: external(ABCS_Header), internal(ABCS_Header_TgIn){automatic;};
+decoder ABCS_Header_Decoder: in_map(ABCS_Header_InMap);
+encoder ABCS_Header_Encoder: out_map(ABCS_Header_OutMap);
+
+
+external ABCS_Header_With_Payload: terminated_by(EOF) {
+    ABCS_Header abcsHeader;
+    bytearray data: dynamic_size(remaining_size);    
+};
+
+in_map ABCS_Header_With_Payload_InMap: external(ABCS_Header_With_Payload), target_internal(ABCS_Header_With_Payload_TgIn) {automatic;};
+out_map ABCS_Header_With_Payload_OutMap: external(ABCS_Header_With_Payload), internal(ABCS_Header_With_Payload_TgIn) {automatic;};
+decoder ABCS_Header_With_Payload_Decoder: in_map(ABCS_Header_With_Payload_InMap);
+encoder ABCS_Header_With_Payload_Encoder: out_map(ABCS_Header_With_Payload_OutMap);
+
+
+
+]]></string>
+   <boolean name="IsValid" value="true"/>
+</exportmultiplex>

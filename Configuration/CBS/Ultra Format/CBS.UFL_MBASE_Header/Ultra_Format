@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Ultra_Format" ref_path="ultra_format[Internal]/storable[ultra_format]/storable[Data]">
+   <string name="Definition"><![CDATA[import CBS.UFL_DSP_Header;
+
+external MBASE_Header {
+    ascii HDVERS        : character_encoding("cp838"), static_size(4), align(left), padded_with(0x40);
+    ascii HDTCOD        : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+    ascii HDTXTP        : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+    ascii HDRIND        : character_encoding("cp838"), static_size(2), align(left), padded_with(0x40); //response result code
+    ascii HDNERR        : character_encoding("cp838"), static_size(2), align(right), padded_with(0xf0);
+    ascii HDSRID        : character_encoding("cp838"), static_size(3), align(left), padded_with(0x40);
+    ascii HDDSID        : character_encoding("cp838"), static_size(3), align(left), padded_with(0x40);
+    ascii HDRTDQ        : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+    ascii HDDTQL        : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+    ascii HDTMLI        : character_encoding("cp838"), static_size(20), align(left), padded_with(0x40);
+    ascii HDBKNO        : character_encoding("cp838"), static_size(2), align(right), padded_with(0xf0);
+    ascii HDLGID        : character_encoding("cp838"), static_size(3), align(left), padded_with(0x40);
+    ascii HDCLDR        : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+    //ascii HDBRNO        : character_encoding("cp838"), static_size(5), align(right), padded_with(0x40); //branch no // padded_with(0xf0) edit by chollachart 20190202 ***not use
+    ascii HDBRNO        : character_encoding("cp838"), static_size(5), align(right), padded_with(0xf0); //branch no // padded_with(0xf0) edit by chollachart 20190212
+    ascii HDUSID        : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+    ascii HDSUP1        : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+    ascii HDSUP2        : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+    ascii HDSUP3        : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+    ascii HDACCD        : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+    ascii HDNXTA        : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+    ascii HDTXMD        : character_encoding("cp838"), static_size(2), align(left), padded_with(0x40);
+    ascii HDSLKY        : character_encoding("cp838"), static_size(30), align(left), padded_with(0x40);
+    ascii HDRREF        : character_encoding("cp838"), static_size(25), align(left), padded_with(0x40);
+    ascii HDSREF        : character_encoding("cp838"), static_size(9), align(right), padded_with(0xf0);
+    ascii HDRCKY        : character_encoding("cp838"), static_size(16), align(left), padded_with(0x40);
+    ascii HDNREC        : character_encoding("cp838"), static_size(3), align(right), padded_with(0xf0); //number of records
+    ascii HDMREC        : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);  //more record flag
+    ascii HDSMTD        : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+    ascii HDTIMS        : character_encoding("cp838"), static_size(26), align(left), padded_with(0x40);
+    ascii HDVFMT        : character_encoding("cp838"), static_size(100), align(left), padded_with(0x40); //search indicator
+    ascii HDDAPV        : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+    ascii HDCOUN        : character_encoding("cp838"), static_size(3), align(left), padded_with(0x40);
+    ascii HDFCID        : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40); //function id
+    ascii HDFCSQ        : character_encoding("cp838"), static_size(9), align(right), padded_with(0xf0);
+    ascii HDFILR        : character_encoding("cp838"), static_size(18), align(left), padded_with(0x40);
+};
+
+
+external MBASE_Header_With_Payload: terminated_by(EOF) {
+    MBASE_Header mbaseHeader;
+    bytearray data: dynamic_size(remaining_size);    
+};
+
+in_map MBASE_Header_InMap: external(MBASE_Header), target_internal(MBASE_Header_TI){automatic;};
+out_map MBASE_Header_OutMap: external(MBASE_Header), internal(MBASE_Header_TI){automatic;};
+encoder MBASE_Header_Encode: out_map(MBASE_Header_OutMap);
+decoder MBASE_Header_Decode: in_map(MBASE_Header_InMap);
+
+in_map MBASE_Header_With_Payload_InMap: external(MBASE_Header_With_Payload), target_internal(MBASE_Header_With_Payload_TI) {automatic;};
+decoder MBASE_Header_With_Payload_Decode: in_map(MBASE_Header_With_Payload_InMap);]]></string>
+   <boolean name="IsValid" value="true"/>
+</exportmultiplex>

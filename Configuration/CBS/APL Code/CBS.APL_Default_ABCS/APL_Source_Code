@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="APL_Source_Code" ref_path="apl_script[Internal]/storable[apl_script]/storable[Data]">
+   <string name="Definition"><![CDATA[import ultra.CBS.UFL_DSP_Header;
+import ultra.CBS.UFL_ABCS_Header;
+import ultra.CBS.UFL_TLLOG;
+import apl.Common.APL_Common_Constant;
+import apl.Common.APL_Common_Utilities;
+
+DSP_Header_TgIn createDefaultDSPHeaderForABCS(string sourceID ,  string uniqKey) {   
+    DSP_Header_TgIn dspHeader = udrCreate(DSP_Header_TgIn);    
+    
+    dspHeader.SKTHEAD = "*SOKR"; //Header Type
+    dspHeader.I13FMID = "ABCS"; //Header Format ID
+    dspHeader.I13DID = "HTLF"; //Destination ID
+    dspHeader.I13HLEN = "0312"; //Message Length
+    dspHeader.I13VERS = "0800"; //Version Number
+    dspHeader.I13HFMID = "*DSP"; //Header Format ID
+    
+    dspHeader.I13SID = "ESB##"; //Source ID (UPD for 50,51) (ESB for 52)
+    if(sourceID != "" && sourceID != null){
+        dspHeader.I13SID = sourceID;
+    }    
+    dspHeader.I13XID = "0"; //Exchange ID
+    
+    dspHeader.SKTMLEN = sizeOf_ABCS_TLLOG_RequestSocket; //3378;
+    //old       
+    //dspHeader.I13ACQN = uniqKey;
+    //dspHeader.I13TMNO = strSubstring(uniqKey,8,12); //TranmissionNumber 
+      
+    dspHeader.I13ACQN = strSubstring(uniqKey, 0, 12);  
+    dspHeader.I13TMNO = strSubstring(uniqKey, 12, 16);    
+    
+    return dspHeader;
+}
+
+ABCS_Header_TgIn createDefaultABCSHeader() {
+    ABCS_Header_TgIn abcs = udrCreate(ABCS_Header_TgIn);
+        
+    abcs.ICHEAD = "*MOSA"; //Message Header
+    abcs.TMTIMIN = "000000"; //Entry Time
+    abcs.TMTXTYP = "T9999"; //Transaction Type
+    abcs.ICFMT = "ABCS"; //Message Format Code
+    abcs.ICEOM = "*EOM"; //EOM group indicator (default *EOM for request)
+    
+    int abcsMessageLength = sizeOf_ABCS_Header_with_TLLOG;
+    abcs.ICLEN = intToHexString(abcsMessageLength);
+    
+    return abcs;
+}
+
+bytearray combineABCSSocket(DSP_Header_TgIn dspHeader, ABCS_Header_TgIn abcsHeader,TLLOG_TgIn tllogRequest){
+    
+    bytearray out = udrEncode("DSP_Header_Encoder", dspHeader);
+    out = baAppend(out, udrEncode("ABCS_Header_Encoder", abcsHeader));
+    out = baAppend(out, udrEncode("TLLOG_Encoder", tllogRequest));        
+    
+    return out;
+}
+
+ABCS_Header_TgIn mapABCSHeaderTgInFromABCSHeaderWithPayload(ABCS_Header_With_Payload_TgIn abcsPL){
+    ABCS_Header_TgIn abcsHeader = udrCreate(ABCS_Header_TgIn);
+    
+    abcsHeader.ICLEN = abcsPL.abcsHeader.ICLEN;
+    abcsHeader.ICHEAD = abcsPL.abcsHeader.ICHEAD;
+    abcsHeader.ICCOMQ = abcsPL.abcsHeader.ICCOMQ;
+    abcsHeader.ICCMLIB = abcsPL.abcsHeader.ICCMLIB;
+    abcsHeader.TMTIMIN = abcsPL.abcsHeader.TMTIMIN;
+    abcsHeader.TMTXTYP = abcsPL.abcsHeader.TMTXTYP;
+    abcsHeader.ICDSPK = abcsPL.abcsHeader.ICDSPK;
+    abcsHeader.ICDSND = abcsPL.abcsHeader.ICDSND;
+    abcsHeader.ICIBKRF = abcsPL.abcsHeader.ICIBKRF;
+    abcsHeader.ICTXREG = abcsPL.abcsHeader.ICTXREG;
+    abcsHeader.ICFMT = abcsPL.abcsHeader.ICFMT;
+    abcsHeader.ICRSV1 = abcsPL.abcsHeader.ICRSV1;
+    abcsHeader.ICRSV2 = abcsPL.abcsHeader.ICRSV2;
+    abcsHeader.ICEOM = abcsPL.abcsHeader.ICEOM;
+    
+    return abcsHeader;
+}
+]]></string>
+</exportmultiplex>

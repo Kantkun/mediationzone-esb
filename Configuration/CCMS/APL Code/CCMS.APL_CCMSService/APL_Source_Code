@@ -1,0 +1,1126 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="APL_Source_Code" ref_path="apl_script[Internal]/storable[apl_script]/storable[Data]">
+   <string name="Definition"><![CDATA[//ultra
+import ultra.Ultra.UFL_MBASE_DD20001;
+import ultra.Ultra.UFL_MBASE_DD22001;
+import ultra.Ultra.UFL_MBASE_DD22002;
+import ultra.Ultra.UFL_MBASE_DD22003;
+import ultra.ws.CCMS.PRF_WS_CCMSService.cycles;
+import ultra.ws.CCMS.PRF_WS_CCMSService.tns;
+import ultra.CBS.UFL_DSP_Header;
+import ultra.CBS.UFL_MBASE_Header;
+import ultra.Ultra.UFL_MBASE_Reject;
+import ultra.CBS.UFL_MBERROR;
+
+//apl
+import apl.Common.APL_Common_MBASE;
+import apl.Common.APL_Common_Utilities;
+
+final int sizeOf_DD20001 = 990;
+final int sizeOf_DD22001 = 809;
+final int sizeOf_DD22002 = 858;
+final int sizeOf_DD22003 = 764;
+
+//Create SOAP Request
+WSCycle_inquiryStockCard createSOAP_InquiryStockCard(string uniqKey, DSP_Header_TgIn tcpRequest){
+    list<MBASE_Header_With_Payload_TI> mbaseList = listCreate(MBASE_Header_With_Payload_TI);
+    udrDecode("MBASE_Header_With_Payload_Decode",mbaseList,tcpRequest.data);
+    MBASE_Header_With_Payload_TI mbase = listGet(mbaseList,0);
+    
+    //Mbase Request (DD20001)
+    bytearray refilled = refillTrimedColumn(mbase.data,76);   
+    debug(baToStr(refilled, "IBM-Thai"));
+    list<DD20001_RQ_TI> DD20001_RQ = listCreate(DD20001_RQ_TI);
+    udrDecode("DD20001_RQ_Decode", DD20001_RQ,refilled);
+    DD20001_RQ_TI DD20001 = listGet(DD20001_RQ,0);
+    
+    //Constan current date/time
+    string strDate;
+    dateToString(strDate, dateCreateNow(), "yyyyMMddHHmmssSSS"); 
+    
+    //SOAP Request
+    WSCycle_inquiryStockCard requestSOAP = udrCreate(WSCycle_inquiryStockCard);
+    requestSOAP.context = uniqKey;
+    requestSOAP.param = udrCreate(InquiryStockCardReq);
+    requestSOAP.param.RequesterSystem = "CBS";
+    requestSOAP.param.RequestReferenceNo = "CBS" + strDate;
+    requestSOAP.param.OriginalRequesterSystem = "CBS";
+    requestSOAP.param.TransactionDateTime = dateCreateNow();
+    requestSOAP.param.TeamCode = padBranchNumber(mbase.mbaseHeader.HDBRNO, 5);  //edited by chollachart 2019-02-02 DD20001.IBRNIS_BranchNo;
+    requestSOAP.param.UserId = tcpRequest.I13USER;
+    //optional
+    requestSOAP.param.CardNo = strTrim(DD20001.IATMCD_ATMCard);
+    //optional
+    if (getStringValue(DD20001.ICREFNO_CARDREFERENCENO) != ""){
+        requestSOAP.param.CardReferenceNo = DD20001.ICREFNO_CARDREFERENCENO;
+    }
+    //requestSOAP.param.CardReferenceNo = DD20001.ICREFNO_CARDREFERENCENO;
+    //requestSOAP.param.CardReferenceNo = "";
+    return requestSOAP;
+}
+
+WSCycle_inquiryCard createSOAP_InquiryCard(string uniqKey, DSP_Header_TgIn tcpRequest){
+    list<MBASE_Header_With_Payload_TI> mbaseList = listCreate(MBASE_Header_With_Payload_TI);
+    udrDecode("MBASE_Header_With_Payload_Decode",mbaseList,tcpRequest.data);
+    MBASE_Header_With_Payload_TI mbase = listGet(mbaseList,0);
+
+    //Mbase Request (DD20001)
+    bytearray refilled = refillTrimedColumn(mbase.data,76);   
+    debug(baToStr(refilled, "IBM-Thai"));
+    list<DD20001_RQ_TI> DD20001_RQ = listCreate(DD20001_RQ_TI);
+    udrDecode("DD20001_RQ_Decode", DD20001_RQ,refilled);
+    DD20001_RQ_TI DD20001 = listGet(DD20001_RQ,0);
+    
+    //Constan current date/time
+    string strDate;
+    dateToString(strDate, dateCreateNow(), "yyyyMMddHHmmssSSS"); 
+    
+    //SOAP Request
+    WSCycle_inquiryCard requestSOAP = udrCreate(WSCycle_inquiryCard);
+    requestSOAP.context = uniqKey;
+    requestSOAP.param = udrCreate(InquiryCardReq);
+    requestSOAP.param.RequesterSystem = "CBS";
+    requestSOAP.param.RequestReferenceNo = "CBS" + strDate;
+    requestSOAP.param.OriginalRequesterSystem = "CBS";
+    requestSOAP.param.TransactionDateTime = dateCreateNow();
+    requestSOAP.param.TeamCode = padBranchNumber(mbase.mbaseHeader.HDBRNO, 5);  //edited by chollachart 2019-02-02 DD20001.IBRNIS_BranchNo;
+    requestSOAP.param.UserId = tcpRequest.I13USER;
+    //optional
+    if (getStringValue(DD20001.IATMCD_ATMCard) != ""){
+        requestSOAP.param.CardNo = strTrim(DD20001.IATMCD_ATMCard);
+    }
+    
+    //optional
+    if (getStringValue(DD20001.ICREFNO_CARDREFERENCENO) != ""){
+        requestSOAP.param.CardReferenceNo = DD20001.ICREFNO_CARDREFERENCENO;
+    }
+    
+    //optional
+    if (DD20001.ACCTNO_Accountnumber != "0000000000000000000"){
+        requestSOAP.param.AcctNo = setAccountNumber(DD20001.ACCTNO_Accountnumber);
+    }
+
+    return requestSOAP;
+}
+
+WSCycle_addInstantCard createSOAP_AddInstantCard(string uniqKey, DSP_Header_TgIn tcpRequest){
+    //mbase
+    list<MBASE_Header_With_Payload_TI> mbaseList = listCreate(MBASE_Header_With_Payload_TI);
+    udrDecode("MBASE_Header_With_Payload_Decode",mbaseList,tcpRequest.data);
+    MBASE_Header_With_Payload_TI mbase = listGet(mbaseList,0);
+    
+    //Mbase Request (DD22001)
+    bytearray refilled = refillTrimedColumn(mbase.data,sizeOf_DD22001);   
+    debug(baToStr(refilled, "IBM-Thai"));
+    list<DD22001_RQ_TI> DD22001_RQ = listCreate(DD22001_RQ_TI);
+    udrDecode("DD22001_RQ_Decode", DD22001_RQ,refilled);
+    DD22001_RQ_TI DD22001 = listGet(DD22001_RQ,0);
+    //Constan current date/time
+    string strDate;
+    dateToString(strDate, dateCreateNow(), "yyyyMMddHHmmssSSS"); 
+    
+    //SOAP Request
+    WSCycle_addInstantCard requestSOAP = udrCreate(WSCycle_addInstantCard);
+    requestSOAP.context = uniqKey;
+    requestSOAP.param = udrCreate(AddInstantCardReq);
+    requestSOAP.param.RequesterSystem = "CBS";
+    requestSOAP.param.RequestReferenceNo = "CBS" + strDate;
+    requestSOAP.param.OriginalRequesterSystem = "CBS";
+    requestSOAP.param.TransactionDateTime = dateCreateNow();
+    requestSOAP.param.TeamCode = padBranchNumber(mbase.mbaseHeader.HDBRNO, 5);  //edited by chollachart 2019-02-02 DD22001.IBRNIS_BranchNo;
+    requestSOAP.param.UserId = tcpRequest.I13USER;
+    //optional
+    requestSOAP.param.CardNo = strTrim(DD22001.IATMCD_ATMCard);
+    //optional
+    requestSOAP.param.CardReferenceNo = DD22001.ICREFNO_CardReferenceNo;
+    requestSOAP.param.PinMailerRefNo = DD22001.IREFNM_PINREFNO;
+    requestSOAP.param.CustomerNo = DD22001.CIFNO_CIFNumber;
+    requestSOAP.param.TitleNameTh = DD22001.ITITNM_TITLE;
+    requestSOAP.param.NameTh = DD22001.INAME_NAME;
+    requestSOAP.param.TitleNameEn = DD22001.IATTIT_ALTINATETITLE;
+    requestSOAP.param.NameEn = DD22001.IATNAM_ALTINATENAME;
+    requestSOAP.param.DateOfBirth = DD22001.IBIRD8_BirthDate;
+    requestSOAP.param.CifNo = DD22001.IIDNUM_IDNumber;
+    requestSOAP.param.CifTypeCode = cifTypeCodeMapping(DD22001.IIDTYP_IDTYPECODE);
+    requestSOAP.param.CustomerTypeCode = DD22001.ICFINDI_CustomerType;
+    requestSOAP.param.IdIssueCountryCode = DD22001.IIDCTY_IDISSUECOUNTRY;
+    requestSOAP.param.CardStatusCode = "1"; //DD22001.ISTATS_Status; default value = 1
+    requestSOAP.param.NumberOfAccount = DD22001.IACCNT_NumberOfAccount;
+    
+    requestSOAP.param.AccountList = udrCreate(AddInstantCardReq$AccountList);
+    requestSOAP.param.AccountList.accountList = listCreate(Account);
+    
+    //AccountList
+    //Account01
+    if (getStringValue(DD22001.IACCT01_AccountNumber)!="0000000000000000000"){
+        Account account1 = udrCreate(Account);
+        account1.AcctNo = setAccountNumber(DD22001.IACCT01_AccountNumber);
+        account1.AcctTypeCode = DD22001.ITYPE01_AccountType;
+        account1.AcctBranchCode = DD22001.IACBR01_BranchNumber;
+        account1.AcctCategoryCode = accountCategoryCodeMapping(DD22001.ISTAT01_AccountStatus);
+        account1.AccountAction = "";
+        listAdd(requestSOAP.param.AccountList.accountList, account1);
+    }
+    
+    //Account02
+    //debug("AccountNo: " + DD22001.IACCT02_AccountNumber);
+    if (getStringValue(DD22001.IACCT02_AccountNumber)!="0000000000000000000"){
+        Account account2 = udrCreate(Account);
+        account2.AcctNo = setAccountNumber(DD22001.IACCT02_AccountNumber);
+        account2.AcctTypeCode = DD22001.ITYPE02_AccountType;
+        account2.AcctBranchCode = DD22001.IACBR02_BranchNumber;
+        account2.AcctCategoryCode = accountCategoryCodeMapping(DD22001.ISTAT02_AccountStatus);
+        account2.AccountAction = "";
+        listAdd(requestSOAP.param.AccountList.accountList, account2);
+    }
+    
+    
+    //Account03
+    if (getStringValue(DD22001.IACCT03_AccountNumber)!="0000000000000000000"){
+        Account account3 = udrCreate(Account);
+        account3.AcctNo = setAccountNumber(DD22001.IACCT03_AccountNumber);
+        account3.AcctTypeCode = DD22001.ITYPE03_AccountType;
+        account3.AcctBranchCode = DD22001.IACBR03_BranchNumber;
+        account3.AcctCategoryCode = accountCategoryCodeMapping(DD22001.ISTAT03_AccountStatus);
+        account3.AccountAction = "";
+        listAdd(requestSOAP.param.AccountList.accountList, account3);
+    }
+    
+    
+    //Account04
+    if (getStringValue(DD22001.IACCT04_AccountNumber)!="0000000000000000000"){
+        Account account4 = udrCreate(Account);
+        account4.AcctNo = setAccountNumber(DD22001.IACCT04_AccountNumber);
+        account4.AcctTypeCode = DD22001.ITYPE04_AccountType;
+        account4.AcctBranchCode = DD22001.IACBR04_BranchNumber;
+        account4.AcctCategoryCode = accountCategoryCodeMapping(DD22001.ISTAT04_AccountStatus);
+        account4.AccountAction = "";
+        listAdd(requestSOAP.param.AccountList.accountList, account4);
+    }
+    
+    
+    //Account05
+    if (getStringValue(DD22001.IACCT05_AccountNumber)!="0000000000000000000"){
+        Account account5 = udrCreate(Account);
+        account5.AcctNo = setAccountNumber(DD22001.IACCT05_AccountNumber);
+        account5.AcctTypeCode = DD22001.ITYPE05_AccountType;
+        account5.AcctBranchCode = DD22001.IACBR05_BranchNumber;
+        account5.AcctCategoryCode = accountCategoryCodeMapping(DD22001.ISTAT05_AccountStatus);
+        account5.AccountAction = "";
+        listAdd(requestSOAP.param.AccountList.accountList, account5);
+    }
+    
+    
+    //Account06
+    if (getStringValue(DD22001.IACCT06_AccountNumber)!="0000000000000000000"){
+        Account account6 = udrCreate(Account);
+        account6.AcctNo = setAccountNumber(DD22001.IACCT06_AccountNumber);
+        account6.AcctTypeCode = DD22001.ITYPE06_AccountType;
+        account6.AcctBranchCode = DD22001.IACBR06_BranchNumber;
+        account6.AcctCategoryCode = accountCategoryCodeMapping(DD22001.ISTAT06_AccountStatus);
+        account6.AccountAction = "";
+        listAdd(requestSOAP.param.AccountList.accountList, account6);
+    }
+    
+    //Account07
+    if (getStringValue(DD22001.IACCT07_AccountNumber)!="0000000000000000000"){
+        Account account7 = udrCreate(Account);
+        account7.AcctNo = setAccountNumber(DD22001.IACCT07_AccountNumber);
+        account7.AcctTypeCode = DD22001.ITYPE07_AccountType;
+        account7.AcctBranchCode = DD22001.IACBR07_BranchNumber;
+        account7.AcctCategoryCode = accountCategoryCodeMapping(DD22001.ISTAT07_AccountStatus);
+        account7.AccountAction = "";
+        listAdd(requestSOAP.param.AccountList.accountList, account7);
+    }
+    
+    //Account08
+    if (getStringValue(DD22001.IACCT08_AccountNumber)!="0000000000000000000"){
+        Account account8 = udrCreate(Account);
+        account8.AcctNo = setAccountNumber(DD22001.IACCT08_AccountNumber);
+        account8.AcctTypeCode = DD22001.ITYPE08_AccountType;
+        account8.AcctBranchCode = DD22001.IACBR08_BranchNumber;
+        account8.AcctCategoryCode = accountCategoryCodeMapping(DD22001.ISTAT08_AccountStatus);
+        account8.AccountAction = "";
+        listAdd(requestSOAP.param.AccountList.accountList, account8);
+    }
+    //End AccountList
+    
+    return requestSOAP;
+}
+
+WSCycle_replaceCard createSOAP_ReplaceCard(string uniqKey, DSP_Header_TgIn tcpRequest){
+    //mbase
+    list<MBASE_Header_With_Payload_TI> mbaseList = listCreate(MBASE_Header_With_Payload_TI);
+    udrDecode("MBASE_Header_With_Payload_Decode",mbaseList,tcpRequest.data);
+    MBASE_Header_With_Payload_TI mbase = listGet(mbaseList,0);
+    
+    //Mbase Request (DD22002)
+    bytearray refilled = refillTrimedColumn(mbase.data,sizeOf_DD22002);   
+    debug(baToStr(refilled, "IBM-Thai"));
+    list<DD22002_RQ_TI> DD22002_RQ = listCreate(DD22002_RQ_TI);
+    udrDecode("DD22002_RQ_Decode", DD22002_RQ,refilled);
+    DD22002_RQ_TI DD22002 = listGet(DD22002_RQ,0);
+    
+    //Constan current date/time
+    string strDate;
+    dateToString(strDate, dateCreateNow(), "yyyyMMddHHmmssSSS"); 
+    
+    //SOAP Request
+    WSCycle_replaceCard requestSOAP = udrCreate(WSCycle_replaceCard);
+    requestSOAP.context = uniqKey;
+    requestSOAP.param = udrCreate(ReplaceCardReq);
+    requestSOAP.param.RequesterSystem = "CBS";
+    requestSOAP.param.RequestReferenceNo = "CBS" + strDate;
+    requestSOAP.param.OriginalRequesterSystem = "CBS";
+    requestSOAP.param.TransactionDateTime = dateCreateNow();
+    requestSOAP.param.TeamCode = padBranchNumber(mbase.mbaseHeader.HDBRNO, 5);  //edited by chollachart 2019-02-02 DD22002.IBRNIS_BranchNo;
+    requestSOAP.param.UserId = tcpRequest.I13USER;
+    //optional
+    requestSOAP.param.CardNo = DD22002.OATMCD_OldATMCardNumber;
+    //optional
+    requestSOAP.param.CardReferenceNo = DD22002.OCREFNO_OldCardRefNo;
+    //optional
+    requestSOAP.param.NewCardNo = DD22002.IATMCD_ATMCard;
+    //optional
+    requestSOAP.param.NewCardReferenceNo = DD22002.ICREFNO_CARDREFERENCENO;
+    
+    return requestSOAP;
+}
+
+WSCycle_updateRelatedAccounts createSOAP_UpdateRelatedAccounts(string uniqKey, DSP_Header_TgIn tcpRequest){
+    //mbase
+    list<MBASE_Header_With_Payload_TI> mbaseList = listCreate(MBASE_Header_With_Payload_TI);
+    udrDecode("MBASE_Header_With_Payload_Decode",mbaseList,tcpRequest.data);
+    MBASE_Header_With_Payload_TI mbase = listGet(mbaseList,0);
+    
+    //Mbase Request (DD22003)
+    bytearray refilled = refillTrimedColumn(mbase.data,sizeOf_DD22003);   
+    debug(baToStr(refilled, "IBM-Thai"));
+    list<DD22003_RQ_TI> DD22003_RQ = listCreate(DD22003_RQ_TI);
+    udrDecode("DD22003_RQ_Decode", DD22003_RQ,refilled);
+    DD22003_RQ_TI DD22003 = listGet(DD22003_RQ,0);
+    
+    //Constan current date/time
+    string strDate;
+    dateToString(strDate, dateCreateNow(), "yyyyMMddHHmmssSSS"); 
+    
+    //SOAP Request
+    WSCycle_updateRelatedAccounts requestSOAP = udrCreate(WSCycle_updateRelatedAccounts);
+    requestSOAP.context = uniqKey;
+    requestSOAP.param = udrCreate(UpdateRelatedAccountsReq);
+    requestSOAP.param.RequesterSystem = "CBS";
+    requestSOAP.param.RequestReferenceNo = "CBS" + strDate;
+    requestSOAP.param.OriginalRequesterSystem = "CBS";
+    requestSOAP.param.TransactionDateTime = dateCreateNow();
+    requestSOAP.param.TeamCode = padBranchNumber(mbase.mbaseHeader.HDBRNO, 5);  //edited by chollachart 2019-02-02 DD22003.IBRNIS_BranchNo;
+    requestSOAP.param.UserId = tcpRequest.I13USER;
+    //optional
+    requestSOAP.param.CardNo = DD22003.IATMCD_ATMCard;
+    //optional
+    requestSOAP.param.CardReferenceNo = DD22003.ICREFNO_CardReferenceNo;
+    requestSOAP.param.NumberOfAccount = DD22003.IACCNT_NumberOfAccount;
+    
+    requestSOAP.param.AccountList = udrCreate(UpdateRelatedAccountsReq$AccountList);
+    requestSOAP.param.AccountList.accountList = listCreate(Account);
+    
+    //AccountList
+    //Account01
+    if (getStringValue(DD22003.IACCT01_AccountNo)!="0000000000000000000"){
+        Account account1 = udrCreate(Account);
+        account1.AcctNo = setAccountNumber(DD22003.IACCT01_AccountNo);
+        account1.AcctTypeCode = DD22003.ITYPE01_AccountType;
+        account1.AcctBranchCode = DD22003.IACBR01_AccountBranch;
+        account1.AcctCategoryCode = accountCategoryCodeMapping(DD22003.ISTAT01_AccountStatus);
+        account1.AccountAction = accountAction(DD22003.IOPTN01_AccountOption);
+        listAdd(requestSOAP.param.AccountList.accountList, account1);
+    }
+    
+    //Account02
+    if (getStringValue(DD22003.IACCT02_AccountNo)!="0000000000000000000"){
+        Account account2 = udrCreate(Account);
+        account2.AcctNo = setAccountNumber(DD22003.IACCT02_AccountNo);
+        account2.AcctTypeCode = DD22003.ITYPE02_AccountType;
+        account2.AcctBranchCode = DD22003.IACBR02_AccountBranch;
+        account2.AcctCategoryCode = accountCategoryCodeMapping(DD22003.ISTAT02_AccountStatus);
+        account2.AccountAction = accountAction(DD22003.IOPTN02_AccountOption);
+        listAdd(requestSOAP.param.AccountList.accountList, account2);
+    }
+    
+    //Account03
+    if (getStringValue(DD22003.IACCT03_AccountNo)!="0000000000000000000"){
+        Account account3 = udrCreate(Account);
+        account3.AcctNo = setAccountNumber(DD22003.IACCT03_AccountNo);
+        account3.AcctTypeCode = DD22003.ITYPE03_AccountType;
+        account3.AcctBranchCode = DD22003.IACBR03_AccountBranch;
+        account3.AcctCategoryCode = accountCategoryCodeMapping(DD22003.ISTAT03_AccountStatus);
+        account3.AccountAction = accountAction(DD22003.IOPTN03_AccountOption);
+        listAdd(requestSOAP.param.AccountList.accountList, account3);
+    }
+    
+    //Account04
+    if (getStringValue(DD22003.IACCT04_AccountNo)!="0000000000000000000"){
+        Account account4 = udrCreate(Account);
+        account4.AcctNo = setAccountNumber(DD22003.IACCT04_AccountNo);
+        account4.AcctTypeCode = DD22003.ITYPE04_AccountType;
+        account4.AcctBranchCode = DD22003.IACBR04_AccountBranch;
+        account4.AcctCategoryCode = accountCategoryCodeMapping(DD22003.ISTAT04_AccountStatus);
+        account4.AccountAction = accountAction(DD22003.IOPTN04_AccountOption);
+        listAdd(requestSOAP.param.AccountList.accountList, account4);
+    }
+    
+    //Account05
+    if (getStringValue(DD22003.IACCT05_AccountNo)!="0000000000000000000"){
+        Account account5 = udrCreate(Account);
+        account5.AcctNo = setAccountNumber(DD22003.IACCT05_AccountNo);
+        account5.AcctTypeCode = DD22003.ITYPE05_AccountType;
+        account5.AcctBranchCode = DD22003.IACBR05_AccountBranch;
+        account5.AcctCategoryCode = accountCategoryCodeMapping(DD22003.ISTAT05_AccountStatus);
+        account5.AccountAction = accountAction(DD22003.IOPTN05_AccountOption);
+        listAdd(requestSOAP.param.AccountList.accountList, account5);
+    }
+    
+    //Account06
+    if (getStringValue(DD22003.IACCT06_AccountNo)!="0000000000000000000"){
+        Account account6 = udrCreate(Account);
+        account6.AcctNo = setAccountNumber(DD22003.IACCT06_AccountNo);
+        account6.AcctTypeCode = DD22003.ITYPE06_AccountType;
+        account6.AcctBranchCode = DD22003.IACBR06_AccountBranch;
+        account6.AcctCategoryCode = accountCategoryCodeMapping(DD22003.ISTAT06_AccountStatus);
+        account6.AccountAction = accountAction(DD22003.IOPTN06_AccountOption);
+        listAdd(requestSOAP.param.AccountList.accountList, account6);
+    }
+    
+    //Account07
+    if (getStringValue(DD22003.IACCT07_AccountNo)!="0000000000000000000"){
+        Account account7 = udrCreate(Account);
+        account7.AcctNo = setAccountNumber(DD22003.IACCT07_AccountNo);
+        account7.AcctTypeCode = DD22003.ITYPE07_AccountType;
+        account7.AcctBranchCode = DD22003.IACBR07_AccountBranch;
+        account7.AcctCategoryCode = accountCategoryCodeMapping(DD22003.ISTAT07_AccountStatus);
+        account7.AccountAction = accountAction(DD22003.IOPTN07_AccountOption);
+        listAdd(requestSOAP.param.AccountList.accountList, account7);
+    }
+    
+    //Account08
+    if (getStringValue(DD22003.IACCT08_AccountNo)!="0000000000000000000"){
+        Account account8 = udrCreate(Account);
+        account8.AcctNo = setAccountNumber(DD22003.IACCT08_AccountNo);
+        account8.AcctTypeCode = DD22003.ITYPE08_AccountType;
+        account8.AcctBranchCode = DD22003.IACBR08_AccountBranch;
+        account8.AcctCategoryCode = accountCategoryCodeMapping(DD22003.ISTAT08_AccountStatus);
+        account8.AccountAction = accountAction(DD22003.IOPTN08_AccountOption);
+        listAdd(requestSOAP.param.AccountList.accountList, account8);
+    }
+    //End AccountList
+    
+    return requestSOAP;
+}
+//End Create SOAP Request
+
+
+//Create MBASE Response Message
+bytearray createResponseMessageDD20001_InquiryStockCard(DSP_Header_TgIn tcpRequest, WSCycle_inquiryStockCard inquiryStockCardRes){
+    //DSP Header
+    DSP_Header_TgIn dspHeader = createDefaultDSPHeader();
+    dspHeader.SKTMLEN = sizeOf_DSPHeader + sizeOf_MBaseHeader + sizeOf_DD20001 - 9;
+    dspHeader.SKTHEAD = tcpRequest.SKTHEAD;
+    dspHeader.I13HLEN = tcpRequest.I13HLEN;
+    dspHeader.I13MLEN = tcpRequest.I13MLEN;
+    dspHeader.I13VERS = tcpRequest.I13VERS;
+    dspHeader.I13SID = tcpRequest.I13SID;
+    dspHeader.I13DID = tcpRequest.I13DID;
+    dspHeader.I13RTGN = tcpRequest.I13RTGN;
+    dspHeader.I13XID = tcpRequest.I13XID;
+    dspHeader.I13RRNO = tcpRequest.I13RRNO;
+    dspHeader.I13USER = tcpRequest.I13USER;
+    dspHeader.I13HFMID = tcpRequest.I13HFMID;  
+    dspHeader.I13CUTO = tcpRequest.I13CUTO;
+    dspHeader.I13UDTA = tcpRequest.I13UDTA;
+    dspHeader.I13SDTA = tcpRequest.I13SDTA;
+    dspHeader.I13TTYP = tcpRequest.I13TTYP;
+    dspHeader.I13RCNF = tcpRequest.I13RCNF;
+    if(inquiryStockCardRes.response.ResponseCode == "0000"){
+        dspHeader.I13MSTA = "/AA";
+    }else{
+        dspHeader.I13MSTA = ".AB";
+    }
+    
+         
+    //MBASE Header
+    list<MBASE_Header_With_Payload_TI> mbaseList = listCreate(MBASE_Header_With_Payload_TI);
+    udrDecode("MBASE_Header_With_Payload_Decode",mbaseList,tcpRequest.data);
+    MBASE_Header_With_Payload_TI mbase = listGet(mbaseList,0);
+
+    MBASE_Header_TI mbaseHeader = udrCreate(MBASE_Header_TI);
+    
+    mbaseHeader.HDVERS = mbase.mbaseHeader.HDVERS;
+    mbaseHeader.HDTCOD = mbase.mbaseHeader.HDTCOD;
+    mbaseHeader.HDTXTP = mbase.mbaseHeader.HDTXTP;
+    mbaseHeader.HDRIND = mbase.mbaseHeader.HDRIND; 
+    mbaseHeader.HDNERR = mbase.mbaseHeader.HDNERR;
+    mbaseHeader.HDSRID = mbase.mbaseHeader.HDSRID;
+    mbaseHeader.HDDSID = mbase.mbaseHeader.HDDSID;
+    mbaseHeader.HDRTDQ = mbase.mbaseHeader.HDRTDQ;
+    mbaseHeader.HDDTQL = mbase.mbaseHeader.HDDTQL;
+    mbaseHeader.HDTMLI = mbase.mbaseHeader.HDTMLI;
+    mbaseHeader.HDBKNO = mbase.mbaseHeader.HDBKNO;
+    mbaseHeader.HDLGID = mbase.mbaseHeader.HDLGID;
+    mbaseHeader.HDCLDR = mbase.mbaseHeader.HDCLDR; 
+    mbaseHeader.HDBRNO = mbase.mbaseHeader.HDBRNO; 
+    mbaseHeader.HDUSID = mbase.mbaseHeader.HDUSID;
+    mbaseHeader.HDSUP1 = mbase.mbaseHeader.HDSUP1;
+    mbaseHeader.HDSUP2 = mbase.mbaseHeader.HDSUP2;
+    mbaseHeader.HDSUP3 = mbase.mbaseHeader.HDSUP3;
+    mbaseHeader.HDACCD = mbase.mbaseHeader.HDACCD;
+    mbaseHeader.HDNXTA = mbase.mbaseHeader.HDNXTA;
+    mbaseHeader.HDTXMD = mbase.mbaseHeader.HDTXMD;
+    mbaseHeader.HDSLKY = mbase.mbaseHeader.HDSLKY;
+    mbaseHeader.HDRREF = mbase.mbaseHeader.HDRREF;
+    mbaseHeader.HDSREF = mbase.mbaseHeader.HDSREF;
+    mbaseHeader.HDRCKY = mbase.mbaseHeader.HDRCKY;
+    mbaseHeader.HDNREC = mbase.mbaseHeader.HDNREC;
+    mbaseHeader.HDMREC = mbase.mbaseHeader.HDMREC;
+    mbaseHeader.HDSMTD = mbase.mbaseHeader.HDSMTD;
+    mbaseHeader.HDTIMS = mbase.mbaseHeader.HDTIMS;
+    mbaseHeader.HDVFMT = mbase.mbaseHeader.HDVFMT;
+    mbaseHeader.HDDAPV = mbase.mbaseHeader.HDDAPV;
+    mbaseHeader.HDCOUN = mbase.mbaseHeader.HDCOUN;
+    mbaseHeader.HDFCID = mbase.mbaseHeader.HDFCID;
+    mbaseHeader.HDFCSQ = mbase.mbaseHeader.HDFCSQ;
+    mbaseHeader.HDFILR = mbase.mbaseHeader.HDFILR;
+   
+    //Request Data
+    DD20001_RS_TI mbaseResponse = udrCreate(DD20001_RS_TI);
+    if(inquiryStockCardRes.response.ResponseCode == "0000"){
+        mbaseResponse.IATMCD_ATMCard = inquiryStockCardRes.response.CardNo;
+        mbaseResponse.ICREFNO_CardReferenceNo = inquiryStockCardRes.response.CardReferenceNo;
+        mbaseResponse.ICRNTYP_CardType = inquiryStockCardRes.response.CardType;
+        mbaseResponse.IREFNM_PINREFNO = inquiryStockCardRes.response.PinMailerRefNo;
+    }
+
+    bytearray outgoing = udrEncode("DSP_Header_Encoder", dspHeader);
+    outgoing = baAppend(outgoing, udrEncode("MBASE_Header_Encode", mbaseHeader));
+    //outgoing = baAppend(outgoing, mbaseHeader);
+    outgoing = baAppend(outgoing, udrEncode("DD20001_RS_Encode", mbaseResponse));
+    return outgoing;
+}
+
+bytearray createResponseMessageDD20001_InquiryCard(DSP_Header_TgIn tcpRequest, WSCycle_inquiryCard inquiryCardRes){
+    //DSP Header
+    DSP_Header_TgIn dspHeader = createDefaultDSPHeader();
+    dspHeader.SKTMLEN = sizeOf_DSPHeader + sizeOf_MBaseHeader + sizeOf_DD20001 - 9;
+    dspHeader.SKTHEAD = tcpRequest.SKTHEAD;
+    dspHeader.I13HLEN = tcpRequest.I13HLEN;
+    dspHeader.I13MLEN = tcpRequest.I13MLEN;
+    dspHeader.I13VERS = tcpRequest.I13VERS;
+    dspHeader.I13SID = tcpRequest.I13SID;
+    dspHeader.I13DID = tcpRequest.I13DID;
+    dspHeader.I13RTGN = tcpRequest.I13RTGN;
+    dspHeader.I13XID = tcpRequest.I13XID;
+    dspHeader.I13RRNO = tcpRequest.I13RRNO;
+    dspHeader.I13USER = tcpRequest.I13USER;
+    dspHeader.I13HFMID = tcpRequest.I13HFMID;  
+    dspHeader.I13CUTO = tcpRequest.I13CUTO;
+    dspHeader.I13UDTA = tcpRequest.I13UDTA;
+    dspHeader.I13SDTA = tcpRequest.I13SDTA;
+    dspHeader.I13TTYP = tcpRequest.I13TTYP;
+    dspHeader.I13RCNF = tcpRequest.I13RCNF;
+    if(inquiryCardRes.response.ResponseCode == "0000"){
+        dspHeader.I13MSTA = "/AA";
+    }else{
+        dspHeader.I13MSTA = ".AB";
+    }
+         
+    //MBASE Header
+    list<MBASE_Header_With_Payload_TI> mbaseList = listCreate(MBASE_Header_With_Payload_TI);
+    udrDecode("MBASE_Header_With_Payload_Decode",mbaseList,tcpRequest.data);
+    MBASE_Header_With_Payload_TI mbase = listGet(mbaseList,0);
+
+    MBASE_Header_TI mbaseHeader = udrCreate(MBASE_Header_TI);
+    
+    mbaseHeader.HDVERS = mbase.mbaseHeader.HDVERS;
+    mbaseHeader.HDTCOD = mbase.mbaseHeader.HDTCOD;
+    mbaseHeader.HDTXTP = mbase.mbaseHeader.HDTXTP;
+    mbaseHeader.HDRIND = mbase.mbaseHeader.HDRIND; 
+    mbaseHeader.HDNERR = mbase.mbaseHeader.HDNERR;
+    mbaseHeader.HDSRID = mbase.mbaseHeader.HDSRID;
+    mbaseHeader.HDDSID = mbase.mbaseHeader.HDDSID;
+    mbaseHeader.HDRTDQ = mbase.mbaseHeader.HDRTDQ;
+    mbaseHeader.HDDTQL = mbase.mbaseHeader.HDDTQL;
+    mbaseHeader.HDTMLI = mbase.mbaseHeader.HDTMLI;
+    mbaseHeader.HDBKNO = mbase.mbaseHeader.HDBKNO;
+    mbaseHeader.HDLGID = mbase.mbaseHeader.HDLGID;
+    mbaseHeader.HDCLDR = mbase.mbaseHeader.HDCLDR; 
+    mbaseHeader.HDBRNO = mbase.mbaseHeader.HDBRNO; 
+    mbaseHeader.HDUSID = mbase.mbaseHeader.HDUSID;
+    mbaseHeader.HDSUP1 = mbase.mbaseHeader.HDSUP1;
+    mbaseHeader.HDSUP2 = mbase.mbaseHeader.HDSUP2;
+    mbaseHeader.HDSUP3 = mbase.mbaseHeader.HDSUP3;
+    mbaseHeader.HDACCD = mbase.mbaseHeader.HDACCD;
+    mbaseHeader.HDNXTA = mbase.mbaseHeader.HDNXTA;
+    mbaseHeader.HDTXMD = mbase.mbaseHeader.HDTXMD;
+    mbaseHeader.HDSLKY = mbase.mbaseHeader.HDSLKY;
+    mbaseHeader.HDRREF = mbase.mbaseHeader.HDRREF;
+    mbaseHeader.HDSREF = mbase.mbaseHeader.HDSREF;
+    mbaseHeader.HDRCKY = mbase.mbaseHeader.HDRCKY;
+    mbaseHeader.HDNREC = mbase.mbaseHeader.HDNREC;
+    mbaseHeader.HDMREC = mbase.mbaseHeader.HDMREC;
+    mbaseHeader.HDSMTD = mbase.mbaseHeader.HDSMTD;
+    mbaseHeader.HDTIMS = mbase.mbaseHeader.HDTIMS;
+    mbaseHeader.HDVFMT = mbase.mbaseHeader.HDVFMT;
+    mbaseHeader.HDDAPV = mbase.mbaseHeader.HDDAPV;
+    mbaseHeader.HDCOUN = mbase.mbaseHeader.HDCOUN;
+    mbaseHeader.HDFCID = mbase.mbaseHeader.HDFCID;
+    mbaseHeader.HDFCSQ = mbase.mbaseHeader.HDFCSQ;
+    mbaseHeader.HDFILR = mbase.mbaseHeader.HDFILR;
+   
+    //Request Data
+    DD20001_RS_TI mbaseResponse = udrCreate(DD20001_RS_TI);
+    
+    mbaseResponse.IATMCD_ATMCard = inquiryCardRes.response.CardNo;
+    mbaseResponse.ICREFNO_CardReferenceNo = inquiryCardRes.response.CardReferenceNo;
+	mbaseResponse.ITITCD_TitleName = inquiryCardRes.response.TitleNameTh;
+	mbaseResponse.IENAME_EnglishName = inquiryCardRes.response.NameTh;
+	mbaseResponse.IBIRD8_BirthDate = inquiryCardRes.response.DateOfBirth;
+    mbaseResponse.IIDNUM_IDNumber = inquiryCardRes.response.CifNo;
+    mbaseResponse.IIDTYP_IDTypeCode = cifTypeCodeMapping2Socket(inquiryCardRes.response.CifTypeCode);
+    mbaseResponse.IIDCTY_IDIssueCountryCode = inquiryCardRes.response.IdIssueCountryCode;
+    
+    //date AnnualFeeDate = null;
+    //strToDate(AnnualFeeDate, inquiryCardRes.response.OriginalFeeDate, "yyyy-MM-dd HH:mm:ss.SSS");
+    //dateToString(mbaseResponse.IAFEE8_AnnualFeeDate,AnnualFeeDate,"yyyyMMdd");
+    mbaseResponse.IAFEE8_AnnualFeeDate = inquiryCardRes.response.OriginalFeeDate;
+
+    mbaseResponse.IBRNIS_BranchNumber = inquiryCardRes.response.IssueBranch;
+    mbaseResponse.ISTATS_Status = inquiryCardRes.response.CardStatusCode;
+    mbaseResponse.ILUSE8_LastUsed = inquiryCardRes.response.LastUsedDate;
+    mbaseResponse.IREFNM_PINREFNO = inquiryCardRes.response.PinMailerRefNo;
+    mbaseResponse.IPINER_PinErrorCount = inquiryCardRes.response.NoOfBadPinTries;
+    
+    date DateAdd = null;
+    strToDate(DateAdd, inquiryCardRes.response.CardCreatedDate, "yyyy-MM-dd HH:mm:ss.SSS");
+    dateToString(mbaseResponse.IADDD8_DateAdd,DateAdd,"yyyyMMdd");
+
+    mbaseResponse.IISSD8_DateIssue = inquiryCardRes.response.CardIssueDate;
+    
+    date DateLastMaint = null;
+    strToDate(DateLastMaint, inquiryCardRes.response.CardUpdatedDate, "yyyy-MM-dd HH:mm:ss.SSS");
+    dateToString(mbaseResponse.ILMND8_DateLastMaint,DateLastMaint,"yyyyMMdd");
+    mbaseResponse.ICIFNO_CIFNumber = inquiryCardRes.response.CustomerNo;
+      
+    mbaseResponse.IACCNT_NumberOfAccount = inquiryCardRes.response.NumberOfAccount;
+
+    int accountSize = listSize(inquiryCardRes.response.AccountList.accountList);
+    for(int i=0; i<accountSize; i++){
+        Account account = listGet(inquiryCardRes.response.AccountList.accountList,i);
+        if (i==0){
+            mbaseResponse.ITYPE01_AccountType01 = account.AcctTypeCode;
+            mbaseResponse.IACCT01_AccountNo01 = account.AcctNo;
+            mbaseResponse.IACBR01_AccountBranch01 = account.AcctBranchCode;
+            mbaseResponse.ISTAT01_AccountStatus01 = accountCategoryCodeMapping2Socket(account.AcctCategoryCode);
+            mbaseResponse.IOPTN01_AccountOption01 = account.AccountAction;
+        }
+        
+        if (i==1){
+            mbaseResponse.ITYPE02_AccountType02 = account.AcctTypeCode;
+            mbaseResponse.IACCT02_AccountNo02 = account.AcctNo;
+            mbaseResponse.IACBR02_AccountBranch02 = account.AcctBranchCode;
+            mbaseResponse.ISTAT02_AccountStatus02 = accountCategoryCodeMapping2Socket(account.AcctCategoryCode);
+            mbaseResponse.IOPTN02_AccountOption02 = account.AccountAction;
+        }
+        
+        if (i==2){
+            mbaseResponse.ITYPE03_AccountType03 = account.AcctTypeCode;
+            mbaseResponse.IACCT03_AccountNo03 = account.AcctNo;
+            mbaseResponse.IACBR03_AccountBranch03 = account.AcctBranchCode;
+            mbaseResponse.ISTAT03_AccountStatus03 = accountCategoryCodeMapping2Socket(account.AcctCategoryCode);
+            mbaseResponse.IOPTN03_AccountOption03 = account.AccountAction;
+        }
+        
+        if (i==3){
+            mbaseResponse.ITYPE04_AccountType04 = account.AcctTypeCode;
+            mbaseResponse.IACCT04_AccountNo04 = account.AcctNo;
+            mbaseResponse.IACBR04_AccountBranch04 = account.AcctBranchCode;
+            mbaseResponse.ISTAT04_AccountStatus04 = accountCategoryCodeMapping2Socket(account.AcctCategoryCode);
+            mbaseResponse.IOPTN04_AccountOption04 = account.AccountAction;
+        }
+        
+        if (i==4){
+            mbaseResponse.ITYPE05_AccountType05 = account.AcctTypeCode;
+            mbaseResponse.IACCT05_AccountNo05 = account.AcctNo;
+            mbaseResponse.IACBR05_AccountBranch05 = account.AcctBranchCode;
+            mbaseResponse.ISTAT05_AccountStatus05 = accountCategoryCodeMapping2Socket(account.AcctCategoryCode);
+            mbaseResponse.IOPTN05_AccountOption05 = account.AccountAction;
+        }
+        
+        if (i==5){
+            mbaseResponse.ITYPE06_AccountType06 = account.AcctTypeCode;
+            mbaseResponse.IACCT06_AccountNo06 = account.AcctNo;
+            mbaseResponse.IACBR06_AccountBranch06 = account.AcctBranchCode;
+            mbaseResponse.ISTAT06_AccountStatus06 = accountCategoryCodeMapping2Socket(account.AcctCategoryCode);
+            mbaseResponse.IOPTN06_AccountOption06 = account.AccountAction;
+        }
+        
+        if (i==6){
+            mbaseResponse.ITYPE07_AccountType07 = account.AcctTypeCode;
+            mbaseResponse.IACCT07_AccountNo07 = account.AcctNo;
+            mbaseResponse.IACBR07_AccountBranch07 = account.AcctBranchCode;
+            mbaseResponse.ISTAT07_AccountStatus07 = accountCategoryCodeMapping2Socket(account.AcctCategoryCode);
+            mbaseResponse.IOPTN07_AccountOption07 = account.AccountAction;
+        }
+        
+        if (i==7){
+            mbaseResponse.ITYPE08_AccountType08 = account.AcctTypeCode;
+            mbaseResponse.IACCT08_AccountNo08 = account.AcctNo;
+            mbaseResponse.IACBR08_AccountBranch08 = account.AcctBranchCode;
+            mbaseResponse.ISTAT08_AccountStatus08 = accountCategoryCodeMapping2Socket(account.AcctCategoryCode);
+            mbaseResponse.IOPTN08_AccountOption08 = account.AccountAction;
+        }
+    }
+    
+    mbaseResponse.INSFLG_InsuranceFlag = "";
+    mbaseResponse.ICRNTYP_CardType = "";
+    if (inquiryCardRes.response.TitleNameTh != null){
+        mbaseResponse.ITITTH_TitleNameThai = inquiryCardRes.response.TitleNameTh;
+    }
+    
+    if (inquiryCardRes.response.NameTh != null){
+        mbaseResponse.ITNAME_ThaiName = inquiryCardRes.response.NameTh;
+    }
+    
+    //edit by Prapas Ngootip 30/11/2018
+    mbaseResponse.IPTFG_PinTriesFlag = inquiryCardRes.response.ExtensionBadPinFlag;
+    //end edit
+    
+    bytearray outgoing = udrEncode("DSP_Header_Encoder", dspHeader);
+    outgoing = baAppend(outgoing, udrEncode("MBASE_Header_Encode", mbaseHeader));
+    outgoing = baAppend(outgoing, udrEncode("DD20001_RS_Encode", mbaseResponse));
+    return outgoing;
+}
+
+bytearray createResponseMessageDD22001_AddInstantCard(DSP_Header_TgIn tcpRequest, WSCycle_addInstantCard addInstantCardRes){
+    //DSP Header
+    DSP_Header_TgIn dspHeader = createDefaultDSPHeader();
+    dspHeader.SKTMLEN = sizeOf_DSPHeader + sizeOf_MBaseHeader + sizeOf_DD22001 - 9;
+    dspHeader.SKTHEAD = tcpRequest.SKTHEAD;
+    dspHeader.I13HLEN = tcpRequest.I13HLEN;
+    dspHeader.I13MLEN = tcpRequest.I13MLEN;
+    dspHeader.I13VERS = tcpRequest.I13VERS;
+    dspHeader.I13SID = tcpRequest.I13SID;
+    dspHeader.I13DID = tcpRequest.I13DID;
+    dspHeader.I13RTGN = tcpRequest.I13RTGN;
+    dspHeader.I13XID = tcpRequest.I13XID;
+    dspHeader.I13RRNO = tcpRequest.I13RRNO;
+    dspHeader.I13USER = tcpRequest.I13USER;
+    dspHeader.I13HFMID = tcpRequest.I13HFMID;  
+    dspHeader.I13CUTO = tcpRequest.I13CUTO;
+    dspHeader.I13UDTA = tcpRequest.I13UDTA;
+    dspHeader.I13SDTA = tcpRequest.I13SDTA;
+    dspHeader.I13TTYP = tcpRequest.I13TTYP;
+    dspHeader.I13RCNF = tcpRequest.I13RCNF;
+    //if(addInstantCardRes.response.ResponseCode == "0000"){
+    dspHeader.I13MSTA = "/AA";
+    //}else{
+    //    dspHeader.I13MSTA = "/AB";
+    //}
+         
+    //MBASE Header
+    list<MBASE_Header_With_Payload_TI> mbaseList = listCreate(MBASE_Header_With_Payload_TI);
+    udrDecode("MBASE_Header_With_Payload_Decode",mbaseList,tcpRequest.data);
+    MBASE_Header_With_Payload_TI mbase = listGet(mbaseList,0);
+    
+    MBASE_Header_TI mbaseHeader = udrCreate(MBASE_Header_TI);
+    
+    mbaseHeader.HDVERS = mbase.mbaseHeader.HDVERS;
+    mbaseHeader.HDTCOD = mbase.mbaseHeader.HDTCOD;
+    mbaseHeader.HDTXTP = mbase.mbaseHeader.HDTXTP;
+    mbaseHeader.HDRIND = mbase.mbaseHeader.HDRIND; 
+    mbaseHeader.HDNERR = mbase.mbaseHeader.HDNERR;
+    mbaseHeader.HDSRID = mbase.mbaseHeader.HDSRID;
+    mbaseHeader.HDDSID = mbase.mbaseHeader.HDDSID;
+    mbaseHeader.HDRTDQ = mbase.mbaseHeader.HDRTDQ;
+    mbaseHeader.HDDTQL = mbase.mbaseHeader.HDDTQL;
+    mbaseHeader.HDTMLI = mbase.mbaseHeader.HDTMLI;
+    mbaseHeader.HDBKNO = mbase.mbaseHeader.HDBKNO;
+    mbaseHeader.HDLGID = mbase.mbaseHeader.HDLGID;
+    mbaseHeader.HDCLDR = mbase.mbaseHeader.HDCLDR; 
+    mbaseHeader.HDBRNO = mbase.mbaseHeader.HDBRNO; 
+    mbaseHeader.HDUSID = mbase.mbaseHeader.HDUSID;
+    mbaseHeader.HDSUP1 = mbase.mbaseHeader.HDSUP1;
+    mbaseHeader.HDSUP2 = mbase.mbaseHeader.HDSUP2;
+    mbaseHeader.HDSUP3 = mbase.mbaseHeader.HDSUP3;
+    mbaseHeader.HDACCD = mbase.mbaseHeader.HDACCD;
+    mbaseHeader.HDNXTA = mbase.mbaseHeader.HDNXTA;
+    mbaseHeader.HDTXMD = mbase.mbaseHeader.HDTXMD;
+    mbaseHeader.HDSLKY = mbase.mbaseHeader.HDSLKY;
+    mbaseHeader.HDRREF = mbase.mbaseHeader.HDRREF;
+    mbaseHeader.HDSREF = mbase.mbaseHeader.HDSREF;
+    mbaseHeader.HDRCKY = mbase.mbaseHeader.HDRCKY;
+    mbaseHeader.HDNREC = mbase.mbaseHeader.HDNREC;
+    mbaseHeader.HDMREC = mbase.mbaseHeader.HDMREC;
+    mbaseHeader.HDSMTD = mbase.mbaseHeader.HDSMTD;
+    mbaseHeader.HDTIMS = mbase.mbaseHeader.HDTIMS;
+    mbaseHeader.HDVFMT = mbase.mbaseHeader.HDVFMT;
+    mbaseHeader.HDDAPV = mbase.mbaseHeader.HDDAPV;
+    mbaseHeader.HDCOUN = mbase.mbaseHeader.HDCOUN;
+    mbaseHeader.HDFCID = mbase.mbaseHeader.HDFCID;
+    mbaseHeader.HDFCSQ = mbase.mbaseHeader.HDFCSQ;
+    mbaseHeader.HDFILR = mbase.mbaseHeader.HDFILR;
+   
+    //Request Data
+
+    bytearray outgoing = udrEncode("DSP_Header_Encoder", dspHeader);
+    outgoing = baAppend(outgoing, udrEncode("MBASE_Header_Encode", mbaseHeader));
+    bytearray refilled = refillTrimedColumn(mbase.data,sizeOf_DD22001);
+    outgoing = baAppend(outgoing, refilled);
+    //outgoing = baAppend(outgoing, udrEncode("DD20001_RS_Encode", mbaseResponse));
+    return outgoing;
+}
+
+bytearray createResponseMessageDD22002_ReplaceCard(DSP_Header_TgIn tcpRequest, WSCycle_replaceCard replaceCardRes){
+    //DSP Header
+    DSP_Header_TgIn dspHeader = createDefaultDSPHeader();
+    dspHeader.SKTMLEN = sizeOf_DSPHeader + sizeOf_MBaseHeader + sizeOf_DD22002 - 9;
+    dspHeader.SKTHEAD = tcpRequest.SKTHEAD;
+    dspHeader.I13HLEN = tcpRequest.I13HLEN;
+    dspHeader.I13MLEN = tcpRequest.I13MLEN;
+    dspHeader.I13VERS = tcpRequest.I13VERS;
+    dspHeader.I13SID = tcpRequest.I13SID;
+    dspHeader.I13DID = tcpRequest.I13DID;
+    dspHeader.I13RTGN = tcpRequest.I13RTGN;
+    dspHeader.I13XID = tcpRequest.I13XID;
+    dspHeader.I13RRNO = tcpRequest.I13RRNO;
+    dspHeader.I13USER = tcpRequest.I13USER;
+    dspHeader.I13HFMID = tcpRequest.I13HFMID;  
+    dspHeader.I13CUTO = tcpRequest.I13CUTO;
+    dspHeader.I13UDTA = tcpRequest.I13UDTA;
+    dspHeader.I13SDTA = tcpRequest.I13SDTA;
+    dspHeader.I13TTYP = tcpRequest.I13TTYP;
+    dspHeader.I13RCNF = tcpRequest.I13RCNF;
+    if(replaceCardRes.response.ResponseCode == "0000"){
+        dspHeader.I13MSTA = "/AA";
+    }else{
+        dspHeader.I13MSTA = ".AB";
+    }
+         
+    //MBASE Header
+    list<MBASE_Header_With_Payload_TI> mbaseList = listCreate(MBASE_Header_With_Payload_TI);
+    udrDecode("MBASE_Header_With_Payload_Decode",mbaseList,tcpRequest.data);
+    MBASE_Header_With_Payload_TI mbase = listGet(mbaseList,0);
+    
+    MBASE_Header_TI mbaseHeader = udrCreate(MBASE_Header_TI);
+    
+    mbaseHeader.HDVERS = mbase.mbaseHeader.HDVERS;
+    mbaseHeader.HDTCOD = mbase.mbaseHeader.HDTCOD;
+    mbaseHeader.HDTXTP = mbase.mbaseHeader.HDTXTP;
+    mbaseHeader.HDRIND = mbase.mbaseHeader.HDRIND; 
+    mbaseHeader.HDNERR = mbase.mbaseHeader.HDNERR;
+    mbaseHeader.HDSRID = mbase.mbaseHeader.HDSRID;
+    mbaseHeader.HDDSID = mbase.mbaseHeader.HDDSID;
+    mbaseHeader.HDRTDQ = mbase.mbaseHeader.HDRTDQ;
+    mbaseHeader.HDDTQL = mbase.mbaseHeader.HDDTQL;
+    mbaseHeader.HDTMLI = mbase.mbaseHeader.HDTMLI;
+    mbaseHeader.HDBKNO = mbase.mbaseHeader.HDBKNO;
+    mbaseHeader.HDLGID = mbase.mbaseHeader.HDLGID;
+    mbaseHeader.HDCLDR = mbase.mbaseHeader.HDCLDR; 
+    mbaseHeader.HDBRNO = mbase.mbaseHeader.HDBRNO; 
+    mbaseHeader.HDUSID = mbase.mbaseHeader.HDUSID;
+    mbaseHeader.HDSUP1 = mbase.mbaseHeader.HDSUP1;
+    mbaseHeader.HDSUP2 = mbase.mbaseHeader.HDSUP2;
+    mbaseHeader.HDSUP3 = mbase.mbaseHeader.HDSUP3;
+    mbaseHeader.HDACCD = mbase.mbaseHeader.HDACCD;
+    mbaseHeader.HDNXTA = mbase.mbaseHeader.HDNXTA;
+    mbaseHeader.HDTXMD = mbase.mbaseHeader.HDTXMD;
+    mbaseHeader.HDSLKY = mbase.mbaseHeader.HDSLKY;
+    mbaseHeader.HDRREF = mbase.mbaseHeader.HDRREF;
+    mbaseHeader.HDSREF = mbase.mbaseHeader.HDSREF;
+    mbaseHeader.HDRCKY = mbase.mbaseHeader.HDRCKY;
+    mbaseHeader.HDNREC = mbase.mbaseHeader.HDNREC;
+    mbaseHeader.HDMREC = mbase.mbaseHeader.HDMREC;
+    mbaseHeader.HDSMTD = mbase.mbaseHeader.HDSMTD;
+    mbaseHeader.HDTIMS = mbase.mbaseHeader.HDTIMS;
+    mbaseHeader.HDVFMT = mbase.mbaseHeader.HDVFMT;
+    mbaseHeader.HDDAPV = mbase.mbaseHeader.HDDAPV;
+    mbaseHeader.HDCOUN = mbase.mbaseHeader.HDCOUN;
+    mbaseHeader.HDFCID = mbase.mbaseHeader.HDFCID;
+    mbaseHeader.HDFCSQ = mbase.mbaseHeader.HDFCSQ;
+    mbaseHeader.HDFILR = mbase.mbaseHeader.HDFILR;
+   
+    //Request Data
+
+    bytearray outgoing = udrEncode("DSP_Header_Encoder", dspHeader);
+    outgoing = baAppend(outgoing, udrEncode("MBASE_Header_Encode", mbaseHeader));
+    bytearray refilled = refillTrimedColumn(mbase.data,sizeOf_DD22002);
+    outgoing = baAppend(outgoing, refilled);
+    //outgoing = baAppend(outgoing, udrEncode("DD20001_RS_Encode", mbaseResponse));
+    return outgoing;
+}
+
+bytearray createResponseMessageDD22003_UpdateRelatedAccounts(DSP_Header_TgIn tcpRequest, WSCycle_updateRelatedAccounts updateRelatedAccRes){
+    //DSP Header
+    DSP_Header_TgIn dspHeader = createDefaultDSPHeader();
+    dspHeader.SKTMLEN = sizeOf_DSPHeader + sizeOf_MBaseHeader + sizeOf_DD22003 - 9;
+    //dspHeader.SKTMLEN = sizeOf_DSPHeader + sizeOf_MBaseHeader + 726 - 9;
+    dspHeader.SKTHEAD = tcpRequest.SKTHEAD;
+    dspHeader.I13HLEN = tcpRequest.I13HLEN;
+    dspHeader.I13MLEN = tcpRequest.I13MLEN;
+    dspHeader.I13VERS = tcpRequest.I13VERS;
+    dspHeader.I13SID = tcpRequest.I13SID;
+    dspHeader.I13DID = tcpRequest.I13DID;
+    dspHeader.I13RTGN = tcpRequest.I13RTGN;
+    dspHeader.I13XID = tcpRequest.I13XID;
+    dspHeader.I13RRNO = tcpRequest.I13RRNO;
+    dspHeader.I13USER = tcpRequest.I13USER;
+    dspHeader.I13HFMID = tcpRequest.I13HFMID;  
+    dspHeader.I13CUTO = tcpRequest.I13CUTO;
+    dspHeader.I13UDTA = tcpRequest.I13UDTA;
+    dspHeader.I13SDTA = tcpRequest.I13SDTA;
+    dspHeader.I13TTYP = tcpRequest.I13TTYP;
+    dspHeader.I13RCNF = tcpRequest.I13RCNF;
+    if(updateRelatedAccRes.response.ResponseCode == "0000"){
+        dspHeader.I13MSTA = "/AA";
+    }else{
+        dspHeader.I13MSTA = ".AB";
+    }
+         
+    //MBASE Header
+    list<MBASE_Header_With_Payload_TI> mbaseList = listCreate(MBASE_Header_With_Payload_TI);
+    udrDecode("MBASE_Header_With_Payload_Decode",mbaseList,tcpRequest.data);
+    MBASE_Header_With_Payload_TI mbase = listGet(mbaseList,0);
+    
+    MBASE_Header_TI mbaseHeader = udrCreate(MBASE_Header_TI);
+    
+    mbaseHeader.HDVERS = mbase.mbaseHeader.HDVERS;
+    mbaseHeader.HDTCOD = mbase.mbaseHeader.HDTCOD;
+    mbaseHeader.HDTXTP = mbase.mbaseHeader.HDTXTP;
+    mbaseHeader.HDRIND = mbase.mbaseHeader.HDRIND; 
+    mbaseHeader.HDNERR = mbase.mbaseHeader.HDNERR;
+    mbaseHeader.HDSRID = mbase.mbaseHeader.HDSRID;
+    mbaseHeader.HDDSID = mbase.mbaseHeader.HDDSID;
+    mbaseHeader.HDRTDQ = mbase.mbaseHeader.HDRTDQ;
+    mbaseHeader.HDDTQL = mbase.mbaseHeader.HDDTQL;
+    mbaseHeader.HDTMLI = mbase.mbaseHeader.HDTMLI;
+    mbaseHeader.HDBKNO = mbase.mbaseHeader.HDBKNO;
+    mbaseHeader.HDLGID = mbase.mbaseHeader.HDLGID;
+    mbaseHeader.HDCLDR = mbase.mbaseHeader.HDCLDR; 
+    mbaseHeader.HDBRNO = mbase.mbaseHeader.HDBRNO; 
+    mbaseHeader.HDUSID = mbase.mbaseHeader.HDUSID;
+    mbaseHeader.HDSUP1 = mbase.mbaseHeader.HDSUP1;
+    mbaseHeader.HDSUP2 = mbase.mbaseHeader.HDSUP2;
+    mbaseHeader.HDSUP3 = mbase.mbaseHeader.HDSUP3;
+    mbaseHeader.HDACCD = mbase.mbaseHeader.HDACCD;
+    mbaseHeader.HDNXTA = mbase.mbaseHeader.HDNXTA;
+    mbaseHeader.HDTXMD = mbase.mbaseHeader.HDTXMD;
+    mbaseHeader.HDSLKY = mbase.mbaseHeader.HDSLKY;
+    mbaseHeader.HDRREF = mbase.mbaseHeader.HDRREF;
+    mbaseHeader.HDSREF = mbase.mbaseHeader.HDSREF;
+    mbaseHeader.HDRCKY = mbase.mbaseHeader.HDRCKY;
+    mbaseHeader.HDNREC = mbase.mbaseHeader.HDNREC;
+    mbaseHeader.HDMREC = mbase.mbaseHeader.HDMREC;
+    mbaseHeader.HDSMTD = mbase.mbaseHeader.HDSMTD;
+    mbaseHeader.HDTIMS = mbase.mbaseHeader.HDTIMS;
+    mbaseHeader.HDVFMT = mbase.mbaseHeader.HDVFMT;
+    mbaseHeader.HDDAPV = mbase.mbaseHeader.HDDAPV;
+    mbaseHeader.HDCOUN = mbase.mbaseHeader.HDCOUN;
+    mbaseHeader.HDFCID = mbase.mbaseHeader.HDFCID;
+    mbaseHeader.HDFCSQ = mbase.mbaseHeader.HDFCSQ;
+    mbaseHeader.HDFILR = mbase.mbaseHeader.HDFILR;
+   
+    //Request Data
+
+    bytearray outgoing = udrEncode("DSP_Header_Encoder", dspHeader);
+    outgoing = baAppend(outgoing, udrEncode("MBASE_Header_Encode", mbaseHeader));
+    bytearray refilled = refillTrimedColumn(mbase.data,sizeOf_DD22003);
+    outgoing = baAppend(outgoing, refilled);
+    //outgoing = baAppend(outgoing, udrEncode("DD22003_RS_Encode", mbaseResponse));
+    return outgoing;
+}
+
+//reject message
+bytearray createResponseMessageRejected(DSP_Header_TgIn tcpRequest,ws.AbstractWSCycle wsRes){
+    debug("Webservice error Message: ");
+    debug(wsRes.errorMessage);
+    debug("End webservice error Message: ");
+    
+    //DSP Header
+    DSP_Header_TgIn dspHeader = createDefaultDSPHeader();
+    //sizeOf_DSPHeader + sizeOf_MBaseHeader + sizeOf_MBERROR - 9
+    dspHeader.SKTMLEN = 940;
+    dspHeader.SKTHEAD = tcpRequest.SKTHEAD;
+    dspHeader.I13HLEN = tcpRequest.I13HLEN;
+    dspHeader.I13MLEN = tcpRequest.I13MLEN;
+    dspHeader.I13VERS = tcpRequest.I13VERS;
+    dspHeader.I13SID = tcpRequest.I13SID;
+    dspHeader.I13DID = tcpRequest.I13DID;
+    dspHeader.I13RTGN = tcpRequest.I13RTGN;
+    dspHeader.I13XID = tcpRequest.I13XID;
+    dspHeader.I13RRNO = tcpRequest.I13RRNO;
+    dspHeader.I13USER = tcpRequest.I13USER;
+    dspHeader.I13HFMID = tcpRequest.I13HFMID;  
+    dspHeader.I13CUTO = tcpRequest.I13CUTO;
+    dspHeader.I13UDTA = tcpRequest.I13UDTA;
+    dspHeader.I13SDTA = tcpRequest.I13SDTA;
+    dspHeader.I13TTYP = tcpRequest.I13TTYP;
+    dspHeader.I13RCNF = tcpRequest.I13RCNF;
+    dspHeader.I13MSTA = ".AB";
+         
+    //MBASE Header
+    list<MBASE_Header_With_Payload_TI> mbaseList = listCreate(MBASE_Header_With_Payload_TI);
+    udrDecode("MBASE_Header_With_Payload_Decode",mbaseList,tcpRequest.data);
+    MBASE_Header_With_Payload_TI mbase = listGet(mbaseList,0);
+    
+    MBASE_Header_TI mbaseHeader = udrCreate(MBASE_Header_TI);
+    
+    mbaseHeader.HDVERS = mbase.mbaseHeader.HDVERS;
+    mbaseHeader.HDTCOD = mbase.mbaseHeader.HDTCOD;
+    mbaseHeader.HDTXTP = mbase.mbaseHeader.HDTXTP;
+    mbaseHeader.HDRIND = "AB"; 
+    mbaseHeader.HDNERR = mbase.mbaseHeader.HDNERR;
+    mbaseHeader.HDSRID = mbase.mbaseHeader.HDSRID;
+    mbaseHeader.HDDSID = mbase.mbaseHeader.HDDSID;
+    mbaseHeader.HDRTDQ = mbase.mbaseHeader.HDRTDQ;
+    mbaseHeader.HDDTQL = mbase.mbaseHeader.HDDTQL;
+    mbaseHeader.HDTMLI = mbase.mbaseHeader.HDTMLI;
+    mbaseHeader.HDBKNO = mbase.mbaseHeader.HDBKNO;
+    mbaseHeader.HDLGID = mbase.mbaseHeader.HDLGID;
+    mbaseHeader.HDCLDR = mbase.mbaseHeader.HDCLDR; 
+    mbaseHeader.HDBRNO = mbase.mbaseHeader.HDBRNO; 
+    mbaseHeader.HDUSID = mbase.mbaseHeader.HDUSID;
+    mbaseHeader.HDSUP1 = mbase.mbaseHeader.HDSUP1;
+    mbaseHeader.HDSUP2 = mbase.mbaseHeader.HDSUP2;
+    mbaseHeader.HDSUP3 = mbase.mbaseHeader.HDSUP3;
+    mbaseHeader.HDACCD = mbase.mbaseHeader.HDACCD;
+    mbaseHeader.HDNXTA = mbase.mbaseHeader.HDNXTA;
+    mbaseHeader.HDTXMD = mbase.mbaseHeader.HDTXMD;
+    mbaseHeader.HDSLKY = mbase.mbaseHeader.HDSLKY;
+    mbaseHeader.HDRREF = mbase.mbaseHeader.HDRREF;
+    mbaseHeader.HDSREF = mbase.mbaseHeader.HDSREF;
+    mbaseHeader.HDRCKY = mbase.mbaseHeader.HDRCKY;
+    mbaseHeader.HDNREC = mbase.mbaseHeader.HDNREC;
+    mbaseHeader.HDMREC = mbase.mbaseHeader.HDMREC;
+    mbaseHeader.HDSMTD = mbase.mbaseHeader.HDSMTD;
+    mbaseHeader.HDTIMS = mbase.mbaseHeader.HDTIMS;
+    mbaseHeader.HDVFMT = mbase.mbaseHeader.HDVFMT;
+    mbaseHeader.HDDAPV = mbase.mbaseHeader.HDDAPV;
+    mbaseHeader.HDCOUN = mbase.mbaseHeader.HDCOUN;
+    mbaseHeader.HDFCID = mbase.mbaseHeader.HDFCID;
+    mbaseHeader.HDFCSQ = mbase.mbaseHeader.HDFCSQ;
+    mbaseHeader.HDFILR = mbase.mbaseHeader.HDFILR;
+   
+    //MBError
+    MBASE_MBERROR_RQ_TI mbError = udrCreate(MBASE_MBERROR_RQ_TI);
+    mbError.ERCODE_ErrorCode = "DSP9999";
+    mbError.ERTYPE_ErrorIndicator = "E";
+    mbError.ERSEVE_ErrorSeverity = "";
+    mbError.ERFLDN_ErrorField = "";
+    mbError.EROVRB_OverideBitPosition = "";
+    
+    string errorDesc = "";
+    if(instanceOf(wsRes, WSCycle_inquiryStockCard)){
+        WSCycle_inquiryStockCard resp = (WSCycle_inquiryStockCard) wsRes;
+        errorDesc = resp.response.ResponseCode + resp.response.ResponseDesc;
+    }
+    
+    if(instanceOf(wsRes, WSCycle_addInstantCard)){
+        WSCycle_addInstantCard resp = (WSCycle_addInstantCard) wsRes;
+        errorDesc = resp.response.ResponseCode + resp.response.ResponseDesc;
+    }
+    
+    if(instanceOf(wsRes, WSCycle_inquiryCard)){
+        WSCycle_inquiryCard resp = (WSCycle_inquiryCard) wsRes;
+        errorDesc = resp.response.ResponseCode + resp.response.ResponseDesc;
+    }
+    
+    if(instanceOf(wsRes, WSCycle_replaceCard)){
+        WSCycle_replaceCard resp = (WSCycle_replaceCard) wsRes;
+        errorDesc = resp.response.ResponseCode + resp.response.ResponseDesc;
+        
+    }
+    
+    if(instanceOf(wsRes, WSCycle_updateRelatedAccounts)){
+        WSCycle_updateRelatedAccounts resp = (WSCycle_updateRelatedAccounts) wsRes;
+        errorDesc = resp.response.ResponseCode + resp.response.ResponseDesc;
+    }
+    
+    if(errorDesc == ""){
+        mbError.ERDESC_ErrorDescription = wsRes.errorMessage;
+    }else{
+        mbError.ERDESC_ErrorDescription = errorDesc;
+    }
+    
+    mbError.EREXTN_ExtendedData = ".";
+
+    bytearray outgoing = udrEncode("DSP_Header_Encoder", dspHeader);
+    outgoing = baAppend(outgoing, udrEncode("MBASE_Header_Encode", mbaseHeader));
+    outgoing = baAppend(outgoing, udrEncode("MBASE_MBERROR_RQ_Encode", mbError));
+    return outgoing; 
+}
+//end reject message
+
+//End Create MBASE Response Message
+
+//mapping sl data to ccms
+string setAccountNumber(string acctNo){
+    string AccountNumber = "000000000000";
+    if(acctNo!="0000000000000000000"){
+        AccountNumber = strSubstring(acctNo,strLength(acctNo)-12,strLength(acctNo));
+    }
+    return AccountNumber;
+}
+
+string accountCategoryCodeMapping(string acctCat){
+    if(acctCat=="3"){
+        return "PR";
+    }else{
+        return "SE";
+    }
+}
+
+string accountCategoryCodeMapping2Socket(string acctCat){
+    if(acctCat=="PR"){
+        return "3";
+    }else{
+        return "1";
+    }
+}
+
+string cifTypeCodeMapping(string cifType){
+    if(cifType=="001"){ //PERSONAL ID
+        return "I";
+    }else if(cifType=="002"){   //PASSPORT NUMBER
+        return "P";
+    }else if(cifType=="003"){   //TAX ID
+        return "X";
+    }else if(cifType=="004"){   //JURISTIC ID
+        return "J";
+    }else{
+        return "O";
+    }
+}
+
+string cifTypeCodeMapping2Socket(string cifType){
+    if(cifType=="I"){ //PERSONAL ID
+        return "001";
+    }else if(cifType=="P"){   //PASSPORT NUMBER
+        return "002";
+    }else if(cifType=="X"){   //TAX ID
+        return "003";
+    }else if(cifType=="J"){   //JURISTIC ID
+        return "004";
+    }else{
+        return "000";
+    }
+}
+
+string accountAction(string acctOption){
+    if(acctOption=="N"){
+        return "";
+    }else{
+        return acctOption;
+    }
+}
+//end mapping
+
+]]></string>
+</exportmultiplex>
