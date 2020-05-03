@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Ultra_Format" ref_path="ultra_format[Internal]/storable[ultra_format]/storable[Data]">
+   <string name="Definition"><![CDATA[import CBS.UFL_DSP_Header;
+
+session SaveServiceLog_Agg{
+    MatcherSaveLog matchLog;
+};
+
+internal MatcherSaveLog {
+    string logType;
+    string uuid;
+    string serviceName;
+    date requestDatetime;
+    long requestMillisec;
+    string xmlRequest;
+    string xmlResponse;
+    string socketRequest;
+    string socketResponse;
+    string responseStatus;
+    DSP_Header_TgIn tcpResponse;
+};]]></string>
+   <boolean name="IsValid" value="true"/>
+</exportmultiplex>

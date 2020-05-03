@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE webservices_profile SYSTEM "jar:/mz/dtd/webservices_profile.dtd">
+<webservices_profile category="Internal">
+   <storable name="webservices_profile" storable-id="dr.Configuration" ver="6.0">
+      <array classname="java.lang.String" name="Access Groups -read -write -execute" size="3">
+         <string name="0" value="All"/>
+         <string name="1" value="Administrator"/>
+         <string name="2" value="All"/>
+      </array>
+      <storable name="Auxiliary Data" null="true"/>
+      <string name="Current Comment" null="true"/>
+      <storable name="Data" storable-id="dr.WSProfileConfig" ver="15.0">
+         <string name="Binding name" value="AisServicePortBinding"/>
+         <boolean name="Disable Underscore Binding Mode" value="false"/>
+         <boolean name="Disable Wrapper Style" value="false"/>
+         <boolean name="Enable JAAS" value="false"/>
+         <boolean name="Enable Username Token" value="false"/>
+         <boolean name="Enable WS Addressing" value="false"/>
+         <boolean name="Enforce RM" value="false"/>
+         <string name="JAAS Module" value="File Login Module"/>
+         <string name="JAAS Properties"><![CDATA[passwordFile /etc/passwd
+debug true
+]]></string>
+         <string name="Max Enum Members" value="256"/>
+         <boolean name="Populate OriginalData Field" value="false"/>
+         <string name="Port type" value="AisService"/>
+         <boolean name="Process Implicit SOAP Headers" value="false"/>
+         <string name="RM Store" value="In Memory"/>
+         <string name="Schema Bindings" value=""/>
+         <boolean name="Security Enabled" value="false"/>
+         <storable name="Security Settings" null="true"/>
+         <string name="Service Port name" value="AisServicePort"/>
+         <boolean name="Simple Mode Enabled" value="false"/>
+         <string name="TLS keystore file" null="true"/>
+         <bytearray name="TLS keystore file content" null="true"/>
+         <password name="TLS keystore password" null="true"/>
+         <password name="Username Token Password" value="DR_DEFAULT_KEY-017BB0B8FB061C1876D43DD75468AA40"/>
+         <string name="Username Token Username" value=""/>
+         <list classname="java.util.LinkedList" name="concatenationFilePathList"/>
+         <string name="helper_class" value="ws.SMS.PRF_WS_SMSService.WSHelperImpl"/>
+         <list classname="java.util.LinkedList" name="includeFiles">
+            <storable name="0" storable-id="dr.WSDLIncludeFileStoreable" ver="2.1">
+               <string name="fileContent"><![CDATA[<!--Published by JAX-WS RI at http://jax-ws.dev.java.net. RI's version is JAX-WS RI 2.2-hudson-752-.-->
+<xs:schema version="1.0" targetNamespace="http://sms.ps.bsm.stream.co.th/" xmlns:tns="http://sms.ps.bsm.stream.co.th/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+   <xs:element name="IOException" type="tns:IOException"/>
+   <xs:element name="createContent" type="tns:createContent"/>
+   <xs:element name="createContentResponse" type="tns:createContentResponse"/>
+   <xs:element name="postMessage" type="tns:postMessage"/>
+   <xs:element name="postMessageResponse" type="tns:postMessageResponse"/>
+   <xs:element name="removeNewLineOrCarriageReturnOnContentTail" type="tns:removeNewLineOrCarriageReturnOnContentTail"/>
+   <xs:element name="removeNewLineOrCarriageReturnOnContentTailResponse" type="tns:removeNewLineOrCarriageReturnOnContentTailResponse"/>
+   <xs:element name="sendSMS" type="tns:sendSMS"/>
+   <xs:element name="sendSMSResponse" type="tns:sendSMSResponse"/>
+   <xs:complexType name="postMessage">
+      <xs:sequence>
+         <xs:element name="arg0" type="xs:string" minOccurs="0"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="postMessageResponse">
+      <xs:sequence>
+         <xs:element name="return" type="xs:boolean"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="IOException">
+      <xs:sequence>
+         <xs:element name="message" type="xs:string" minOccurs="0"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="createContent">
+      <xs:sequence>
+         <xs:element name="arg0" type="xs:string" minOccurs="0"/>
+         <xs:element name="arg1" type="xs:string" minOccurs="0"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="createContentResponse">
+      <xs:sequence>
+         <xs:element name="return" type="tns:contentBean" minOccurs="0"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="contentBean">
+      <xs:sequence>
+         <xs:element name="contentEncode" type="xs:string" minOccurs="0"/>
+         <xs:element name="contentType" type="xs:string" minOccurs="0"/>
+         <xs:element name="defaultLenght" type="xs:double"/>
+         <xs:element name="encoder" type="tns:unicodeThai" minOccurs="0"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="unicodeThai">
+      <xs:sequence/>
+   </xs:complexType>
+   <xs:complexType name="removeNewLineOrCarriageReturnOnContentTail">
+      <xs:sequence>
+         <xs:element name="arg0" type="xs:string" minOccurs="0"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="removeNewLineOrCarriageReturnOnContentTailResponse">
+      <xs:sequence>
+         <xs:element name="return" type="xs:string" minOccurs="0"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="sendSMS">
+      <xs:sequence>
+         <xs:element name="aisReq" type="tns:aisReq" minOccurs="0"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="aisReq">
+      <xs:sequence>
+         <xs:element name="charge" type="xs:string" minOccurs="0"/>
+         <xs:element name="cmd" type="xs:string" minOccurs="0"/>
+         <xs:element name="content" type="xs:string" minOccurs="0"/>
+         <xs:element name="report" type="xs:string" minOccurs="0"/>
+         <xs:element name="sendTo" type="xs:string" minOccurs="0"/>
+         <xs:element name="transID" type="xs:string" minOccurs="0"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="sendSMSResponse">
+      <xs:sequence>
+         <xs:element name="return" type="tns:modulesOperResp" minOccurs="0"/>
+      </xs:sequence>
+   </xs:complexType>
+   <xs:complexType name="modulesOperResp">
+      <xs:sequence>
+         <xs:element name="statusCode" type="xs:string" minOccurs="0"/>
+         <xs:element name="statusMessage" type="xs:string" minOccurs="0"/>
+      </xs:sequence>
+   </xs:complexType>
+</xs:schema>]]></string>
+               <string name="filePathSequence" value="SMSGatewayService_xsd.xsd"/>
+            </storable>
+         </list>
+         <string name="inputAndOutputTypeName"><![CDATA[ws.SMS.PRF_WS_SMSService.udr.AbstractAisServiceWSCycle]]></string>
+         <string name="properties"><![CDATA[# Advanced XML binding options can be customized here. If the properties are commented out, default values are used.
+
+#Enable JAXB Simple Binding Mode
+# When true, XSD Schemas of loaded WSDL files are compiled into Java code using the experimental "Simple and better binding mode". This is necessary for some complex types, for instance when duplicate element names are used within the same complex type.
+enable_JAXB_simple_binding false
+
+#Disable JAXWS Wrapper style Mode
+# When true, the cycle UDR will contain request and response parameters that wrap all the arguments in request and response UDRs.
+disable_JAXWS_wrapper_mode false
+
+#Enable Processing Of Implicit Soap Header
+# When true, any SOAP headers defined in the binding section of WSDL files are compiled into Java code. This is necessary in order to manipulate the SOAP headers in outgoing Web Service requests. 
+enable_processing_of_implicit_SOAP_header false
+
+#Disable Underscore Binding Mode
+# When false, underscore binding mode is true, JAXB will not strip underscore from the element names when converting a WSDL file to Java.
+disable_under_score_binding false
+
+#Populate originaldata field
+# When true the OriginalData field in the WSCycleUDR will be populated with the content of the SOAP request
+populate_originaldata_field false
+
+#Max enum members
+# Sets the value for the typesafeEnumMaxMembers jaxb global variable which controls the maximum number of allowed enum members
+max_enum_members 256
+
+#Schema level bindings
+# Sets the jaxb schema level bindings per xsd file. The format is [filename.xsd]:package=[packageSuffix],[transformationType]-prefix=prefix,suffix=suffix;
+schema_level_bindings 
+
+#Enable fault stack trace in response
+# When true stack trace information will be available in error responses
+fault_stack_trace_enabled false
+
+#Allow HEAD
+# When true HTTP method HEAD is allowed
+allow_head false
+
+]]></string>
+         <boolean name="singleWSDLFile" value="true"/>
+         <string name="transport" value="HTTP"/>
+         <map classname="java.util.HashMap" name="typeNamespaceToPrefixMap" size="1">
+            <string name="key_0" value="http://sms.ps.bsm.stream.co.th/"/>
+            <string name="value_0" value="tns"/>
+         </map>
+         <string name="unique_name" value="com.digitalroute.ws.ws1550475202250"/>
+         <string name="wsdlFileContent"><![CDATA[<!--Published by JAX-WS RI at http://jax-ws.dev.java.net. RI's version is JAX-WS RI 2.2-hudson-752-.-->
+<!--Generated by JAX-WS RI at http://jax-ws.dev.java.net. RI's version is JAX-WS RI 2.2-hudson-752-.-->
+<definitions targetNamespace="http://sms.ps.bsm.stream.co.th/" name="AisServiceService" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:wsp1_2="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://sms.ps.bsm.stream.co.th/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.xmlsoap.org/wsdl/">
+   <types>
+      <xsd:schema>
+         <xsd:import namespace="http://sms.ps.bsm.stream.co.th/" schemaLocation="SMSGatewayService_xsd.xsd"/>
+      </xsd:schema>
+   </types>
+   <message name="sendSMS">
+      <part name="parameters" element="tns:sendSMS"/>
+   </message>
+   <message name="sendSMSResponse">
+      <part name="parameters" element="tns:sendSMSResponse"/>
+   </message>
+   <message name="removeNewLineOrCarriageReturnOnContentTail">
+      <part name="parameters" element="tns:removeNewLineOrCarriageReturnOnContentTail"/>
+   </message>
+   <message name="removeNewLineOrCarriageReturnOnContentTailResponse">
+      <part name="parameters" element="tns:removeNewLineOrCarriageReturnOnContentTailResponse"/>
+   </message>
+   <message name="createContent">
+      <part name="parameters" element="tns:createContent"/>
+   </message>
+   <message name="createContentResponse">
+      <part name="parameters" element="tns:createContentResponse"/>
+   </message>
+   <message name="postMessage">
+      <part name="parameters" element="tns:postMessage"/>
+   </message>
+   <message name="postMessageResponse">
+      <part name="parameters" element="tns:postMessageResponse"/>
+   </message>
+   <message name="IOException">
+      <part name="fault" element="tns:IOException"/>
+   </message>
+   <portType name="AisService">
+      <operation name="sendSMS">
+         <input wsam:Action="http://sms.ps.bsm.stream.co.th/AisService/sendSMSRequest" message="tns:sendSMS"/>
+         <output wsam:Action="http://sms.ps.bsm.stream.co.th/AisService/sendSMSResponse" message="tns:sendSMSResponse"/>
+      </operation>
+      <operation name="removeNewLineOrCarriageReturnOnContentTail">
+         <input wsam:Action="http://sms.ps.bsm.stream.co.th/AisService/removeNewLineOrCarriageReturnOnContentTailRequest" message="tns:removeNewLineOrCarriageReturnOnContentTail"/>
+         <output wsam:Action="http://sms.ps.bsm.stream.co.th/AisService/removeNewLineOrCarriageReturnOnContentTailResponse" message="tns:removeNewLineOrCarriageReturnOnContentTailResponse"/>
+      </operation>
+      <operation name="createContent">
+         <input wsam:Action="http://sms.ps.bsm.stream.co.th/AisService/createContentRequest" message="tns:createContent"/>
+         <output wsam:Action="http://sms.ps.bsm.stream.co.th/AisService/createContentResponse" message="tns:createContentResponse"/>
+      </operation>
+      <operation name="postMessage">
+         <input wsam:Action="http://sms.ps.bsm.stream.co.th/AisService/postMessageRequest" message="tns:postMessage"/>
+         <output wsam:Action="http://sms.ps.bsm.stream.co.th/AisService/postMessageResponse" message="tns:postMessageResponse"/>
+         <fault message="tns:IOException" name="IOException" wsam:Action="http://sms.ps.bsm.stream.co.th/AisService/postMessage/Fault/IOException"/>
+      </operation>
+   </portType>
+   <binding name="AisServicePortBinding" type="tns:AisService">
+      <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
+      <operation name="sendSMS">
+         <soap:operation soapAction=""/>
+         <input>
+            <soap:body use="literal"/>
+         </input>
+         <output>
+            <soap:body use="literal"/>
+         </output>
+      </operation>
+      <operation name="removeNewLineOrCarriageReturnOnContentTail">
+         <soap:operation soapAction=""/>
+         <input>
+            <soap:body use="literal"/>
+         </input>
+         <output>
+            <soap:body use="literal"/>
+         </output>
+      </operation>
+      <operation name="createContent">
+         <soap:operation soapAction=""/>
+         <input>
+            <soap:body use="literal"/>
+         </input>
+         <output>
+            <soap:body use="literal"/>
+         </output>
+      </operation>
+      <operation name="postMessage">
+         <soap:operation soapAction=""/>
+         <input>
+            <soap:body use="literal"/>
+         </input>
+         <output>
+            <soap:body use="literal"/>
+         </output>
+         <fault name="IOException">
+            <soap:fault name="IOException" use="literal"/>
+         </fault>
+      </operation>
+   </binding>
+   <service name="AisServiceService">
+      <port name="AisServicePort" binding="tns:AisServicePortBinding">
+         <soap:address location="http://192.168.254.115:8080/ghbsmsservice/AisService"/>
+      </port>
+   </service>
+</definitions>]]></string>
+         <string name="wsdlFileName" value="SMSGatewayService.wsdl"/>
+         <string name="wsdl_file" value="/Users/Tue/Downloads"/>
+      </storable>
+      <string name="Folder" value="SMS"/>
+      <boolean name="Is Dirty" value="false"/>
+      <boolean name="Is Encrypted" value="false"/>
+      <boolean name="Is Locked" value="false"/>
+      <boolean name="Is Valid" value="true"/>
+      <string name="Key" value="MZ1550475771575"/>
+      <string name="Modified By" value="mzadmin"/>
+      <long name="Modified Date" value="1551427799340"/>
+      <string name="Name" value="PRF_WS_SMSService"/>
+      <string name="Owner" value="mzadmin"/>
+      <string name="Type" value="WS Profile"/>
+      <int name="Version" value="1"/>
+      <string name="documentation" value=""/>
+      <string name="parameters" value=""/>
+   </storable>
+</webservices_profile>

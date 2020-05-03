@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Template" ref_path="workflow_data[Internal]/storable[workflow_data]/storable[Data]">
+   <Multiplex_Ref ref_path="exportmultiplex[Workflow_Table]/storable[InstanceTable]">
+      <int name="Field Count" value="0"/>
+   </Multiplex_Ref>
+   <storable name="Execution Config" storable-id="dr.WorkflowExecutionConfig" ver="8.0">
+      <object name="Debug Type">
+         <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+            <object name="Value">
+               <enum name="Object Internal" storable-id="dr.DebugType" value="EVENT"/>
+            </object>
+         </storable>
+      </object>
+      <boolean name="Debug Type active" value="true"/>
+      <string name="Debug Type extref key" null="true"/>
+      <enum name="Debug Type fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+      <boolean name="Debug Type mod" value="false"/>
+      <boolean name="Debug Type pres" value="true"/>
+      <object name="Execution Settings">
+         <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+            <object name="Value">
+               <storable name="Object Internal" storable-id="dr.ExecutionSettings" ver="2.0">
+                  <boolean name="enabled" value="false"/>
+               </storable>
+            </object>
+         </storable>
+      </object>
+      <boolean name="Execution Settings active" value="true"/>
+      <string name="Execution Settings extref key" null="true"/>
+      <enum name="Execution Settings fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+      <boolean name="Execution Settings mod" value="false"/>
+      <boolean name="Execution Settings pres" value="true"/>
+      <object name="Number of Files to Keep">
+         <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+            <object name="Value">
+               <int name="Object Internal" value="0"/>
+            </object>
+         </storable>
+      </object>
+      <boolean name="Number of Files to Keep active" value="true"/>
+      <string name="Number of Files to Keep extref key" null="true"/>
+      <enum name="Number of Files to Keep fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+      <boolean name="Number of Files to Keep mod" value="false"/>
+      <boolean name="Number of Files to Keep pres" value="true"/>
+      <object name="Throughput MIM">
+         <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+            <object name="Value">
+               <null name="Object Internal"/>
+            </object>
+         </storable>
+      </object>
+      <boolean name="Throughput MIM active" value="true"/>
+      <string name="Throughput MIM extref key" null="true"/>
+      <enum name="Throughput MIM fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+      <boolean name="Throughput MIM mod" value="false"/>
+      <boolean name="Throughput MIM pres" value="true"/>
+      <object name="Transaction Handler">
+         <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+            <object name="Value">
+               <null name="Object Internal"/>
+            </object>
+         </storable>
+      </object>
+      <boolean name="Transaction Handler active" value="true"/>
+      <string name="Transaction Handler extref key" null="true"/>
+      <enum name="Transaction Handler fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+      <boolean name="Transaction Handler mod" value="false"/>
+      <boolean name="Transaction Handler pres" value="true"/>
+   </storable>
+   <list classname="java.util.ArrayList" name="Field Types"/>
+   <list classname="java.util.ArrayList" name="Logged error MIM"/>
+   <list classname="java.util.ArrayList" name="Nodes">
+      <storable name="0" storable-id="dr.WfNode" ver="2.0">
+         <string name="Classname" value="com.digitalroute.transport.TransportTaskInsp"/>
+         <array classname="com.digitalroute.wf.WfNodeConfig" name="Configuration" size="1">
+            <storable name="0" storable-id="dr.WfNodeConfig" ver="1.0">
+               <string name="Classname" value="com.digitalroute.transport.TransportTaskInsp"/>
+               <storable name="Data" storable-id="dr.TransportTaskConfig" ver="1.0">
+                  <object name="Enable System Backup">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <boolean name="Object Internal" value="true"/>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="Enable System Backup active" value="true"/>
+                  <string name="Enable System Backup extref key" null="true"/>
+                  <enum name="Enable System Backup fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="Enable System Backup mod" value="false"/>
+                  <boolean name="Enable System Backup pres" value="true"/>
+                  <object name="Keep Export">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <int name="Object Internal" value="90"/>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="Keep Export active" value="true"/>
+                  <string name="Keep Export extref key" null="true"/>
+                  <enum name="Keep Export fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="Keep Export mod" value="false"/>
+                  <boolean name="Keep Export pres" value="true"/>
+                  <object name="Keep Import">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <int name="Object Internal" value="60"/>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="Keep Import active" value="true"/>
+                  <string name="Keep Import extref key" null="true"/>
+                  <enum name="Keep Import fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="Keep Import mod" value="false"/>
+                  <boolean name="Keep Import pres" value="true"/>
+                  <object name="Password">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <null name="Object Internal"/>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="Password active" value="true"/>
+                  <string name="Password extref key" null="true"/>
+                  <enum name="Password fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="Password mod" value="false"/>
+                  <boolean name="Password pres" value="true"/>
+                  <object name="Use Encryption">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <boolean name="Object Internal" value="false"/>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="Use Encryption active" value="true"/>
+                  <string name="Use Encryption extref key" null="true"/>
+                  <enum name="Use Encryption fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="Use Encryption mod" value="false"/>
+                  <boolean name="Use Encryption pres" value="true"/>
+               </storable>
+            </storable>
+         </array>
+         <string name="Name" value="System_Backup"/>
+      </storable>
+   </list>
+   <list classname="java.util.ArrayList" name="Routes"/>
+   <list classname="java.util.ArrayList" name="Service"/>
+   <boolean name="Template Valid" value="false"/>
+</exportmultiplex>

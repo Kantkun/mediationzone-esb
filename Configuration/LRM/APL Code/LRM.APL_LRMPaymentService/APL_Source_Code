@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="APL_Source_Code" ref_path="apl_script[Internal]/storable[apl_script]/storable[Data]">
+   <string name="Definition"><![CDATA[import ultra.ws.LRM.PRF_WS_LRMPaymentService.cycles;
+import ultra.ws.LRM.PRF_WS_LRMPaymentService.tns;
+import ultra.CBS.UFL_DSP_Header;
+import ultra.CBS.UFL_MBASE_Header;
+import apl.Common.APL_Common_MBASE;
+import ultra.Ultra.UFL_MBASE_LN83103;
+import ultra.Ultra.UFL_MBASE_LN83104;
+import ultra.Ultra.UFL_MBASE_Reject;
+import apl.Common.APL_Common_Utilities;
+
+final int sizeOf_LN83103_RQ = 49;
+final int sizeOf_LN83103_RS = 566;
+final int sizeOf_LN83104_RQ = 76;
+final int sizeOf_LN83104_RS = 566;
+
+//LN83103
+bytearray createContentMessageLN83103_InquiryLoanPayment(string uniqKey,WSCycle_inquiryLoanPayment request){
+   //DSP Header
+    DSP_Header_TgIn dspHeader = createDefaultDSPHeader();
+    dspHeader.SKTMLEN = sizeOf_DSPHeader + sizeOf_MBaseHeader + sizeOf_LN83103_RQ - 9;
+    dspHeader.I13FMID = "MBASE";  
+    dspHeader.I13DID = "LNSI";
+    dspHeader.I13SID = request.param_Header.ChannelID + "##";
+    //dspHeader.I13ACQN = uniqKey;  
+    dspHeader.I13ACQN = strSubstring(uniqKey, 0, 12);  
+    dspHeader.I13TMNO = strSubstring(uniqKey, 12, 16); 
+         
+    //MBASE Header
+    MBASE_Header_TI mbaseHeader = createDefaultMBASEHeader();
+    mbaseHeader.HDTCOD = "LN83103";
+    mbaseHeader.HDDSID = "ESB";
+    mbaseHeader.HDACCD = "I";
+    //mbaseHeader.HDUSID = "IMBUSR";
+    mbaseHeader.HDNREC = "15";
+    mbaseHeader.HDUSID = request.param_Header.ChannelID + "USR";
+    
+    //Request Data
+    MBASE_LN83103_RQ_TI mbaseRequest = udrCreate(MBASE_LN83103_RQ_TI);    
+    mbaseRequest.LNYREF_LRMGeneratedReferenceNumber = request.param_Data.LRMReferenceNumber;
+    mbaseRequest.ACCTNO_LoanAccountNumber = request.param_Data.LoanAccountNumber;
+    
+    //paging Data
+    mbaseHeader.HDVFMT = request.param_Paging.NextPageIndicator;
+    
+    //Build Socket Message
+    bytearray outgoing = udrEncode("DSP_Header_Encoder", dspHeader);
+    outgoing = baAppend(outgoing, udrEncode("MBASE_Header_Encode", mbaseHeader));
+    outgoing = baAppend(outgoing, udrEncode("MBASE_LN83103_RQ_Encode", mbaseRequest));
+    return outgoing;
+}
+
+//WSCycle_inquiryLoanPayment
+
+WSCycle_inquiryLoanPayment responseMessageLN83103_InquiryLoanPayment(WSCycle_inquiryLoanPayment responseMessage,DSP_Header_TgIn tcpResponse,long requestMillisec,boolean errorUDR){
+    if(errorUDR==false){
+        list<MBASE_Header_With_Payload_TI> aList = listCreate(MBASE_Header_With_Payload_TI);
+        udrDecode("MBASE_Header_With_Payload_Decode", aList, tcpResponse.data);
+        MBASE_Header_With_Payload_TI mbase = listGet(aList,0);
+        
+        //debug(mbase);
+        //debug("MBase Header:" + mbase.mbaseHeader);
+        debug("TransCode: " + mbase.mbaseHeader.HDTCOD);
+        debug("DSP status: " + tcpResponse.I13MSTA);
+        debug("MBase Data:" + baToStr(mbase.data, "IBM-Thai"));
+        
+        bytearray refilled = refillTrimedColumn(mbase.data,sizeOf_LN83103_RS);   
+        //debug("MBASE Data refilled:" + baToStr(refilled, "IBM-Thai")); 
+        
+        //Response Header
+        responseMessage.param_Header_01 = udrCreate(InquiryLoanPaymentResponse$Header);
+        date responseTransactinDatetime = dateCreateCopy(responseMessage.param_Header.TransactionDateTime);
+        dateSetTimeZone(responseTransactinDatetime, "GMT+7");       
+        responseMessage.param_Header_01.ReferenceNo = responseMessage.param_Header.ReferenceNo;
+        responseMessage.param_Header_01.TransactionDateTime = responseTransactinDatetime;
+        responseMessage.param_Header_01.ChannelID = responseMessage.param_Header.ChannelID;
+        
+        //Response StatusInfo
+        responseMessage.param_Header_01.StatusInfo = udrCreate(InquiryLoanPaymentResponse$Header$StatusInfo);
+        responseMessage.param_Header_01.StatusInfo.Status = udrCreate(InquiryLoanPaymentResponse$Header$StatusInfo$Status);
+        responseMessage.param_Header_01.StatusInfo.Status.UsageTime = dateCreateNowMilliseconds()-requestMillisec;
+        
+        //Request Data AccountList 
+        if(!strStartsWith(tcpResponse.I13MSTA, ".DSP")){
+            if(mbase.mbaseHeader.HDRIND == "AA"){
+                //Success
+                debug("AA");
+                //debug("mbase length : " + baSize(refilled));
+                
+                responseMessage.param_Header_01.AccountList = udrCreate(InquiryLoanPaymentResponse$Header$AccountList);
+                responseMessage.param_Header_01.AccountList.Account = listCreate(InquiryLoanPaymentResponse$Header$AccountList$Account);
+                
+                //response content list
+                list<MBASE_LN83103_RS_TI> AccountList = listCreate(MBASE_LN83103_RS_TI);
+                udrDecode("MBASE_LN83103_RS_Decode", AccountList, refilled);
+                
+                for(MBASE_LN83103_RS_TI account: AccountList){
+                    InquiryLoanPaymentResponse$Header$AccountList$Account acc = udrCreate(InquiryLoanPaymentResponse$Header$AccountList$Account);   
+                    
+                    acc.LRMReferenceNumber                  = getStringValue(account.LNYREF_LRMReference);
+                    //acc.LoanAccountNumber                   = strSubstring(account.ACCTNO_AccountNumber,strLength(account.ACCTNO_AccountNumber)-12,strLength(account.ACCTNO_AccountNumber));
+                    acc.LoanAccountNumber                   = accountNumberFormat(getStringValue(account.ACCTNO_AccountNumber),"L");
+                    acc.IsInputAccountFlag                  = getStringValue(account.SAMEFG_IsInputAccount);
+                    acc.CustomerNumber                      = padCustomerNumber(getStringValue(account.CIFNO_CIFNumber),9);
+                    acc.CustomerNameTH                      = getStringValue(account.ACNAME_AccountNameTH);
+                    acc.CustomerNameEN                      = getStringValue(account.ACSNAME_AccountNameEN);
+                    acc.RelationshipCode                    = getStringValue(account.ACRREL_CustomerarePJ);
+                    acc.FreezeCode                          = getStringValue(account.HOLDST_HoldStatus);
+                    acc.ProductCode                         = getStringValue(account.TYPE_LoanType);
+                    
+                    strToDouble(acc.PaymentAmount           ,convertToNumberic(account.PMTAMT_PaymentAmount, 17,2)); 
+                    strToDouble(acc.PrincipleAmount         ,convertToNumberic(account.PRNBIL_PrincipalBilled, 17,2)); 
+                    strToDouble(acc.InterestAmount          ,convertToNumberic(account.INTBIL_InterestBilled, 17,2)); 
+                    strToDouble(acc.ChargeAmount            ,convertToNumberic(account.FEEAMT_FeeBilled, 17,2)); 
+                    strToDouble(acc.TotalOutStandingAmount  ,convertToNumberic(account.CURPO_CurrentMonth, 17,2)); 
+                    
+                	listAdd(responseMessage.param_Header_01.AccountList.Account,acc);
+                }
+                    
+                //Response Status Info
+                responseMessage.param_Header_01.StatusInfo.Status.Success = true;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = mbase.mbaseHeader.HDRIND;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Success";
+                
+                //Response Paging Info
+                responseMessage.param_Header_01.PagingInfo = udrCreate(InquiryLoanPaymentResponse$Header$PagingInfo);
+                responseMessage.param_Header_01.PagingInfo.Paging = udrCreate(InquiryLoanPaymentResponse$Header$PagingInfo$Paging);
+                if (mbase.mbaseHeader.HDMREC == "Y"){
+                    responseMessage.param_Header_01.PagingInfo.Paging.HasMoreRecord = true;
+                }else{
+                    responseMessage.param_Header_01.PagingInfo.Paging.HasMoreRecord = false;
+                }
+                
+                responseMessage.param_Header_01.PagingInfo.Paging.NextPageIndicator = mbase.mbaseHeader.HDVFMT;
+                strToInt(responseMessage.param_Header_01.PagingInfo.Paging.NumberOfRecord, mbase.mbaseHeader.HDNREC);
+                strToInt(responseMessage.param_Header_01.PagingInfo.Paging.PageSize,"15");
+        
+            }else{
+                //Rejected
+                //Get Mbase Reject
+                list<MBASE_Reject_With_Payload_TI> aRejected = listCreate(MBASE_Reject_With_Payload_TI);
+                udrDecode("MBASE_Reject_With_Payload_Decode", aRejected, mbase.data);
+                MBASE_Reject_With_Payload_TI rejected = listGet(aRejected,0);
+                
+                responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = rejected.mbaseReject.ErrorCode;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = baToStr(rejected.errorDesc, "IBM-Thai");
+            }
+        }else{
+                if(strStartsWith(tcpResponse.I13MSTA, ".DSP")){
+                    //Response Stattus Info
+                    string responseCodeDSP = strREReplaceAll(tcpResponse.I13MSTA, "\\.", "");
+                    responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = responseCodeDSP;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = getDSPErrorDesc(responseCodeDSP);       
+                }
+                else{
+                    //DSP Service down 
+                    responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = "CBS8999";
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Unknow data format (Invalid response from host)";     
+                }
+        }
+    }else{
+            //Response Header
+            responseMessage.param_Header_01 = udrCreate(InquiryLoanPaymentResponse$Header);
+            date responseTransactinDatetime = dateCreateCopy(responseMessage.param_Header.TransactionDateTime);
+            dateSetTimeZone(responseTransactinDatetime, "GMT+7");       
+            responseMessage.param_Header_01.ReferenceNo = responseMessage.param_Header.ReferenceNo;
+            responseMessage.param_Header_01.TransactionDateTime = responseTransactinDatetime;
+            responseMessage.param_Header_01.ChannelID = responseMessage.param_Header.ChannelID;
+            //Response StatusInfo
+            responseMessage.param_Header_01.StatusInfo = udrCreate(InquiryLoanPaymentResponse$Header$StatusInfo);
+            responseMessage.param_Header_01.StatusInfo.Status = udrCreate(InquiryLoanPaymentResponse$Header$StatusInfo$Status);
+            responseMessage.param_Header_01.StatusInfo.Status.UsageTime = dateCreateNowMilliseconds()-requestMillisec;
+            responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+            responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = "CBS8990";
+            responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Connection to CBS lost";
+    }    
+    return responseMessage;
+}
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+bytearray createContentMessageLN83104_InquiryLoanPaymentByNatID(string uniqKey,WSCycle_inquiryLoanPaymentByNatID request){
+   //DSP Header
+    DSP_Header_TgIn dspHeader = createDefaultDSPHeader();
+    dspHeader.SKTMLEN = sizeOf_DSPHeader + sizeOf_MBaseHeader + sizeOf_LN83104_RQ - 9;
+    dspHeader.I13FMID = "MBASE";  
+    dspHeader.I13DID = "LNSI";
+    dspHeader.I13SID = request.param_Header.ChannelID + "##";
+    //dspHeader.I13ACQN = uniqKey;  
+    dspHeader.I13ACQN = strSubstring(uniqKey, 0, 12);  
+    dspHeader.I13TMNO = strSubstring(uniqKey, 12, 16);
+         
+    //MBASE Header
+    MBASE_Header_TI mbaseHeader = createDefaultMBASEHeader();
+    mbaseHeader.HDTCOD = "LN83104";
+    mbaseHeader.HDDSID = "ESB";
+    mbaseHeader.HDACCD = "I";
+    mbaseHeader.HDNREC = "15";
+    mbaseHeader.HDUSID = request.param_Header.ChannelID + "USR";
+    
+    //Request Data
+    MBASE_LN83104_RQ_TI mbaseRequest = udrCreate(MBASE_LN83104_RQ_TI);    
+    mbaseRequest.LNYREF_LRMGeneratedReferenceNumber = request.param_Data.LRMReferenceNumber;
+    mbaseRequest.CFSSNO_IDNumber = request.param_Data.IDNumber;
+    mbaseRequest.CFSSCD_IDTypeCode = "001";
+    mbaseRequest.CFCIDT_IDIssuedCountryCode = "TH";
+    //paging Data
+    mbaseHeader.HDVFMT = request.param_Paging.NextPageIndicator;
+    
+    //Build Socket Message
+    bytearray outgoing = udrEncode("DSP_Header_Encoder", dspHeader);
+    outgoing = baAppend(outgoing, udrEncode("MBASE_Header_Encode", mbaseHeader));
+    outgoing = baAppend(outgoing, udrEncode("MBASE_LN83104_RQ_Encode", mbaseRequest));
+    return outgoing;
+}
+
+WSCycle_inquiryLoanPaymentByNatID responseMessageLN83104_InquiryLoanPaymentByNatID(WSCycle_inquiryLoanPaymentByNatID responseMessage,DSP_Header_TgIn tcpResponse,long requestMillisec,boolean errorUDR){
+    if(errorUDR==false){
+        list<MBASE_Header_With_Payload_TI> aList = listCreate(MBASE_Header_With_Payload_TI);
+        udrDecode("MBASE_Header_With_Payload_Decode", aList, tcpResponse.data);
+        MBASE_Header_With_Payload_TI mbase = listGet(aList,0);
+        
+        //debug(mbase);
+        //debug("MBase Header:" + mbase.mbaseHeader);
+        debug("TransCode: " + mbase.mbaseHeader.HDTCOD);
+        debug("DSP status: " + tcpResponse.I13MSTA);
+        debug("MBase Data:" + baToStr(mbase.data, "IBM-Thai"));
+        
+        bytearray refilled = refillTrimedColumn(mbase.data,sizeOf_LN83104_RS);   
+        //debug("MBASE Data refilled:" + baToStr(refilled, "IBM-Thai")); 
+        
+        //Response Header
+        responseMessage.param_Header_01 = udrCreate(InquiryLoanPaymentByNatIDResponse$Header);
+        date responseTransactinDatetime = dateCreateCopy(responseMessage.param_Header.TransactionDateTime);
+        dateSetTimeZone(responseTransactinDatetime, "GMT+7");       
+        responseMessage.param_Header_01.ReferenceNo = responseMessage.param_Header.ReferenceNo;
+        responseMessage.param_Header_01.TransactionDateTime = responseTransactinDatetime;
+        responseMessage.param_Header_01.ChannelID = responseMessage.param_Header.ChannelID;
+        
+        //Response StatusInfo
+        responseMessage.param_Header_01.StatusInfo = udrCreate(InquiryLoanPaymentByNatIDResponse$Header$StatusInfo);
+        responseMessage.param_Header_01.StatusInfo.Status = udrCreate(InquiryLoanPaymentByNatIDResponse$Header$StatusInfo$Status);
+        responseMessage.param_Header_01.StatusInfo.Status.UsageTime = dateCreateNowMilliseconds()-requestMillisec;
+        
+        //Request Data AccountList 
+        if(!strStartsWith(tcpResponse.I13MSTA, ".DSP")){
+            if(mbase.mbaseHeader.HDRIND == "AA"){
+                //Success
+                debug("AA");
+                //debug("mbase length : " + baSize(refilled));
+                
+                responseMessage.param_Header_01.AccountList = udrCreate(InquiryLoanPaymentByNatIDResponse$Header$AccountList);
+                responseMessage.param_Header_01.AccountList.Account = listCreate(InquiryLoanPaymentByNatIDResponse$Header$AccountList$Account);
+                
+                //response content list
+                list<MBASE_LN83104_RS_TI> AccountList = listCreate(MBASE_LN83104_RS_TI);
+                udrDecode("MBASE_LN83104_RS_Decode", AccountList, refilled);
+                
+                for(MBASE_LN83104_RS_TI account: AccountList){
+                    InquiryLoanPaymentByNatIDResponse$Header$AccountList$Account acc = udrCreate(InquiryLoanPaymentByNatIDResponse$Header$AccountList$Account);   
+                    acc.LRMReferenceNumber = getStringValue(account.LNYREF_LRMGeneratedReferenceNumber);
+                    strToDouble(acc.ChargeAmount, convertToNumberic(account.FEEAMT_OutChrgAmt, 17,2)); 
+                    acc.CustomerNameEN = getStringValue(account.ACSNAME_CustomerNameEN);
+                    acc.CustomerNameTH = getStringValue(account.ACNAME_CustomerNameTH);
+                    acc.CustomerNumber = getStringValue(account.CIFNO_CustomerNumber);
+                    acc.FreezeCode = getStringValue(account.HOLDST_FreezeCode);
+                    strToDouble(acc.InterestAmount, convertToNumberic(account.INTBIL_OutIntAmt, 17,2)); 
+                    acc.IsInputAccountFlag = getStringValue(account.SAMEFG_IsInputAcct);
+                    acc.LoanAccountNumber = accountNumberFormat(getStringValue(account.ACCTNO_LoanAccountNumber),"L");
+                    strToDouble(acc.PaymentAmount, convertToNumberic(account.PMTAMT_EmiAmt, 17,2)); 
+                    strToDouble(acc.PrincipleAmount, convertToNumberic(account.PRNBIL_OutPrnAmt, 17,2));
+                    acc.ProductCode = getStringValue(account.TYPE_TypeLoanProduct);
+                    acc.RelationshipCode = getStringValue(account.ACRREL_AcctPoaAsRecType);
+                    strToDouble(acc.TotalOutstandingAmount, convertToNumberic(account.CURPO_OutSumAmt, 17,2));
+                	listAdd(responseMessage.param_Header_01.AccountList.Account,acc);
+                }
+                    
+                //Response Status Info
+                responseMessage.param_Header_01.StatusInfo.Status.Success = true;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = mbase.mbaseHeader.HDRIND;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Success";
+                
+                //Response Paging Info
+                responseMessage.param_Header_01.PagingInfo = udrCreate(InquiryLoanPaymentByNatIDResponse$Header$PagingInfo);
+                responseMessage.param_Header_01.PagingInfo.Paging = udrCreate(InquiryLoanPaymentByNatIDResponse$Header$PagingInfo$Paging);
+                if (mbase.mbaseHeader.HDMREC == "Y"){
+                    responseMessage.param_Header_01.PagingInfo.Paging.HasMoreRecord = true;
+                }else{
+                    responseMessage.param_Header_01.PagingInfo.Paging.HasMoreRecord = false;
+                }
+                
+                responseMessage.param_Header_01.PagingInfo.Paging.NextPageIndicator = mbase.mbaseHeader.HDVFMT;
+                strToInt(responseMessage.param_Header_01.PagingInfo.Paging.NumberOfRecord, mbase.mbaseHeader.HDNREC);
+                strToInt(responseMessage.param_Header_01.PagingInfo.Paging.PageSize,"15");
+        
+            }else{
+                //Rejected
+                //Get Mbase Reject
+                list<MBASE_Reject_With_Payload_TI> aRejected = listCreate(MBASE_Reject_With_Payload_TI);
+                udrDecode("MBASE_Reject_With_Payload_Decode", aRejected, mbase.data);
+                MBASE_Reject_With_Payload_TI rejected = listGet(aRejected,0);
+                
+                responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = rejected.mbaseReject.ErrorCode;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = baToStr(rejected.errorDesc, "IBM-Thai");
+            }
+        }else{
+                if(strStartsWith(tcpResponse.I13MSTA, ".DSP")){
+                    //Response Stattus Info
+                    string responseCodeDSP = strREReplaceAll(tcpResponse.I13MSTA, "\\.", "");
+                    responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = responseCodeDSP;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = getDSPErrorDesc(responseCodeDSP);       
+                }
+                else{
+                    //DSP Service down 
+                    responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = "CBS8999";
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Unknow data format (Invalid response from host)";     
+                }
+        }
+    }else{
+            //Response Header
+            responseMessage.param_Header_01 = udrCreate(InquiryLoanPaymentByNatIDResponse$Header);
+            date responseTransactinDatetime = dateCreateCopy(responseMessage.param_Header.TransactionDateTime);
+            dateSetTimeZone(responseTransactinDatetime, "GMT+7");       
+            responseMessage.param_Header_01.ReferenceNo = responseMessage.param_Header.ReferenceNo;
+            responseMessage.param_Header_01.TransactionDateTime = responseTransactinDatetime;
+            responseMessage.param_Header_01.ChannelID = responseMessage.param_Header.ChannelID;
+            //Response StatusInfo
+            responseMessage.param_Header_01.StatusInfo = udrCreate(InquiryLoanPaymentByNatIDResponse$Header$StatusInfo);
+            responseMessage.param_Header_01.StatusInfo.Status = udrCreate(InquiryLoanPaymentByNatIDResponse$Header$StatusInfo$Status);
+            responseMessage.param_Header_01.StatusInfo.Status.UsageTime = dateCreateNowMilliseconds()-requestMillisec;
+            responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+            responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = "CBS8990";
+            responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Connection to CBS lost";
+    }
+    return responseMessage;
+}
+]]></string>
+</exportmultiplex>

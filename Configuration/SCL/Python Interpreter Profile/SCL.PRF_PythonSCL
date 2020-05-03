@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE pythoninterpreter_profile SYSTEM "jar:/mz/dtd/pythoninterpreter_profile.dtd">
+<pythoninterpreter_profile category="Internal">
+   <storable name="pythoninterpreter_profile" storable-id="dr.Configuration" ver="6.0">
+      <array classname="java.lang.String" name="Access Groups -read -write -execute" size="3">
+         <string name="0" value="All"/>
+         <string name="1" value="Administrator"/>
+         <string name="2" value="All"/>
+      </array>
+      <storable name="Auxiliary Data" null="true"/>
+      <string name="Current Comment" null="true"/>
+      <storable name="Data" storable-id="dr.PythonInterpreterData" ver="7.1">
+         <object name="Executable">
+            <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+               <object name="Value">
+                  <string name="Object Internal" value="python"/>
+               </object>
+            </storable>
+         </object>
+         <boolean name="Executable active" value="true"/>
+         <string name="Executable extref key" null="true"/>
+         <enum name="Executable fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+         <boolean name="Executable mod" value="false"/>
+         <boolean name="Executable pres" value="true"/>
+         <object name="Python Paths">
+            <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+               <object name="Value">
+                  <array classname="java.lang.String" name="Object Internal" size="0"/>
+               </object>
+            </storable>
+         </object>
+         <boolean name="Python Paths active" value="true"/>
+         <string name="Python Paths extref key" null="true"/>
+         <enum name="Python Paths fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+         <boolean name="Python Paths mod" value="false"/>
+         <boolean name="Python Paths pres" value="true"/>
+         <object name="Use As Default">
+            <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+               <object name="Value">
+                  <boolean name="Object Internal" value="false"/>
+               </object>
+            </storable>
+         </object>
+         <boolean name="Use As Default active" value="true"/>
+         <string name="Use As Default extref key" null="true"/>
+         <enum name="Use As Default fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+         <boolean name="Use As Default mod" value="false"/>
+         <boolean name="Use As Default pres" value="true"/>
+         <object name="Working Directory">
+            <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+               <object name="Value">
+                  <string name="Object Internal" value=""/>
+               </object>
+            </storable>
+         </object>
+         <boolean name="Working Directory active" value="true"/>
+         <string name="Working Directory extref key" null="true"/>
+         <enum name="Working Directory fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+         <boolean name="Working Directory mod" value="false"/>
+         <boolean name="Working Directory pres" value="true"/>
+      </storable>
+      <string name="Folder" value="SCL"/>
+      <boolean name="Is Dirty" value="false"/>
+      <boolean name="Is Encrypted" value="false"/>
+      <boolean name="Is Locked" value="false"/>
+      <boolean name="Is Valid" value="true"/>
+      <string name="Key" value="MZ1529054945601"/>
+      <string name="Modified By" value="mzadmin"/>
+      <long name="Modified Date" value="1538733261506"/>
+      <string name="Name" value="PRF_PythonSCL"/>
+      <string name="Owner" value="mzadmin"/>
+      <string name="Type" value="Python Interpreter Profile"/>
+      <int name="Version" value="1"/>
+      <string name="documentation" value=""/>
+      <string name="parameters" value=""/>
+   </storable>
+</pythoninterpreter_profile>

@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="APL_Source_Code" ref_path="apl_script[Internal]/storable[apl_script]/storable[Data]">
+   <string name="Definition"><![CDATA[import ultra.ws.ONCB.PRF_WS_ONCBService.cycles;
+import ultra.ws.ONCB.PRF_WS_ONCBService.tns;
+import ultra.CBS.UFL_DSP_Header;
+import ultra.CBS.UFL_MBASE_Header;
+import apl.Common.APL_Common_MBASE;
+import ultra.Ultra.UFL_MBASE_IFS55540;
+import ultra.Ultra.UFL_MBASE_IFS55541;
+import ultra.Ultra.UFL_MBASE_Reject;
+import apl.Common.APL_Common_Utilities;
+
+final int sizeOf_IFS55540_RQ = 215;
+final int sizeOf_IFS55540_RS = 349;
+final int sizeOf_IFS55541_RQ = 230;
+final int sizeOf_IFS55541_RS = 386;
+
+//IFS55540
+bytearray createContentMessageIFS55540_InquiryAccountList(string uniqKey,WSCycle_inquiryAccountList request){
+   //DSP Header
+    DSP_Header_TgIn dspHeader = createDefaultDSPHeader();
+    dspHeader.SKTMLEN = sizeOf_DSPHeader + sizeOf_MBaseHeader + sizeOf_IFS55540_RQ - 9;
+    dspHeader.I13FMID = "MBASE";  
+    dspHeader.I13DID = "IFSI"; //???????
+    dspHeader.I13ACQN = uniqKey;  
+         
+    //MBASE Header
+    MBASE_Header_TI mbaseHeader = createDefaultMBASEHeader();
+    mbaseHeader.HDTCOD = "IFS55540";
+    mbaseHeader.HDDSID = "ESB";
+    mbaseHeader.HDACCD = "I";
+    mbaseHeader.HDNREC = "20";
+    
+    //Request Data
+    MBASE_IFS55540_RQ_TI mbaseRequest = udrCreate(MBASE_IFS55540_RQ_TI);    
+    mbaseRequest.INNAME_Name                        = request.param_Data.IDNumber;
+    mbaseRequest.INLNAM_LastName                    = request.param_Data.CustomerName;
+    mbaseRequest.INICNO_IDnumberRegistrationnumber  = request.param_Data.CustomerLastName;
+    mbaseRequest.ININDI_CustomerType                = request.param_Data.RequestType;
+    mbaseRequest.INACTY_SearchbyAccountType         = request.param_Data.Key;
+    
+    //paging Data
+    mbaseHeader.HDVFMT = request.param_Paging.NextPageIndicator;
+    
+    //Build Socket Message
+    bytearray outgoing = udrEncode("DSP_Header_Encoder", dspHeader);
+    outgoing = baAppend(outgoing, udrEncode("MBASE_Header_Encode", mbaseHeader));
+    outgoing = baAppend(outgoing, udrEncode("MBASE_IFS55540_RQ_Encode", mbaseRequest));
+    return outgoing;
+}
+
+WSCycle_inquiryAccountList responseMessageIFS55540_InquiryAccountList(WSCycle_inquiryAccountList responseMessage,DSP_Header_TgIn tcpResponse,long requestMillisec){
+    list<MBASE_Header_With_Payload_TI> aList = listCreate(MBASE_Header_With_Payload_TI);
+    udrDecode("MBASE_Header_With_Payload_Decode", aList, tcpResponse.data);
+    MBASE_Header_With_Payload_TI mbase = listGet(aList,0);
+    
+    //debug(mbase);
+    debug("MBase Header:" + mbase.mbaseHeader);
+    debug("TransCode: " + mbase.mbaseHeader.HDTCOD);
+    debug("DSP status: " + tcpResponse.I13MSTA);
+    debug("MBase Data:" + baToStr(mbase.data, "IBM-Thai"));
+    
+    bytearray refilled = refillTrimedColumn(mbase.data,sizeOf_IFS55540_RS);   
+    //debug("MBASE Data refilled:" + baToStr(refilled, "IBM-Thai")); 
+    
+    //Response Header
+    responseMessage.param_Header_01 = udrCreate(InquiryAccountListResponse$Header);
+    date responseTransactinDatetime = dateCreateCopy(responseMessage.param_Header.TransactionDateTime);
+    dateSetTimeZone(responseTransactinDatetime, "GMT+7");       
+    responseMessage.param_Header_01.ReferenceNo = responseMessage.param_Header.ReferenceNo;
+    responseMessage.param_Header_01.TransactionDateTime = responseTransactinDatetime;
+    responseMessage.param_Header_01.ChannelID = responseMessage.param_Header.ChannelID;
+    
+    //Response StatusInfo
+    responseMessage.param_Header_01.StatusInfo = udrCreate(InquiryAccountListResponse$Header$StatusInfo);
+    responseMessage.param_Header_01.StatusInfo.Status = udrCreate(InquiryAccountListResponse$Header$StatusInfo$Status);
+    responseMessage.param_Header_01.StatusInfo.Status.UsageTime = dateCreateNowMilliseconds()-requestMillisec;
+    
+    //Request Data AccountList 
+    if(mbase.mbaseHeader.HDRIND == "AA"){
+        //Success
+        debug("AA");
+        //debug("mbase length : " + baSize(refilled));
+        
+        responseMessage.param_Header_01.AccountList = udrCreate(InquiryAccountListResponse$Header$AccountList);
+        responseMessage.param_Header_01.AccountList.Account = listCreate(InquiryAccountListResponse$Header$AccountList$Account);
+        
+        //response content list
+        list<MBASE_IFS55540_RS_TI> AccountList = listCreate(MBASE_IFS55540_RS_TI);
+        udrDecode("MBASE_IFS55540_RS_Decode", AccountList, refilled);
+        
+        for(MBASE_IFS55540_RS_TI account: AccountList){
+            InquiryAccountListResponse$Header$AccountList$Account acc = udrCreate(InquiryAccountListResponse$Header$AccountList$Account);   
+            
+            strToDouble(acc.BankNo              ,convertToNumberic(account.OBANKNO_BankNumber,3,0));
+            strToDouble(acc.BranchNo            ,convertToNumberic(account.OBRANCH_BranchNumber,5,0));
+            acc.BranchName                      = getStringValue(account.OJDNAME_BranchName);
+            acc.AccountType                     = getStringValue(account.OACTYPE_AccountType);
+            acc.AccountNo                       = convertToNumberic(account.OACCTNO_AccountNumber,20,0);
+            acc.AccountName                     = getStringValue(account.OACCNAM_AccountName);
+            acc.Sign                            = getStringValue(account.OAMSIGN_BalanceSign);
+            strToDouble(acc.AvailableBalance    ,convertToNumberic(account.OCBAL_CurrentBalance,20,0));
+            strToDate(acc.ReviewDate            ,account.OSYSDTE_SystemDate,"ddMMyyyy", "GMT+7");
+            acc.Remark                          = getStringValue(account.OCFRREL_Relationship);
+            acc.FirstName                       = getStringValue(account.ONAME_Name);
+            acc.LastName                        = getStringValue(account.OLNAME_LastName);
+            strToDate(acc.BirthDate             ,account.OCFBIR8_DateofBirthIncorporation,"ddMMyyyy", "GMT+7");
+            acc.CitizenId                       = getStringValue(account.OCFSSNO_IDnumberRegistrationnumber);
+            acc.CustomerNo                      = convertToNumberic(account.OCFCIFN_CustomerNumber,19,0);
+            
+        	listAdd(responseMessage.param_Header_01.AccountList.Account,acc);
+        }
+            
+        //Response Status Info
+        responseMessage.param_Header_01.StatusInfo.Status.Success = true;
+        responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = mbase.mbaseHeader.HDRIND;
+        responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Success";
+        
+        //Response Paging Info
+        responseMessage.param_Header_01.PagingInfo = udrCreate(InquiryAccountListResponse$Header$PagingInfo);
+        responseMessage.param_Header_01.PagingInfo.Paging = udrCreate(InquiryAccountListResponse$Header$PagingInfo$Paging);
+        if (mbase.mbaseHeader.HDMREC == "Y"){
+            responseMessage.param_Header_01.PagingInfo.Paging.HasMoreRecord = true;
+        }else{
+            responseMessage.param_Header_01.PagingInfo.Paging.HasMoreRecord = false;
+        }
+        
+        responseMessage.param_Header_01.PagingInfo.Paging.NextPageIndicator = mbase.mbaseHeader.HDVFMT;
+        strToInt(responseMessage.param_Header_01.PagingInfo.Paging.NumberOfRecord, mbase.mbaseHeader.HDNREC);
+        strToInt(responseMessage.param_Header_01.PagingInfo.Paging.PageSize,"20");
+
+    }else{
+        //Rejected
+        //Get Mbase Reject
+        list<MBASE_Reject_With_Payload_TI> aRejected = listCreate(MBASE_Reject_With_Payload_TI);
+        udrDecode("MBASE_Reject_With_Payload_Decode", aRejected, mbase.data);
+        MBASE_Reject_With_Payload_TI rejected = listGet(aRejected,0);
+        
+        responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+        responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = rejected.mbaseReject.ErrorCode;
+        responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = baToStr(rejected.errorDesc, "IBM-Thai");
+    }
+    
+    return responseMessage;
+}
+
+
+//IFS55541
+bytearray createContentMessageIFS55541_InquiryActiveAccount(string uniqKey,WSCycle_inquiryActiveAccount request){
+   //DSP Header
+    DSP_Header_TgIn dspHeader = createDefaultDSPHeader();
+    dspHeader.SKTMLEN = sizeOf_DSPHeader + sizeOf_MBaseHeader + sizeOf_IFS55541_RQ - 9;
+    dspHeader.I13FMID = "MBASE";  
+    dspHeader.I13DID = "IFSI"; //???????
+    dspHeader.I13ACQN = uniqKey;  
+         
+    //MBASE Header
+    MBASE_Header_TI mbaseHeader = createDefaultMBASEHeader();
+    mbaseHeader.HDTCOD = "IFS55541";
+    mbaseHeader.HDDSID = "ESB";
+    mbaseHeader.HDACCD = "I";
+    mbaseHeader.HDNREC = "20";
+    
+    //Request Data
+    MBASE_IFS55541_RQ_TI mbaseRequest = udrCreate(MBASE_IFS55541_RQ_TI);    
+    mbaseRequest.INICNO_IDnumberRegistrationnumber  = request.param_Data.IDNumber;
+    mbaseRequest.INNAME_Name                        = request.param_Data.CustomerName;
+    mbaseRequest.INLNAM_LastName                    = request.param_Data.CustomerLastName;
+    mbaseRequest.ININDI_CustomerType                = request.param_Data.RequestType;
+    dateToString(mbaseRequest.INFRDT_FromDate,      request.param_Data.StartDate,"yyyyMMdd");
+    dateToString(mbaseRequest.INTODT_ToDate,        request.param_Data.EndDate,"yyyyMMdd"); 
+    
+    //paging Data
+    mbaseHeader.HDVFMT = request.param_Paging.NextPageIndicator;
+    
+    //Build Socket Message
+    bytearray outgoing = udrEncode("DSP_Header_Encoder", dspHeader);
+    outgoing = baAppend(outgoing, udrEncode("MBASE_Header_Encode", mbaseHeader));
+    outgoing = baAppend(outgoing, udrEncode("MBASE_IFS55541_RQ_Encode", mbaseRequest));
+    return outgoing;
+}
+
+WSCycle_inquiryActiveAccount responseMessageIFS55541_InquiryActiveAccount(WSCycle_inquiryActiveAccount responseMessage,DSP_Header_TgIn tcpResponse,long requestMillisec){
+    list<MBASE_Header_With_Payload_TI> aList = listCreate(MBASE_Header_With_Payload_TI);
+    udrDecode("MBASE_Header_With_Payload_Decode", aList, tcpResponse.data);
+    MBASE_Header_With_Payload_TI mbase = listGet(aList,0);
+    
+    //debug(mbase);
+    //debug("MBase Header:" + mbase.mbaseHeader);
+    debug("TransCode: " + mbase.mbaseHeader.HDTCOD);
+    debug("DSP status: " + tcpResponse.I13MSTA);
+    debug("MBase Data:" + baToStr(mbase.data, "IBM-Thai"));
+    
+    bytearray refilled = refillTrimedColumn(mbase.data,sizeOf_IFS55541_RS);   
+    //debug("MBASE Data refilled:" + baToStr(refilled, "IBM-Thai")); 
+    
+    //Response Header
+    responseMessage.param_Header_01 = udrCreate(InquiryActiveAccountResponse$Header);
+    date responseTransactinDatetime = dateCreateCopy(responseMessage.param_Header.TransactionDateTime);
+    dateSetTimeZone(responseTransactinDatetime, "GMT+7");       
+    responseMessage.param_Header_01.ReferenceNo = responseMessage.param_Header.ReferenceNo;
+    responseMessage.param_Header_01.TransactionDateTime = responseTransactinDatetime;
+    responseMessage.param_Header_01.ChannelID = responseMessage.param_Header.ChannelID;
+    
+    //Response StatusInfo
+    responseMessage.param_Header_01.StatusInfo = udrCreate(InquiryActiveAccountResponse$Header$StatusInfo);
+    responseMessage.param_Header_01.StatusInfo.Status = udrCreate(InquiryActiveAccountResponse$Header$StatusInfo$Status);
+    responseMessage.param_Header_01.StatusInfo.Status.UsageTime = dateCreateNowMilliseconds()-requestMillisec;
+    
+    //Request Data AccountList 
+    if(mbase.mbaseHeader.HDRIND == "AA"){
+        //Success
+        debug("AA");
+        //debug("mbase length : " + baSize(refilled));
+        
+        responseMessage.param_Header_01.AccountList = udrCreate(InquiryActiveAccountResponse$Header$AccountList);
+        responseMessage.param_Header_01.AccountList.Account = listCreate(InquiryActiveAccountResponse$Header$AccountList$Account);
+        
+        //response content list
+        list<MBASE_IFS55541_RS_TI> AccountList = listCreate(MBASE_IFS55541_RS_TI);
+        udrDecode("MBASE_IFS55541_RS_Decode", AccountList, refilled);
+        
+        for(MBASE_IFS55541_RS_TI account: AccountList){
+            InquiryActiveAccountResponse$Header$AccountList$Account acc = udrCreate(InquiryActiveAccountResponse$Header$AccountList$Account);   
+            
+            strToDouble(acc.BankNo,             convertToNumberic(account.OBANKNO_BankNumber,3,0));
+            strToDouble(acc.BranchNo,           convertToNumberic(account.OBANKNO_BankNumber,5,0));
+            acc.BranchName                      = getStringValue(account.OJDNAME_BranchName);
+            acc.AccountType                     = getStringValue(account.OACTYPE_AccountType);
+            acc.AccountNo                       = convertToNumberic(account.OACCTNO_AccountNumber,20,0);
+            acc.AccountName                     = getStringValue(account.OACCNAM_AccountName);
+            acc.AccountStatus                   = getStringValue(account.OSTATUS_Status);
+            strToDate(acc.AccountOpendDate,     account.ODATOP7_Dateopened,"ddMMyyyy", "GMT+7");
+            strToDate(acc.AccountClosedDate,    account.ODLA7_Datelastactive,"ddMMyyyy", "GMT+7");
+            strToDouble(acc.LimitAccount,       convertToNumberic(account.OORGAMT_OriginalAmount,20,0));
+            acc.Sign                            = getStringValue(account.OAMSIGN_BalanceSign);
+            strToDouble(acc.AvailableBalance,   convertToNumberic(account.OCBAL_CurrentBalance,20,0));
+            strToDate(acc.ReviewDate,           account.OSYSDTE_SystemDate,"ddMMyyyy", "GMT+7");
+            acc.Remark                          = getStringValue(account.OCFRREL_Relationship);
+            acc.FirstName                       = getStringValue(account.ONAME_Name);
+            acc.LastName                        = getStringValue(account.OLNAME_LastName);
+            strToDate(acc.BirthDate,            account.OCFBIR8_DateofBirthIncorporation,"ddMMyyyy", "GMT+7");
+            acc.CitizenID                       = getStringValue(account.OCFSSNO_IDnumberRegistrationnumber);
+            acc.CustomerNo                      = convertToNumberic(account.OCFCIFN_CustomerNumber,19,0);
+            
+        	listAdd(responseMessage.param_Header_01.AccountList.Account,acc);
+        }
+            
+        //Response Status Info
+        responseMessage.param_Header_01.StatusInfo.Status.Success = true;
+        responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = mbase.mbaseHeader.HDRIND;
+        responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Success";
+        
+        //Response Paging Info
+        responseMessage.param_Header_01.PagingInfo = udrCreate(InquiryActiveAccountResponse$Header$PagingInfo);
+        responseMessage.param_Header_01.PagingInfo.Paging = udrCreate(InquiryActiveAccountResponse$Header$PagingInfo$Paging);
+        if (mbase.mbaseHeader.HDMREC == "Y"){
+            responseMessage.param_Header_01.PagingInfo.Paging.HasMoreRecord = true;
+        }else{
+            responseMessage.param_Header_01.PagingInfo.Paging.HasMoreRecord = false;
+        }
+        
+        responseMessage.param_Header_01.PagingInfo.Paging.NextPageIndicator = mbase.mbaseHeader.HDVFMT;
+        strToInt(responseMessage.param_Header_01.PagingInfo.Paging.NumberOfRecord, mbase.mbaseHeader.HDNREC);
+        strToInt(responseMessage.param_Header_01.PagingInfo.Paging.PageSize,"20");
+
+    }else{
+        //Rejected
+        //Get Mbase Reject
+        list<MBASE_Reject_With_Payload_TI> aRejected = listCreate(MBASE_Reject_With_Payload_TI);
+        udrDecode("MBASE_Reject_With_Payload_Decode", aRejected, mbase.data);
+        MBASE_Reject_With_Payload_TI rejected = listGet(aRejected,0);
+        
+        responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+        responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = rejected.mbaseReject.ErrorCode;
+        responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = baToStr(rejected.errorDesc, "IBM-Thai");
+    }
+    
+    return responseMessage;
+}]]></string>
+</exportmultiplex>

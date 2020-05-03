@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="APL_Source_Code" ref_path="apl_script[Internal]/storable[apl_script]/storable[Data]">
+   <string name="Definition"><![CDATA[import ultra.ws.SCL.PRF_WS_SCLService.cycles;
+import ultra.ws.SCL.PRF_WS_SCLService.tns;
+
+import ultra.CBS.UFL_DSP_Header;
+import ultra.CBS.UFL_MBASE_Header;
+import apl.Common.APL_Common_MBASE;
+import ultra.Ultra.UFL_MBASE_Reject;
+import apl.Common.APL_Common_Utilities;
+
+import ultra.Ultra.UFL_MBASE_CFC15119_SCL;
+import ultra.Ultra.UFL_MBASE_CFC15120_SCL;
+
+final int sizeOf_CFC15119_RQ = 242; //change size 215 -> 242 edit by:Prapas [28/02/2019]
+final int sizeOf_CFC15119_RS = 693; //change size 639 -> 693 edit by:Prapas [28/02/2019]
+final int sizeOf_CFC15120_RQ = 23;
+final int sizeOf_CFC15120_RS = 159;
+
+
+//CFC15119
+bytearray createContentMessageCFC15119_InquiryAccountList(string uniqKey,WSCycle_inquiryAccountList request){
+   //DSP Header
+    DSP_Header_TgIn dspHeader = createDefaultDSPHeader();
+    dspHeader.SKTMLEN = sizeOf_DSPHeader + sizeOf_MBaseHeader + sizeOf_CFC15119_RQ - 9;
+    dspHeader.I13FMID = "MBASE";  
+    dspHeader.I13DID = "CIFI";
+    dspHeader.I13SID = request.param_Header.ChannelID + "##";
+    //dspHeader.I13ACQN = uniqKey;  
+    dspHeader.I13ACQN = strSubstring(uniqKey, 0, 12);  
+    dspHeader.I13TMNO = strSubstring(uniqKey, 12, 16);  
+         
+    //MBASE Header
+    MBASE_Header_TI mbaseHeader = createDefaultMBASEHeader();
+    mbaseHeader.HDTCOD = "CFC15119";
+    mbaseHeader.HDDSID = "ESB";
+    mbaseHeader.HDACCD = "I";
+    mbaseHeader.HDNREC = "20";
+    mbaseHeader.HDUSID = request.param_Header.ChannelID + "USR";
+    
+    //Request Data
+    MBASE_CFC15119_RQ_TI mbaseRequest = udrCreate(MBASE_CFC15119_RQ_TI);
+    mbaseRequest.CustomerName           = request.param_Data.CustomerName;
+    mbaseRequest.CustomerLastName       = request.param_Data.CustomerLastName;
+    mbaseRequest.IDNumber               = (string)request.param_Data.IDNumber;
+    mbaseRequest.RequestType            = request.param_Data.RequestType;
+    mbaseRequest.Key                    = request.param_Data.Key;
+    
+    //paging Data
+    mbaseHeader.HDVFMT = request.param_Paging.NextPageIndicator;
+    
+    //Build Socket Message
+    bytearray outgoing = udrEncode("DSP_Header_Encoder", dspHeader);
+    outgoing = baAppend(outgoing, udrEncode("MBASE_Header_Encode", mbaseHeader));
+    outgoing = baAppend(outgoing, udrEncode("MBASE_CFC15119_RQ_Encode", mbaseRequest));
+    return outgoing;
+}
+
+WSCycle_inquiryAccountList responseMessageCFC15119_InquiryAccountList(WSCycle_inquiryAccountList responseMessage,DSP_Header_TgIn tcpResponse,long requestMillisec,boolean errorUDR){
+    if(errorUDR==false){
+        list<MBASE_Header_With_Payload_TI> aList = listCreate(MBASE_Header_With_Payload_TI);
+        udrDecode("MBASE_Header_With_Payload_Decode", aList, tcpResponse.data);
+        MBASE_Header_With_Payload_TI mbase = listGet(aList,0);
+        
+        //debug(mbase);
+        debug("MBase Header:" + mbase.mbaseHeader);
+        debug("TransCode: " + mbase.mbaseHeader.HDTCOD);
+        debug("DSP status: " + tcpResponse.I13MSTA);
+        debug("MBase Data:" + baToStr(mbase.data, "IBM-Thai"));
+        //debug("MBase Length: " + strLength(baToStr(mbase.data, "IBM-Thai")));
+        
+        bytearray refilled = refillTrimedColumn(mbase.data,sizeOf_CFC15119_RS);   
+        //debug("MBASE Data refilled:" + baToStr(refilled, "IBM-Thai")); 
+        
+        //Response Header
+        responseMessage.param_Header_01 = udrCreate(InquiryAccountListResponse$Header);
+        date responseTransactinDatetime = dateCreateCopy(responseMessage.param_Header.TransactionDateTime);
+        dateSetTimeZone(responseTransactinDatetime, "GMT+7");       
+        responseMessage.param_Header_01.ReferenceNo = responseMessage.param_Header.ReferenceNo;
+        responseMessage.param_Header_01.TransactionDateTime = responseTransactinDatetime;
+        responseMessage.param_Header_01.ChannelID = responseMessage.param_Header.ChannelID;
+        
+        //Response StatusInfo
+        responseMessage.param_Header_01.StatusInfo = udrCreate(InquiryAccountListResponse$Header$StatusInfo);
+        responseMessage.param_Header_01.StatusInfo.Status = udrCreate(InquiryAccountListResponse$Header$StatusInfo$Status);
+        responseMessage.param_Header_01.StatusInfo.Status.UsageTime = dateCreateNowMilliseconds()-requestMillisec;
+        
+        //Request Data AccountList 
+        if(!strStartsWith(tcpResponse.I13MSTA, ".DSP")){
+            if(mbase.mbaseHeader.HDRIND == "AA"){
+                //Success
+                debug("AA");
+                //debug("mbase length : " + baSize(refilled));
+                
+                responseMessage.param_Header_01.AccountList = udrCreate(InquiryAccountListResponse$Header$AccountList);
+                responseMessage.param_Header_01.AccountList.Account = listCreate(InquiryAccountListResponse$Header$AccountList$Account);
+                
+                //response content list
+                list<MBASE_CFC15119_RS_TI> AccountList = listCreate(MBASE_CFC15119_RS_TI);
+                udrDecode("MBASE_CFC15119_RS_Decode", AccountList, refilled);
+                
+                for(MBASE_CFC15119_RS_TI account: AccountList){
+                    //debug(account);
+                    InquiryAccountListResponse$Header$AccountList$Account acc = udrCreate(InquiryAccountListResponse$Header$AccountList$Account);   
+                    
+                    acc.IDNumber                        = convertToNumberic(account.IDNumber,13,0);
+                    acc.CustomerName                    = getStringValue(account.CustomerName);
+                    acc.CustomerLastName                = getStringValue(account.CustomerLastName);
+                    acc.RequestType                     = getStringValue(account.RequestType);
+                    strToLong(acc.BankNo,               account.BANKNO_BankNo); //SL 3,0 to 3,0
+                    strToLong(acc.BranchNo,             account.BRANCH_BranchNo); //SL 5,0 to 5,0
+                    acc.BranchName                      = getStringValue(account.JDNAME_BranchName);
+                    acc.AccountType                     = getStringValue(account.ACTYPE_AccountType);
+                    acc.AccountNo                       = getStringValue(account.ACCTNO_AccountNo);
+                    //debug(accountNumberFormat(getStringValue(account.ACCTNO_AccountNo),getStringValue(account.ACTYPE_AccountType)));
+                    //acc.AccountNo                       = accountNumberFormat(getStringValue(account.ACCTNO_AccountNo),getStringValue(account.ACTYPE_AccountType));
+                    acc.AccountName                     = getStringValue(account.AccountName);
+                    acc.Sign                            = getStringValue(account.Sign);
+                    strToDouble(acc.AvailableBalance,   account.CBAL_AvailableBalance); //SL 20,0 to 17,2
+                    acc.RelationshipCode                = getStringValue(account.Remark);
+                    acc.FirstName                       = getStringValue(account.CFNA1_FirstName);
+                    acc.LastName                        = getStringValue(account.CFNA1B_LastName);
+                    acc.BirthDate                       = getStringValue(convertDateToBuddhist(account.BirthDate,"dd/MM/yyyy","yyyyMMdd"));
+                    acc.CitizenID                       = getStringValue(account.CFSSNO_CitizenID);
+                    acc.CustomerNo                      = padCustomerNumber(getStringValue(account.CIFNO_CustomerNo),9);
+                    
+                	listAdd(responseMessage.param_Header_01.AccountList.Account,acc);
+                }
+                    
+                //Response Status Info
+                responseMessage.param_Header_01.StatusInfo.Status.Success = true;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = mbase.mbaseHeader.HDRIND;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Success";
+                
+                //Response Paging Info
+                responseMessage.param_Header_01.PagingInfo = udrCreate(InquiryAccountListResponse$Header$PagingInfo);
+                responseMessage.param_Header_01.PagingInfo.Paging = udrCreate(InquiryAccountListResponse$Header$PagingInfo$Paging);
+                if (mbase.mbaseHeader.HDMREC == "Y"){
+                    responseMessage.param_Header_01.PagingInfo.Paging.HasMoreRecord = true;
+                }else{
+                    responseMessage.param_Header_01.PagingInfo.Paging.HasMoreRecord = false;
+                }
+                
+                responseMessage.param_Header_01.PagingInfo.Paging.NextPageIndicator = mbase.mbaseHeader.HDVFMT;
+                strToInt(responseMessage.param_Header_01.PagingInfo.Paging.NumberOfRecord, mbase.mbaseHeader.HDNREC);
+                strToInt(responseMessage.param_Header_01.PagingInfo.Paging.PageSize,"20");
+        
+            }else{
+                //Rejected
+                //Get Mbase Reject
+                list<MBASE_Reject_With_Payload_TI> aRejected = listCreate(MBASE_Reject_With_Payload_TI);
+                udrDecode("MBASE_Reject_With_Payload_Decode", aRejected, mbase.data);
+                MBASE_Reject_With_Payload_TI rejected = listGet(aRejected,0);
+                
+                responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = rejected.mbaseReject.ErrorCode;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = baToStr(rejected.errorDesc, "IBM-Thai");
+            }
+        }else{
+                if(strStartsWith(tcpResponse.I13MSTA, ".DSP")){
+                    //Response Stattus Info
+                    string responseCodeDSP = strREReplaceAll(tcpResponse.I13MSTA, "\\.", "");
+                    responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = responseCodeDSP;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = getDSPErrorDesc(responseCodeDSP);       
+                }
+                else{
+                    //DSP Service down 
+                    responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = "CBS8999";
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Unknow data format (Invalid response from host)";     
+                }
+        }
+    }else{
+            //Response Header
+            responseMessage.param_Header_01 = udrCreate(InquiryAccountListResponse$Header);
+            date responseTransactinDatetime = dateCreateCopy(responseMessage.param_Header.TransactionDateTime);
+            dateSetTimeZone(responseTransactinDatetime, "GMT+7");       
+            responseMessage.param_Header_01.ReferenceNo = responseMessage.param_Header.ReferenceNo;
+            responseMessage.param_Header_01.TransactionDateTime = responseTransactinDatetime;
+            responseMessage.param_Header_01.ChannelID = responseMessage.param_Header.ChannelID;
+            //Response StatusInfo
+            responseMessage.param_Header_01.StatusInfo = udrCreate(InquiryAccountListResponse$Header$StatusInfo);
+            responseMessage.param_Header_01.StatusInfo.Status = udrCreate(InquiryAccountListResponse$Header$StatusInfo$Status);
+            responseMessage.param_Header_01.StatusInfo.Status.UsageTime = dateCreateNowMilliseconds()-requestMillisec;
+            responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+            responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = "CBS8990";
+            responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Connection to CBS lost";
+    }    
+    return responseMessage;
+}
+
+string convertDateToBuddhist(string dateStr, string inFormat, string outFormat){
+    return convertDate(dateStr,inFormat,outFormat,543);
+}
+string convertDateToChrist(string dateStr, string inFormat, string outFormat){
+    return convertDate(dateStr,inFormat,outFormat,-543);
+}
+
+string convertDate(string dateStr, string inFormat, string outFormat, int yearCal){
+    int dateStrInt = 0; strToInt(dateStrInt, strREReplaceAll(dateStr, "/", ""));
+    if((dateStrInt == 0 || dateStr == "00000000") || dateStr == "00/00/0000"){
+        return "";
+    }
+    
+    string year = "";
+    string month = "";
+    string day = "";
+    string dateRes = "";
+    
+    //debug("ConvertDate");
+    //debug(dateStr);
+    //debug(outFormat);
+    //debug(outFormat);
+    //debug(yearCal);
+    
+    if(inFormat == "ddMMyyyy"){
+        if(strLength(dateStr) >= 10){
+            int yr = 0; strToInt(yr, strSubstring(dateStr, 4, 8));
+            if(yr < 0){
+                return dateStr;
+            }
+            year = ((string)(yr + yearCal));
+            month = strSubstring(dateStr, 2, 4);
+            day = strSubstring(dateStr, 0, 2);
+        }else{
+            return dateStr;
+        }
+    }
+    
+    if(inFormat == "dd/MM/yyyy"){
+        if(strLength(dateStr) >= 10){
+            int yr = 0; strToInt(yr, strSubstring(dateStr, 6, 10));
+            if(yr < 0){
+                return dateStr;
+            }
+            year = ((string)(yr + yearCal));
+            month = strSubstring(dateStr, 3, 5);
+            day = strSubstring(dateStr, 0, 2);
+        }else{
+            return dateStr;
+        }
+    }
+    
+    if(inFormat == "yyyyMMdd"){
+        if(strLength(dateStr)>=8){
+            int yr = 0; strToInt(yr, strSubstring(dateStr, 0, 4));
+            if(yr < 0){
+                return dateStr;
+            }
+            year = ((string)(yr + yearCal));
+            month = strSubstring(dateStr, 4, 6);
+            day = strSubstring(dateStr, 6, 8);
+        }else{
+            return dateStr;
+        }
+    }
+    
+    if(outFormat == "ddMMyyyy"){
+        dateRes = day + month + year;
+    }
+    if(outFormat == "dd/MM/yyyy"){
+        dateRes = day + "/" + month + "/" + year;
+    }
+    if(outFormat == "yyyyMMdd"){
+        dateRes = year + month + day;
+    }
+    
+    //debug(dateRes);
+    return dateRes;
+}
+
+//CFC15120
+bytearray createContentMessageCFC15120_InquiryAccountSummary(string uniqKey,WSCycle_inquiryAccountSummary request){
+   //DSP Header
+    DSP_Header_TgIn dspHeader = createDefaultDSPHeader();
+    dspHeader.SKTMLEN = sizeOf_DSPHeader + sizeOf_MBaseHeader + sizeOf_CFC15120_RQ - 9;
+    dspHeader.I13FMID = "MBASE";  
+    dspHeader.I13DID = "CIFI";
+    dspHeader.I13SID = request.param_Header.ChannelID + "##";
+    //dspHeader.I13ACQN = uniqKey;  
+    dspHeader.I13ACQN = strSubstring(uniqKey, 0, 12);  
+    dspHeader.I13TMNO = strSubstring(uniqKey, 12, 16);   
+         
+    //MBASE Header
+    MBASE_Header_TI mbaseHeader = createDefaultMBASEHeader();
+    mbaseHeader.HDTCOD = "CFC15120";
+    mbaseHeader.HDDSID = "ESB";
+    mbaseHeader.HDACCD = "I";
+    mbaseHeader.HDNREC = "20";
+    mbaseHeader.HDUSID = request.param_Header.ChannelID + "USR";
+    
+    //Request Data
+    MBASE_CFC15120_RQ_TI mbaseRequest = udrCreate(MBASE_CFC15120_RQ_TI);
+    
+    mbaseRequest.TransactionType        = request.param_Data.TransactionType;
+    mbaseRequest.RequestedDate          = convertDateToChrist(request.param_Data.RequestedDate,"yyyyMMdd","ddMMyyyy");
+    mbaseRequest.SearchType             = request.param_Data.SearchType;
+    mbaseRequest.SearchKey              = (string)request.param_Data.SearchKey;
+    
+    //paging Data
+    mbaseHeader.HDVFMT = request.param_Paging.NextPageIndicator;
+    
+    //Build Socket Message
+    bytearray outgoing = udrEncode("DSP_Header_Encoder", dspHeader);
+    outgoing = baAppend(outgoing, udrEncode("MBASE_Header_Encode", mbaseHeader));
+    outgoing = baAppend(outgoing, udrEncode("MBASE_CFC15120_RQ_Encode", mbaseRequest));
+    return outgoing;
+}
+
+WSCycle_inquiryAccountSummary responseMessageCFC15120_InquiryActiveAccount(WSCycle_inquiryAccountSummary responseMessage,DSP_Header_TgIn tcpResponse,long requestMillisec,boolean errorUDR){
+    if(errorUDR==false){
+
+        list<MBASE_Header_With_Payload_TI> aList = listCreate(MBASE_Header_With_Payload_TI);
+        udrDecode("MBASE_Header_With_Payload_Decode", aList, tcpResponse.data);
+        MBASE_Header_With_Payload_TI mbase = listGet(aList,0);
+        
+        //debug(mbase);
+        //debug("MBase Header:" + mbase.mbaseHeader);
+        debug("TransCode: " + mbase.mbaseHeader.HDTCOD);
+        debug("DSP status: " + tcpResponse.I13MSTA);
+        debug("MBase Data:" + baToStr(mbase.data, "IBM-Thai"));
+        
+        bytearray refilled = refillTrimedColumn(mbase.data,sizeOf_CFC15120_RS);   
+        //debug("MBASE Data refilled:" + baToStr(refilled, "IBM-Thai")); 
+        
+        //Response Header
+        responseMessage.param_Header_01 = udrCreate(InquiryAccountSummaryResponse$Header);
+        date responseTransactinDatetime = dateCreateCopy(responseMessage.param_Header.TransactionDateTime);
+        dateSetTimeZone(responseTransactinDatetime, "GMT+7");       
+        responseMessage.param_Header_01.ReferenceNo = responseMessage.param_Header.ReferenceNo;
+        responseMessage.param_Header_01.TransactionDateTime = responseTransactinDatetime;
+        responseMessage.param_Header_01.ChannelID = responseMessage.param_Header.ChannelID;
+        
+        //Response StatusInfo
+        responseMessage.param_Header_01.StatusInfo = udrCreate(InquiryAccountSummaryResponse$Header$StatusInfo);
+        responseMessage.param_Header_01.StatusInfo.Status = udrCreate(InquiryAccountSummaryResponse$Header$StatusInfo$Status);
+        responseMessage.param_Header_01.StatusInfo.Status.UsageTime = dateCreateNowMilliseconds()-requestMillisec;
+
+        //Request Data AccountList 
+        if(!strStartsWith(tcpResponse.I13MSTA, ".DSP")){
+            if(mbase.mbaseHeader.HDRIND == "AA"){
+                //Success
+                debug("AA");
+                //debug("mbase length : " + baSize(refilled));
+                
+                responseMessage.param_Header_01.AccountList = udrCreate(InquiryAccountSummaryResponse$Header$AccountList);
+                responseMessage.param_Header_01.AccountList.Account = listCreate(InquiryAccountSummaryResponse$Header$AccountList$Account);
+                
+                //response content list
+                list<MBASE_CFC15120_RS_TI> AccountList = listCreate(MBASE_CFC15120_RS_TI);
+                udrDecode("MBASE_CFC15120_RS_Decode", AccountList, refilled);
+                
+                
+                
+                for(MBASE_CFC15120_RS_TI account: AccountList){
+                    debug("SL ACCOUNT");
+                    debug(account);
+                    InquiryAccountSummaryResponse$Header$AccountList$Account acc = udrCreate(InquiryAccountSummaryResponse$Header$AccountList$Account);   
+                    
+                    acc.TxType                              = getStringValue(account.TxType);
+                    acc.AccountNo                           = getStringValue(account.AccountNo);
+                    //acc.AccountNo                           = accountNumberFormat(getStringValue(account.AccountNo),getStringValue(account.AccountType));
+                    acc.AccountType                         = getStringValue(account.AccountType);
+                    strToDouble(acc.Available,              account.Available); //SL 20,0 to 19,2
+                    //strToDate(acc.Deadline, account.Deadline, "yyyyMMdd");
+                    acc.Deadline                            = getStringValue(convertDateToBuddhist(account.Deadline,"yyyyMMdd","yyyyMMdd"));
+                    strToDouble(acc.InterestRatePercentage, convertToNumberic(account.InterestRatePercentage,6,2)); //SL percenet 6,2 to 13,7
+                    strToDouble(acc.AccuranceAmount,        account.AccuranceAmount); //SL 20,0 to 19,2
+                    acc.Obligation                          = getStringValue(account.Obligation);
+                    acc.Collatteral                         = getStringValue(account.Collatteral);
+                    acc.AccountStatus                       = getStringValue(account.AccountStatus);
+                    
+                	listAdd(responseMessage.param_Header_01.AccountList.Account,acc);
+                }
+
+                //Response Status Info
+                responseMessage.param_Header_01.StatusInfo.Status.Success = true;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = mbase.mbaseHeader.HDRIND;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Success";
+                
+                //Response Paging Info
+                responseMessage.param_Header_01.PagingInfo = udrCreate(InquiryAccountSummaryResponse$Header$PagingInfo);
+                responseMessage.param_Header_01.PagingInfo.Paging = udrCreate(InquiryAccountSummaryResponse$Header$PagingInfo$Paging);
+                if (mbase.mbaseHeader.HDMREC == "Y"){
+                    responseMessage.param_Header_01.PagingInfo.Paging.HasMoreRecord = true;
+                }else{
+                    responseMessage.param_Header_01.PagingInfo.Paging.HasMoreRecord = false;
+                }
+                
+                responseMessage.param_Header_01.PagingInfo.Paging.NextPageIndicator = mbase.mbaseHeader.HDVFMT;
+                strToInt(responseMessage.param_Header_01.PagingInfo.Paging.NumberOfRecord, mbase.mbaseHeader.HDNREC);
+                strToInt(responseMessage.param_Header_01.PagingInfo.Paging.PageSize,"20");
+        
+            }else{
+                //Rejected
+                //Get Mbase Reject
+                list<MBASE_Reject_With_Payload_TI> aRejected = listCreate(MBASE_Reject_With_Payload_TI);
+                udrDecode("MBASE_Reject_With_Payload_Decode", aRejected, mbase.data);
+                MBASE_Reject_With_Payload_TI rejected = listGet(aRejected,0);
+                
+                responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = rejected.mbaseReject.ErrorCode;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = baToStr(rejected.errorDesc, "IBM-Thai");
+            }
+        }else{
+                if(strStartsWith(tcpResponse.I13MSTA, ".DSP")){
+                    //Response Stattus Info
+                    string responseCodeDSP = strREReplaceAll(tcpResponse.I13MSTA, "\\.", "");
+                    responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = responseCodeDSP;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = getDSPErrorDesc(responseCodeDSP);       
+                }
+                else{
+                    //DSP Service down 
+                    responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = "CBS8999";
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Unknow data format (Invalid response from host)";     
+                }
+        }
+    }else{
+            //Response Header
+            responseMessage.param_Header_01 = udrCreate(InquiryAccountSummaryResponse$Header);
+            date responseTransactinDatetime = dateCreateCopy(responseMessage.param_Header.TransactionDateTime);
+            dateSetTimeZone(responseTransactinDatetime, "GMT+7");       
+            responseMessage.param_Header_01.ReferenceNo = responseMessage.param_Header.ReferenceNo;
+            responseMessage.param_Header_01.TransactionDateTime = responseTransactinDatetime;
+            responseMessage.param_Header_01.ChannelID = responseMessage.param_Header.ChannelID;
+            //Response StatusInfo
+            responseMessage.param_Header_01.StatusInfo = udrCreate(InquiryAccountSummaryResponse$Header$StatusInfo);
+            responseMessage.param_Header_01.StatusInfo.Status = udrCreate(InquiryAccountSummaryResponse$Header$StatusInfo$Status);
+            responseMessage.param_Header_01.StatusInfo.Status.UsageTime = dateCreateNowMilliseconds()-requestMillisec;
+            responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+            responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = "CBS8990";
+            responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Connection to CBS lost";
+    }    
+    return responseMessage;
+}
+]]></string>
+</exportmultiplex>

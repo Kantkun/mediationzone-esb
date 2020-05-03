@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Ultra_Format" ref_path="ultra_format[Internal]/storable[ultra_format]/storable[Data]">
+   <string name="Definition"><![CDATA[import CBS.UFL_DSP_Header;
+import CBS.UFL_MBASE_Header;
+import Ultra.UFL_MBASE_CFC810001IR;
+
+session NcbSlRequestPack_Agg{
+    NcbSlRequestPack matchLog;
+};
+
+internal NcbSlRequestPack {
+    DSP_Header_TgIn dsp;
+    MBASE_Header_With_Payload_TI mbase;
+    CFC810001I_RQ_TI cfc810001;
+};]]></string>
+   <boolean name="IsValid" value="true"/>
+</exportmultiplex>

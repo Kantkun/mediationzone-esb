@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="APL_Source_Code" ref_path="apl_script[Internal]/storable[apl_script]/storable[Data]">
+   <string name="Definition"><![CDATA[import ultra.CBS.UFL_DSP_Header;
+import ultra.CBS.UFL_MBASE_Header;
+import apl.Common.APL_Common_MBASE;
+import ultra.SMS.UFL_SMSMatcher;
+import ultra.Ultra.UFL_AXC804000;
+import ultra.HTTP.UFL_Httpd_ServiceList;
+import apl.Common.APL_Common_Utilities;
+import ultra.Ultra.UFL_MBASE_Reject;
+import ultra.CBS.UFL_MBERROR;
+//add by: Prapas Ngootip [18/02/2019]
+import ultra.ws.SMS.PRF_WS_SMSService.cycles;
+import ultra.ws.SMS.PRF_WS_SMSService.tns;
+
+final int sizeOf_AXC804000 = 3230;
+
+//add by: Prapas Ngootip [18/02/2019]
+//Create SOAP Request
+WSCycle_sendSMS createSOAP_SendSMS(string uniqKey, DSP_Header_TgIn tcpRequest){
+    list<MBASE_Header_With_Payload_TI> aList = listCreate(MBASE_Header_With_Payload_TI);
+    udrDecode("MBASE_Header_With_Payload_Decode", aList, tcpRequest.data);
+    MBASE_Header_With_Payload_TI mbase = listGet(aList,0);
+    
+    bytearray refilled = refillTrimedColumn(mbase.data,3230);  
+    //debug(baToStr(refilled, "IBM-Thai"));
+    list<AXC804000_RQ_TI> SMSInfo = listCreate(AXC804000_RQ_TI);
+    udrDecode("AXC804000_RQ_Decode", SMSInfo, refilled);
+    AXC804000_RQ_TI AXC804000 = listGet(SMSInfo,0);
+    
+    //Constan current date/time
+    string strDate;
+    dateToString(strDate, dateCreateNow(), "yyyyMMddHHmmssSSS"); 
+    
+    //SOAP Request
+    WSCycle_sendSMS requestSOAP = udrCreate(WSCycle_sendSMS);
+    requestSOAP.context = uniqKey;
+    requestSOAP.param = udrCreate(AisReq);
+    requestSOAP.param.charge = "N";
+    requestSOAP.param.cmd = "SENDMSG";
+    requestSOAP.param.content = AXC804000.SMSMESSAGE_MESSAGE;
+    requestSOAP.param.report = "Y";
+    requestSOAP.param.sendTo = replaceWithCountryCode(AXC804000.SMSSNDDEST_SNDDEST);
+    requestSOAP.param.transID = "BULK";
+    return requestSOAP;
+}
+//End Create SOAP Request
+
+SMSMatcher createSMSStructor(string uniqKey,DSP_Header_TgIn tcpRequest){
+    SMSMatcher UFLSMS = udrCreate(SMSMatcher);
+    UFLSMS.tcpRequest = tcpRequest;
+    
+    list<MBASE_Header_With_Payload_TI> aList = listCreate(MBASE_Header_With_Payload_TI);
+    udrDecode("MBASE_Header_With_Payload_Decode", aList, tcpRequest.data);
+    MBASE_Header_With_Payload_TI mbase = listGet(aList,0);
+    
+    bytearray refilled = refillTrimedColumn(mbase.data,3230);   
+    
+    //debug(refilled,"IBM-Thai");
+    
+    list<AXC804000_RQ_TI> SMSInfo = listCreate(AXC804000_RQ_TI);
+    udrDecode("AXC804000_RQ_Decode", SMSInfo, refilled);
+    AXC804000_RQ_TI sms = listGet(SMSInfo,0);
+    
+    UFLSMS.SMS_CHARGE   =   "N";;
+    UFLSMS.SMS_CMD      =   "SENDMSG";
+    UFLSMS.SMS_CODE     =   "THAI_SMS";
+    //UFLSMS.SMS_CONTENT  =   sms.SMSMESSAGE_MESSAGE;
+    strToBA(UFLSMS.SMS_CONTENT, sms.SMSMESSAGE_MESSAGE,"UTF-16BE");
+    UFLSMS.SMS_CTYPE    =   "UNICODE";
+    UFLSMS.SMS_FROM     =   "83896";
+    UFLSMS.SMS_REPORT   =   "Y";
+    UFLSMS.SMS_TO       =   sms.SMSSNDDEST_SNDDEST;
+    UFLSMS.SMS_TRANSID  =   uniqKey;
+    
+    return UFLSMS;
+}
+
+SMSMatcher createSMSStructorTest(string uniqKey){
+    SMSMatcher UFLSMS = udrCreate(SMSMatcher);
+    
+    UFLSMS.SMS_CHARGE   =   "N";;
+    UFLSMS.SMS_CMD      =   "SENDMSG";
+    UFLSMS.SMS_CODE     =   "THAI_SMS";
+    //bytearray ContentData; 
+    strToBA(UFLSMS.SMS_CONTENT, "Cholly A","UTF-16BE");
+    //UFLSMS.SMS_CONTENT  =   ContentData;
+    UFLSMS.SMS_CTYPE    =   "UNICODE";
+    UFLSMS.SMS_FROM     =   "83896";
+    UFLSMS.SMS_REPORT   =   "Y";
+    UFLSMS.SMS_TO       =   "0823612781";
+    UFLSMS.SMS_TRANSID  =   uniqKey;
+    
+    return UFLSMS;
+}
+
+bytearray createSocketMessageAXC804000_SendSMS(DSP_Header_TgIn tcpRequest, WSCycle_sendSMS sendSMS){
+    //DSP Header
+    DSP_Header_TgIn dspHeader = createDefaultDSPHeader();
+    dspHeader.SKTMLEN = sizeOf_DSPHeader + sizeOf_MBaseHeader + sizeOf_AXC804000 - 9;
+    dspHeader.SKTHEAD = tcpRequest.SKTHEAD;
+    dspHeader.I13HLEN = tcpRequest.I13HLEN;
+    dspHeader.I13MLEN = tcpRequest.I13MLEN;
+    dspHeader.I13VERS = tcpRequest.I13VERS;
+    dspHeader.I13SID = tcpRequest.I13SID;
+    dspHeader.I13DID = tcpRequest.I13DID;
+    dspHeader.I13RTGN = tcpRequest.I13RTGN;
+    dspHeader.I13XID = tcpRequest.I13XID;
+    dspHeader.I13RRNO = tcpRequest.I13RRNO;
+    dspHeader.I13USER = tcpRequest.I13USER;
+    dspHeader.I13HFMID = tcpRequest.I13HFMID;  
+    dspHeader.I13CUTO = tcpRequest.I13CUTO;
+    dspHeader.I13UDTA = tcpRequest.I13UDTA;
+    dspHeader.I13SDTA = tcpRequest.I13SDTA;
+    dspHeader.I13TTYP = tcpRequest.I13TTYP;
+    dspHeader.I13RCNF = tcpRequest.I13RCNF;
+    dspHeader.I13MSTA = "/AA";
+         
+    //MBASE Header
+    list<MBASE_Header_With_Payload_TI> mbaseList = listCreate(MBASE_Header_With_Payload_TI);
+    udrDecode("MBASE_Header_With_Payload_Decode",mbaseList,tcpRequest.data);
+    MBASE_Header_With_Payload_TI mbase = listGet(mbaseList,0);
+    
+    MBASE_Header_TI mbaseHeader = udrCreate(MBASE_Header_TI);
+    
+    mbaseHeader.HDVERS = mbase.mbaseHeader.HDVERS;
+    mbaseHeader.HDTCOD = mbase.mbaseHeader.HDTCOD;
+    mbaseHeader.HDTXTP = mbase.mbaseHeader.HDTXTP;
+    mbaseHeader.HDRIND = "AA";
+    mbaseHeader.HDNERR = mbase.mbaseHeader.HDNERR;
+    mbaseHeader.HDSRID = mbase.mbaseHeader.HDSRID;
+    mbaseHeader.HDDSID = mbase.mbaseHeader.HDDSID;
+    mbaseHeader.HDRTDQ = mbase.mbaseHeader.HDRTDQ;
+    mbaseHeader.HDDTQL = mbase.mbaseHeader.HDDTQL;
+    mbaseHeader.HDTMLI = mbase.mbaseHeader.HDTMLI;
+    mbaseHeader.HDBKNO = mbase.mbaseHeader.HDBKNO;
+    mbaseHeader.HDLGID = mbase.mbaseHeader.HDLGID;
+    mbaseHeader.HDCLDR = mbase.mbaseHeader.HDCLDR; 
+    mbaseHeader.HDBRNO = mbase.mbaseHeader.HDBRNO; 
+    mbaseHeader.HDUSID = mbase.mbaseHeader.HDUSID;
+    mbaseHeader.HDSUP1 = mbase.mbaseHeader.HDSUP1;
+    mbaseHeader.HDSUP2 = mbase.mbaseHeader.HDSUP2;
+    mbaseHeader.HDSUP3 = mbase.mbaseHeader.HDSUP3;
+    mbaseHeader.HDACCD = mbase.mbaseHeader.HDACCD;
+    mbaseHeader.HDNXTA = mbase.mbaseHeader.HDNXTA;
+    mbaseHeader.HDTXMD = mbase.mbaseHeader.HDTXMD;
+    mbaseHeader.HDSLKY = mbase.mbaseHeader.HDSLKY;
+    mbaseHeader.HDRREF = mbase.mbaseHeader.HDRREF;
+    mbaseHeader.HDSREF = mbase.mbaseHeader.HDSREF;
+    mbaseHeader.HDRCKY = mbase.mbaseHeader.HDRCKY;
+    mbaseHeader.HDNREC = mbase.mbaseHeader.HDNREC;
+    mbaseHeader.HDMREC = mbase.mbaseHeader.HDMREC;
+    mbaseHeader.HDSMTD = mbase.mbaseHeader.HDSMTD;
+    mbaseHeader.HDTIMS = mbase.mbaseHeader.HDTIMS;
+    mbaseHeader.HDVFMT = mbase.mbaseHeader.HDVFMT;
+    mbaseHeader.HDDAPV = mbase.mbaseHeader.HDDAPV;
+    mbaseHeader.HDCOUN = mbase.mbaseHeader.HDCOUN;
+    mbaseHeader.HDFCID = mbase.mbaseHeader.HDFCID;
+    mbaseHeader.HDFCSQ = mbase.mbaseHeader.HDFCSQ;
+    mbaseHeader.HDFILR = mbase.mbaseHeader.HDFILR;
+   
+    //Request Data
+
+    bytearray outgoing = udrEncode("DSP_Header_Encoder", dspHeader);
+    outgoing = baAppend(outgoing, udrEncode("MBASE_Header_Encode", mbaseHeader));
+    bytearray refilled = refillTrimedColumn(mbase.data,sizeOf_AXC804000);
+    outgoing = baAppend(outgoing, refilled);
+    //outgoing = baAppend(outgoing, udrEncode("DD20001_RS_Encode", mbaseResponse));
+    return outgoing;
+}
+bytearray createSocketMessageSMSRejected(DSP_Header_TgIn tcpRequest,string errDes){
+    //DSP Header
+    DSP_Header_TgIn dspHeader = createDefaultDSPHeader();
+    dspHeader.SKTMLEN = 940;
+    dspHeader.SKTHEAD = tcpRequest.SKTHEAD;
+    dspHeader.I13HLEN = tcpRequest.I13HLEN;
+    dspHeader.I13MLEN = tcpRequest.I13MLEN;
+    dspHeader.I13VERS = tcpRequest.I13VERS;
+    dspHeader.I13SID = tcpRequest.I13SID;
+    dspHeader.I13DID = tcpRequest.I13DID;
+    dspHeader.I13RTGN = tcpRequest.I13RTGN;
+    dspHeader.I13XID = tcpRequest.I13XID;
+    dspHeader.I13RRNO = tcpRequest.I13RRNO;
+    dspHeader.I13USER = tcpRequest.I13USER;
+    dspHeader.I13HFMID = tcpRequest.I13HFMID;  
+    dspHeader.I13CUTO = tcpRequest.I13CUTO;
+    dspHeader.I13UDTA = tcpRequest.I13UDTA;
+    dspHeader.I13SDTA = tcpRequest.I13SDTA;
+    dspHeader.I13TTYP = tcpRequest.I13TTYP;
+    dspHeader.I13RCNF = tcpRequest.I13RCNF;
+    dspHeader.I13MSTA = "/AB";
+         
+    //MBASE Header
+    list<MBASE_Header_With_Payload_TI> mbaseList = listCreate(MBASE_Header_With_Payload_TI);
+    udrDecode("MBASE_Header_With_Payload_Decode",mbaseList,tcpRequest.data);
+    MBASE_Header_With_Payload_TI mbase = listGet(mbaseList,0);
+    
+    MBASE_Header_TI mbaseHeader = udrCreate(MBASE_Header_TI);
+    
+    mbaseHeader.HDVERS = mbase.mbaseHeader.HDVERS;
+    mbaseHeader.HDTCOD = mbase.mbaseHeader.HDTCOD;
+    mbaseHeader.HDTXTP = mbase.mbaseHeader.HDTXTP;
+    mbaseHeader.HDRIND = "AB";
+    mbaseHeader.HDNERR = mbase.mbaseHeader.HDNERR;
+    mbaseHeader.HDSRID = mbase.mbaseHeader.HDSRID;
+    mbaseHeader.HDDSID = mbase.mbaseHeader.HDDSID;
+    mbaseHeader.HDRTDQ = mbase.mbaseHeader.HDRTDQ;
+    mbaseHeader.HDDTQL = mbase.mbaseHeader.HDDTQL;
+    mbaseHeader.HDTMLI = mbase.mbaseHeader.HDTMLI;
+    mbaseHeader.HDBKNO = mbase.mbaseHeader.HDBKNO;
+    mbaseHeader.HDLGID = mbase.mbaseHeader.HDLGID;
+    mbaseHeader.HDCLDR = mbase.mbaseHeader.HDCLDR; 
+    mbaseHeader.HDBRNO = mbase.mbaseHeader.HDBRNO; 
+    mbaseHeader.HDUSID = mbase.mbaseHeader.HDUSID;
+    mbaseHeader.HDSUP1 = mbase.mbaseHeader.HDSUP1;
+    mbaseHeader.HDSUP2 = mbase.mbaseHeader.HDSUP2;
+    mbaseHeader.HDSUP3 = mbase.mbaseHeader.HDSUP3;
+    mbaseHeader.HDACCD = mbase.mbaseHeader.HDACCD;
+    mbaseHeader.HDNXTA = mbase.mbaseHeader.HDNXTA;
+    mbaseHeader.HDTXMD = mbase.mbaseHeader.HDTXMD;
+    mbaseHeader.HDSLKY = mbase.mbaseHeader.HDSLKY;
+    mbaseHeader.HDRREF = mbase.mbaseHeader.HDRREF;
+    mbaseHeader.HDSREF = mbase.mbaseHeader.HDSREF;
+    mbaseHeader.HDRCKY = mbase.mbaseHeader.HDRCKY;
+    mbaseHeader.HDNREC = mbase.mbaseHeader.HDNREC;
+    mbaseHeader.HDMREC = mbase.mbaseHeader.HDMREC;
+    mbaseHeader.HDSMTD = mbase.mbaseHeader.HDSMTD;
+    mbaseHeader.HDTIMS = mbase.mbaseHeader.HDTIMS;
+    mbaseHeader.HDVFMT = mbase.mbaseHeader.HDVFMT;
+    mbaseHeader.HDDAPV = mbase.mbaseHeader.HDDAPV;
+    mbaseHeader.HDCOUN = mbase.mbaseHeader.HDCOUN;
+    mbaseHeader.HDFCID = mbase.mbaseHeader.HDFCID;
+    mbaseHeader.HDFCSQ = mbase.mbaseHeader.HDFCSQ;
+    mbaseHeader.HDFILR = mbase.mbaseHeader.HDFILR;
+    
+    //MBError
+    MBASE_MBERROR_RQ_TI mbError = udrCreate(MBASE_MBERROR_RQ_TI);
+    mbError.ERCODE_ErrorCode = "DSP9999";
+    mbError.ERTYPE_ErrorIndicator = "E";
+    mbError.ERSEVE_ErrorSeverity = "";
+    mbError.ERFLDN_ErrorField = "";
+    mbError.EROVRB_OverideBitPosition = "";
+    mbError.ERDESC_ErrorDescription = errDes;
+    mbError.EREXTN_ExtendedData = ".";
+    
+    bytearray outgoing = udrEncode("DSP_Header_Encoder", dspHeader);
+    outgoing = baAppend(outgoing, udrEncode("MBASE_Header_Encode", mbaseHeader));
+    outgoing = baAppend(outgoing, udrEncode("MBASE_MBERROR_RQ_Encode", mbError));
+    return outgoing; 
+}
+
+//function 
+string replaceWithCountryCode(string phoneNumber){
+    debug("PhoneNo: " + phoneNumber);
+    return "66" + strSubstring(phoneNumber, 1, 10);
+    //return strReplaceChars(phoneNumber, 0, "66");
+}
+//end function]]></string>
+</exportmultiplex>

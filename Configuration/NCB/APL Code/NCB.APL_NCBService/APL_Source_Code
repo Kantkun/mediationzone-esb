@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="APL_Source_Code" ref_path="apl_script[Internal]/storable[apl_script]/storable[Data]">
+   <string name="Definition"><![CDATA[import apl.Common.APL_Common_Utilities;
+import ultra.CBS.UFL_DSP_Header;
+import ultra.CBS.UFL_MBASE_Header;
+import apl.Common.APL_Common_MBASE;
+import ultra.Ultra.UFL_MBASE_CFC810001IR;
+import ultra.Ultra.UFL_MBASE_CFC810010IR;
+import ultra.FNT;
+
+final int sizeOf_CFC180001IR_Rq = 626 + 1200; //626;
+final int sizeOf_CFC180001IR = 626 + 1200; //426; //425; //339;
+final int sizeOf_CFC180010IR = 2134 + 396 + 5; //added +5 on 20190722
+
+int getSizeOfCFC180001IR(){
+    return sizeOf_CFC180001IR;
+}
+
+MultiForwardingUDR createMultiForwardingUDR(string dir, string file, bytearray fileContent) {
+    //Create the FNTUDR
+    FNTUDR fntudr = udrCreate(FNTUDR);
+    fntAddString(fntudr, dir);
+    fntAddDirDelimiter(fntudr); //Add a directory
+    fntAddString(fntudr, file); //Add a file
+    MultiForwardingUDR multiForwardingUDR = udrCreate(MultiForwardingUDR);
+    multiForwardingUDR.fntSpecification = fntudr;
+    multiForwardingUDR.content = fileContent;
+    debug("make mutiforwardingUDR");
+    return multiForwardingUDR;
+}
+
+bytearray createResponseSocketCFC810001(string uniqKey,DSP_Header_TgIn tcpRequest){
+   //DSP Header
+    DSP_Header_TgIn dspHeader = createDefaultDSPHeader();
+    dspHeader.SKTMLEN = sizeOf_DSPHeader + sizeOf_MBaseHeader + sizeOf_CFC180001IR - 9;
+    /*dspHeader.I13FMID = "MBASE";  
+    dspHeader.I13DID = "CMSM";
+    dspHeader.I13ACQN = uniqKey;  
+    dspHeader.I13MSTA = "/AA";*/
+    dspHeader.SKTHEAD = tcpRequest.SKTHEAD;
+    dspHeader.I13HLEN = tcpRequest.I13HLEN;
+    dspHeader.I13MLEN = tcpRequest.I13MLEN;
+    dspHeader.I13VERS = tcpRequest.I13VERS;
+    dspHeader.I13SID = tcpRequest.I13SID;
+    dspHeader.I13DID = tcpRequest.I13DID;
+    dspHeader.I13RTGN = tcpRequest.I13RTGN;
+    dspHeader.I13XID = tcpRequest.I13XID;
+    dspHeader.I13RRNO = tcpRequest.I13RRNO;
+    dspHeader.I13USER = tcpRequest.I13USER;
+    dspHeader.I13HFMID = tcpRequest.I13HFMID;  
+    dspHeader.I13CUTO = tcpRequest.I13CUTO;
+    dspHeader.I13UDTA = tcpRequest.I13UDTA;
+    dspHeader.I13SDTA = tcpRequest.I13SDTA;
+    dspHeader.I13TTYP = tcpRequest.I13TTYP;
+    dspHeader.I13RCNF = tcpRequest.I13RCNF;
+    dspHeader.I13MSTA = "/AA";
+         
+    //MBASE Header
+    list<MBASE_Header_With_Payload_TI> mbaseList = listCreate(MBASE_Header_With_Payload_TI);
+    udrDecode("MBASE_Header_With_Payload_Decode",mbaseList,tcpRequest.data);
+    MBASE_Header_With_Payload_TI mbase = listGet(mbaseList,0);
+    
+    MBASE_Header_TI mbaseHeader = createDefaultMBASEHeader();
+    //mbaseHeader.HDTCOD = "CFC810001I";
+    mbaseHeader.HDVERS = mbase.mbaseHeader.HDVERS;
+    mbaseHeader.HDTCOD = mbase.mbaseHeader.HDTCOD;
+    mbaseHeader.HDTXTP = mbase.mbaseHeader.HDTXTP;
+    //mbaseHeader.HDRIND = mbase.mbaseHeader.HDRIND; 
+    mbaseHeader.HDNERR = mbase.mbaseHeader.HDNERR;
+    mbaseHeader.HDSRID = mbase.mbaseHeader.HDSRID;
+    //mbaseHeader.HDDSID = mbase.mbaseHeader.HDDSID;
+    mbaseHeader.HDRTDQ = mbase.mbaseHeader.HDRTDQ;
+    mbaseHeader.HDDTQL = mbase.mbaseHeader.HDDTQL;
+    mbaseHeader.HDTMLI = mbase.mbaseHeader.HDTMLI;
+    mbaseHeader.HDBKNO = mbase.mbaseHeader.HDBKNO;
+    mbaseHeader.HDLGID = mbase.mbaseHeader.HDLGID;
+    mbaseHeader.HDCLDR = mbase.mbaseHeader.HDCLDR; 
+    mbaseHeader.HDBRNO = mbase.mbaseHeader.HDBRNO; 
+    //mbaseHeader.HDUSID = mbase.mbaseHeader.HDUSID;
+    mbaseHeader.HDSUP1 = mbase.mbaseHeader.HDSUP1;
+    mbaseHeader.HDSUP2 = mbase.mbaseHeader.HDSUP2;
+    mbaseHeader.HDSUP3 = mbase.mbaseHeader.HDSUP3;
+    //mbaseHeader.HDACCD = mbase.mbaseHeader.HDACCD;
+    mbaseHeader.HDNXTA = mbase.mbaseHeader.HDNXTA;
+    mbaseHeader.HDTXMD = mbase.mbaseHeader.HDTXMD;
+    mbaseHeader.HDSLKY = mbase.mbaseHeader.HDSLKY;
+    mbaseHeader.HDRREF = mbase.mbaseHeader.HDRREF;
+    mbaseHeader.HDSREF = mbase.mbaseHeader.HDSREF;
+    mbaseHeader.HDRCKY = mbase.mbaseHeader.HDRCKY;
+    mbaseHeader.HDNREC = mbase.mbaseHeader.HDNREC;
+    //mbaseHeader.HDMREC = mbase.mbaseHeader.HDMREC;
+    mbaseHeader.HDSMTD = mbase.mbaseHeader.HDSMTD;
+    mbaseHeader.HDTIMS = mbase.mbaseHeader.HDTIMS;
+    mbaseHeader.HDVFMT = mbase.mbaseHeader.HDVFMT;
+    mbaseHeader.HDDAPV = mbase.mbaseHeader.HDDAPV;
+    mbaseHeader.HDCOUN = mbase.mbaseHeader.HDCOUN;
+    mbaseHeader.HDFCID = mbase.mbaseHeader.HDFCID;
+    mbaseHeader.HDFCSQ = mbase.mbaseHeader.HDFCSQ;
+    mbaseHeader.HDFILR = mbase.mbaseHeader.HDFILR;
+    
+    mbaseHeader.HDDSID = "ESB";
+    mbaseHeader.HDUSID = "ESBUSR";
+    mbaseHeader.HDACCD = "C"; //?
+    mbaseHeader.HDNREC = "1"; //?
+    mbaseHeader.HDRIND = "AA";
+    
+    //Request Data
+    list<CFC810001I_RQ_TI> cfc810001List = listCreate(CFC810001I_RQ_TI);
+    bytearray mbaseData = refillTrimedColumn(mbase.data,sizeOf_CFC180001IR_Rq);
+    udrDecode("CFC810001I_RQ_Decode",cfc810001List,mbaseData);
+    //udrDecode("CFC810001I_RQ_Decode",cfc810001List,mbase.data);
+    CFC810001I_RQ_TI cfc810001 = listGet(cfc810001List,0);
+    
+    CFC810001I_RQ_TI mbaseRequest = udrCreate(CFC810001I_RQ_TI);
+    mbaseRequest.ReferenceNumber	        =  cfc810001.ReferenceNumber;
+    mbaseRequest.CustomerNumber             =  cfc810001.CustomerNumber;
+    mbaseRequest.IDType	                    =  cfc810001.IDType;
+    mbaseRequest.IDCountryCode	            =  cfc810001.IDCountryCode;
+    mbaseRequest.IDNumber	                =  cfc810001.IDNumber;
+    mbaseRequest.CustomerFormattedName	    =  cfc810001.CustomerFormattedName;
+    mbaseRequest.DateofBirth	            =  cfc810001.DateofBirth;
+    mbaseRequest.ReturnCode	                =  cfc810001.ReturnCode;
+    mbaseRequest.Reserved	                =  cfc810001.Reserved;
+    mbaseRequest.InquiryCode                =  cfc810001.InquiryCode;
+    mbaseRequest.InquiryAmount              =  cfc810001.InquiryAmount;
+    mbaseRequest.ConsentFlag                =  cfc810001.ConsentFlag;
+    mbaseRequest.CustomerName               =  cfc810001.CustomerName;
+    mbaseRequest.ThaiFirstName              =  cfc810001.ThaiFirstName;
+    mbaseRequest.ThaiMiddleName             =  cfc810001.ThaiMiddleName;
+    mbaseRequest.ThaiLastName               =  cfc810001.ThaiLastName;
+    mbaseRequest.EngFirstName               =  cfc810001.EngFirstName;
+    mbaseRequest.EngMiddleName              =  cfc810001.EngMiddleName;
+    mbaseRequest.EngLastName                =  cfc810001.EngLastName;
+    
+    //Build Socket Message
+    bytearray outgoing = udrEncode("DSP_Header_Encoder", dspHeader);
+    outgoing = baAppend(outgoing, udrEncode("MBASE_Header_Encode", mbaseHeader));
+    //outgoing = baAppend(outgoing, mbase.data);
+    outgoing = baAppend(outgoing, udrEncode("CFC810001I_RQ_Encode", mbaseRequest));
+    return outgoing;
+}
+
+bytearray createRequestSocketCfc810010ToSL(string uniqKey, CFC810010I_RQ_TI cfc810010Obj){
+    //DSP_Header_TgIn incoming
+     
+    //DSP Header
+    DSP_Header_TgIn dspHeader = createDefaultDSPHeader();
+    dspHeader.SKTMLEN = sizeOf_DSPHeader + sizeOf_MBaseHeader + sizeOf_CFC180010IR - 9;
+    dspHeader.I13FMID = "MBASE";  
+    dspHeader.I13DID = "CIFM";
+    //dspHeader.I13ACQN = uniqKey;  
+    dspHeader.I13ACQN = strSubstring(uniqKey, 0, 12);  
+    dspHeader.I13TMNO = strSubstring(uniqKey, 12, 16);   
+         
+    //MBASE Header
+    MBASE_Header_TI mbaseHeader = createDefaultMBASEHeader();
+    mbaseHeader.HDTCOD = "CFC810010";
+    mbaseHeader.HDDSID = "ESB";
+    mbaseHeader.HDUSID = "ESBUSR";
+    mbaseHeader.HDACCD = "A";
+    mbaseHeader.HDNREC = "1";
+    
+    bytearray outgoing = udrEncode("DSP_Header_Encoder", dspHeader);
+    outgoing = baAppend(outgoing, udrEncode("MBASE_Header_Encode", mbaseHeader));
+    outgoing = baAppend(outgoing, udrEncode("CFC810010I_RQ_Encode", cfc810010Obj));
+    
+    return outgoing;
+}]]></string>
+</exportmultiplex>

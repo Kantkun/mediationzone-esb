@@ -1,0 +1,577 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE pythonmodule_profile SYSTEM "jar:/mz/dtd/pythonmodule_profile.dtd">
+<pythonmodule_profile category="Internal">
+   <storable name="pythonmodule_profile" storable-id="dr.Configuration" ver="6.0">
+      <array classname="java.lang.String" name="Access Groups -read -write -execute" size="3">
+         <string name="0" value="All"/>
+         <string name="1" value="Administrator"/>
+         <string name="2" value="All"/>
+      </array>
+      <storable name="Auxiliary Data" null="true"/>
+      <string name="Current Comment" null="true"/>
+      <storable name="Data" storable-id="dr.PythonModuleData" ver="1.0">
+         <object name="Source Code">
+            <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+               <object name="Value">
+                  <string name="Object Internal"><![CDATA[from decimal import *
+
+def createXMLRequestNCRS(input , userId):
+    
+    debug("cfc810001 object")
+    debug(input)
+    
+    #top header
+    username = userId #"testsit"
+    password = "" #"aaaa1111"
+    requestCommand = "BB01001"
+    
+    #data from sl request
+    #header        
+    memberRef = str(input.ReferenceNumber).strip()
+    enqPurpose = str(input.InquiryCode).strip() #"01"
+    enqAmount = str(input.InquiryAmount if input.InquiryAmount is not None else "0").strip() #"0"
+    consent = str(input.ConsentFlag).strip() #"Y"
+    disputeEnquiry = "Y"
+    creditScore = ""
+    
+    #name middlename lastname
+    if input.ThaiFirstName is None:
+        firstName = ""
+    else:    
+        firstName = input.ThaiFirstName
+    
+    if input.ThaiMiddleName is None:
+        middleName = ""
+    else:    
+        middleName = input.ThaiMiddleName
+    
+    if input.ThaiLastName is None:
+        familyName = ""
+    else:    
+        familyName = input.ThaiLastName
+    
+       
+    dateOfBirth = input.DateofBirth.strip()
+    
+    #id
+    idType = input.IDType.strip()
+    idNumber = input.IDNumber.strip()
+    issueCountry = input.IDCountryCode.strip()
+    
+    #input.CustomerNumber not use
+    
+    xmlRequest = ""
+    
+    #START XML
+    xmlRequest = xmlRequest + "<ncrsrequest>"
+    
+    #START HEADER    
+    xmlRequest = xmlRequest + "<header>"
+    xmlRequest = xmlRequest +   "<user>" + username + "</user>"
+    xmlRequest = xmlRequest +   "<password>" + password + "</password>"
+    xmlRequest = xmlRequest +   "<command>" + requestCommand + "</command>"
+    xmlRequest = xmlRequest + "</header>"
+    #END HEADER
+    
+    #BODY
+    xmlRequest = xmlRequest + "<body>"
+    #TUEF ENQUIRY
+    xmlRequest = xmlRequest + "<tuefenquiry>"
+    xmlRequest = xmlRequest +   "<header>"
+    xmlRequest = xmlRequest +       "<memberref>" + memberRef + "</memberref>"
+    xmlRequest = xmlRequest +       "<enqpurpose>" + enqPurpose + "</enqpurpose>"
+    xmlRequest = xmlRequest +       "<enqamount>" + enqAmount + "</enqamount>"
+    xmlRequest = xmlRequest +       "<consent>" + consent + "</consent>"
+    xmlRequest = xmlRequest +       "<disputeenquiry>" + disputeEnquiry + "</disputeenquiry>"
+    xmlRequest = xmlRequest +       "<creditscore>" + creditScore + "</creditscore>"
+    xmlRequest = xmlRequest +   "</header>"
+    xmlRequest = xmlRequest +   "<name>"
+    xmlRequest = xmlRequest +       "<familyname>" + familyName + "</familyname>"
+    xmlRequest = xmlRequest +       "<firstname>" + firstName + "</firstname>"
+    xmlRequest = xmlRequest +       "<middlename>" + middleName + "</middlename>"
+    xmlRequest = xmlRequest +       "<dateofbirth>" + dateOfBirth + "</dateofbirth>"
+    xmlRequest = xmlRequest +   "</name>"
+    xmlRequest = xmlRequest +   "<id>"
+    xmlRequest = xmlRequest +       "<idtype>" + idType + "</idtype>"
+    xmlRequest = xmlRequest +       "<idnumber>" + idNumber + "</idnumber>"
+    xmlRequest = xmlRequest +       "<issuecountry>" + issueCountry + "</issuecountry>"
+    xmlRequest = xmlRequest +   "</id>"
+    xmlRequest = xmlRequest + "</tuefenquiry>"
+    #END TUEF ENQUIRY
+    xmlRequest = xmlRequest + "</body>"
+    #END BODY
+    
+    xmlRequest = xmlRequest + "</ncrsrequest>"
+    #END XML
+    
+    debug("Params of BB01001");
+    debug(xmlRequest);
+    debug("-------------------------------------------");    
+    
+    return xmlRequest
+    
+    
+def createNCBResponseObject(input,refNo = ""):
+    
+    from ultra.Ultra.UFL_MBASE_CFC810010IR import CFC810010I_RQ_TI
+    cfc810010List = []
+    
+    if len(input) <= 0:
+        debug("empty response body. no response from ncb!")
+        cfc810010EmptyObj = createNonResponseCfc810010Object(refNo)
+        cfc810010List.append(cfc810010EmptyObj)
+        return cfc810010List
+    
+    xml = """<main>
+    """ + input + """    
+    </main>"""
+    
+    
+    
+    from lxml import objectify
+    main = objectify.fromstring(xml)
+     
+    #check response
+    runningNumber = 0
+    #refNo = ""
+    
+    checkNcrsresponse = main.find("ncrsresponse")
+    debug("check ncrsresponse")
+    debug(checkNcrsresponse)
+    if checkNcrsresponse is None:
+        debug("tag ncrsresponse not found!")
+        cfc810010EmptyObj = createOneEmptyCfc810010Object(refNo)
+        cfc810010List.append(cfc810010EmptyObj)
+        return cfc810010List
+    
+    #start check user authen fail or not
+    debug("start check user authen fail")
+    hasCommandER01001 = False
+    hasErrorMsgFailAuthen = False
+    
+    checkHeaderTagForCheckAuthenFail = main.ncrsresponse.find("header")
+    if checkHeaderTagForCheckAuthenFail is not None:
+        debug("--> has header tag")
+        #has header tag then check command tag
+        checkCommandTagForCheckAuthenFail = main.ncrsresponse.header.find("command")
+        if checkCommandTagForCheckAuthenFail is not None:
+            debug("--> has command tag")
+            #check command = ER01001
+            if checkCommandTagForCheckAuthenFail.text.strip() == "ER01001":
+                debug("--> has command value ER01001")
+                hasCommandER01001 = True
+        
+    #check boady and errormsg tag
+    checkBodyTagForCheckAuthenFail = main.ncrsresponse.find("body")
+    if checkBodyTagForCheckAuthenFail is not None:
+        debug("--> has body tag")
+        #has body tag then check tag errormsg
+        checkErrorMsgTagForAuthenFail = main.ncrsresponse.body.find("errormsg")
+        if checkErrorMsgTagForAuthenFail is not None:
+            debug("--> has errormsg tag")
+            #has errormsg tag then check text in tag = Can't authenticate user XXXXX : Username or Password is invalid.
+            errorMsgText = main.ncrsresponse.body.errormsg.text.strip().lower()
+            debug("--> errorMsgText = " + errorMsgText)
+            #check word "Can't authenticate user" and "Username or Password is invalid"
+            if errorMsgText.startswith("can't authenticate user"):
+                debug("--> has text can't authenticate user")
+                hasErrorMsgFailAuthen = True
+    
+    if hasCommandER01001 or hasErrorMsgFailAuthen:
+        #has user authen fail
+        debug("--> has user authen fail")
+        cfc810010AutenFailObj = createAuthenFailResponseCfc810010Object(refNo)
+        cfc810010List.append(cfc810010AutenFailObj)
+        return cfc810010List
+    debug("end check user authen fail")
+    #end check user authen fail or not
+    
+    checkBody = main.ncrsresponse.find("body")
+    debug("check body")
+    debug(checkBody)
+    if checkBody is None:
+        debug("tag body not found!")
+        cfc810010EmptyObj = createOneEmptyCfc810010Object(refNo)
+        cfc810010List.append(cfc810010EmptyObj)
+        return cfc810010List
+    
+    checkTransaction = main.ncrsresponse.body.find("transaction")
+    debug("check transaction")
+    debug(checkTransaction)
+    if checkTransaction is None:
+        debug("tag transaction not found!")
+        cfc810010EmptyObj = createOneEmptyCfc810010Object(refNo)
+        cfc810010List.append(cfc810010EmptyObj)
+        return cfc810010List
+    #else:
+        #refNo = main.ncrsresponse.body.transaction.memberref.text.strip()
+        #debug("early refno : " + refNo)
+    
+    #check error tag block is exist?
+    checkError = main.ncrsresponse.body.transaction.find("tueferror")
+    debug("check tueferror")
+    debug(checkError)
+    if checkError is not None:
+        debug("error tag found, create cfc810010 error object.")
+        #has error tag then create cfc810010 error object instead.
+        #refNo = main.ncrsresponse.body.transaction.memberref.text.strip()
+        errorMessage = "Unknow error."
+        checkErrorHeader = main.ncrsresponse.body.transaction.tueferror.find("error")
+        debug("check error header")
+        debug(checkErrorHeader)
+        if checkErrorHeader is not None:
+            checkErrorItem = main.ncrsresponse.body.transaction.tueferror.error.find("error")
+            debug("check error item")
+            debug(checkErrorItem)
+            if checkErrorItem is not None:
+                errorMessage = ""
+                for errorItem in main.ncrsresponse.body.transaction.tueferror.error.error:
+                    code = errorItem.code.text.strip()
+                    debug("code : " + code)
+                    value = errorItem.value.text.strip()
+                    debug("value : " + value)
+                    desc = errorItem.description.text.strip()
+                    debug("descrtipion : " + desc)
+                    errorMessage = code # + " " + value + " " + desc
+        
+        debug("Error message")
+        debug(errorMessage)
+        cfc810010ErrorObj = createErrorCfc810010Object(refNo,errorMessage)
+        cfc810010List.append(cfc810010ErrorObj)
+        return cfc810010List
+    else:
+        debug("error tag not found.")
+    
+    
+    checkTuefResponse = main.ncrsresponse.body.transaction.find("tuefresponse")
+    debug("check tuefresponse")
+    debug(checkTuefResponse)
+    if checkTuefResponse is None:
+        debug("tag checkTuefResponse not found!")
+        cfc810010EmptyObj = createOneEmptyCfc810010Object(refNo)
+        cfc810010List.append(cfc810010EmptyObj)
+        return cfc810010List
+    
+    checkHeader = main.ncrsresponse.body.transaction.tuefresponse.find("header")
+    debug("check header")
+    debug(checkHeader)
+    if checkHeader is None:
+        debug("tag header not found!")
+        cfc810010EmptyObj = createOneEmptyCfc810010Object(refNo)
+        cfc810010List.append(cfc810010EmptyObj)
+        return cfc810010List
+    
+    checkSubject = main.ncrsresponse.body.transaction.tuefresponse.find("subject")
+    debug("subject")
+    debug(checkSubject)
+    if checkSubject is None:
+        debug("tag subject not found!")
+        cfc810010EmptyObj = createOneEmptyCfc810010Object(refNo)
+        cfc810010List.append(cfc810010EmptyObj)
+        return cfc810010List
+    
+    #if checkHeader is not None :
+        #refNo = main.ncrsresponse.body.transaction.tuefresponse.header.memberref.text.strip()
+    if checkTuefResponse is not None and checkSubject is not None:
+        debug("tuefresponse and subject found.")
+        subjectCount = len(main.ncrsresponse.body.transaction.tuefresponse.subject)
+        debug("subject count : " + str(subjectCount))
+        
+        #loop subject        
+        sIndex = 1
+        for subject in main.ncrsresponse.body.transaction.tuefresponse.subject:
+            debug("---------------------------------------")
+            debug("subject : " + str(sIndex))
+            #check account
+            checkAccount = subject.find("account")
+            if checkAccount is not None:
+                debug("account found")
+                accountCount = len(subject.account)
+                debug("account count : " + str(accountCount))
+                #loop account
+                acIndex = 0
+                for account in subject.account:
+                    #cfc810010 object
+                    acIndex = acIndex + 1
+                    cfc810010Obj = CFC810010I_RQ_TI()
+                    cfc810010Obj.ReferenceNumber = refNo.strip() #40A
+                    cfc810010Obj.Reserved = "00000" #100A
+                    runningNumber = runningNumber + 1
+                    cfc810010Obj.RunningNumber = runningNumber #5,0
+                    cfc810010Obj.ShortName =                str(account.shortname.text.strip()                      if account.find("shortname")                    is not None     and account.shortname.text.strip()                  != "" else "") #25A
+                    cfc810010Obj.AccountType =              str(account.accounttype.text.strip()                    if account.find("accounttype")                  is not None     and account.accounttype.text.strip()                != "" else "00") #2,0
+                    cfc810010Obj.CreditCardType =           str(account.typeofcreditcard.text.strip()               if account.find("typeofcreditcard")             is not None     and account.typeofcreditcard.text.strip()           != "" else "00") #2,0
+                    cfc810010Obj.AsofDate =                 str(account.asofdate.text.strip()                       if account.find("asofdate")                     is not None     and account.asofdate.text.strip()                   != "" else "00000000") #8,0
+                    cfc810010Obj.AccountNumber =            str(account.accountnumber.text.strip()                  if account.find("accountnumber")                is not None     and account.accountnumber.text.strip()              != "" else "") #40A
+                    cfc810010Obj.AccountOpenDate =          str(account.opendate.text.strip()                       if account.find("opendate")                     is not None     and account.opendate.text.strip()                   != "" else "00000000") #8,0
+                    cfc810010Obj.AccountCloseDate =         str(account.closeddate.text.strip()                     if account.find("closeddate")                   is not None     and account.closeddate.text.strip()                 != "" else "00000000") #8,0
+                    cfc810010Obj.LastPaymentDate =          str(account.lastpaymentdate.text.strip()                if account.find("lastpaymentdate")              is not None     and account.lastpaymentdate.text.strip()            != "" else "00000000") #8,0
+                    cfc810010Obj.LastRestructedDate =       str(account.lastrestructureddate.text.strip()           if account.find("lastrestructureddate")         is not None     and account.lastrestructureddate.text.strip()       != "" else "00000000") #8,0
+                    cfc810010Obj.AccountStatus =            str(account.accountstatus.text.strip()                  if account.find("accountstatus")                is not None     and account.accountstatus.text.strip()              != "" else "") #2A
+                    cfc810010Obj.AccountMode =              str(account.ownership.text.strip()                      if account.find("ownership")                    is not None     and account.ownership.text.strip()                  != "" else "") #1A
+                    cfc810010Obj.NumberofHolder =           str(account.numberofcoborrower.text.strip()             if account.find("numberofcoborrower")           is not None     and account.numberofcoborrower.text.strip()         != "" else "00") #2,0
+                    
+                    #cfc810010Obj.CreditLimit =              str(int(account.creditlimit.text.strip())       * 100   if account.find("creditlimit")                  is not None     and account.creditlimit.text.strip()                != "" else "00000000000000000") #17,2
+                    #cfc810010Obj.AvailvableBalance =        str(int(account.amountowed.text.strip())        * 100   if account.find("amountowed")                   is not None     and account.amountowed.text.strip()                 != "" else "00000000000000000") #17,2
+                    #cfc810010Obj.AmountPastDueDate =        str(int(account.amountpastdue.text.strip())     * 100   if account.find("amountpastdue")                is not None     and account.amountpastdue.text.strip()              != "" else "00000000000000000") #17,2
+                    #cfc810010Obj.MonthlyInstallment =       str(int(account.installmentamount.text.strip()) * 100   if account.find("installmentamount")            is not None     and account.installmentamount.text.strip()          != "" else "00000000000000000") #17,2
+                    
+                    cfc810010Obj.CreditLimit =              str(makeStringNumeric172(account.creditlimit.text.strip())        if account.find("creditlimit")                  is not None     and account.creditlimit.text.strip()                != "" else "00000000000000000") #17,2
+                    cfc810010Obj.AvailvableBalance =        str(makeStringNumeric172(account.amountowed.text.strip())         if account.find("amountowed")                   is not None     and account.amountowed.text.strip()                 != "" else "00000000000000000") #17,2
+                    cfc810010Obj.AmountPastDueDate =        str(makeStringNumeric172(account.amountpastdue.text.strip())      if account.find("amountpastdue")                is not None     and account.amountpastdue.text.strip()              != "" else "00000000000000000") #17,2
+                    cfc810010Obj.MonthlyInstallment =       str(makeStringNumeric172(account.installmentamount.text.strip())  if account.find("installmentamount")            is not None     and account.installmentamount.text.strip()          != "" else "00000000000000000") #17,2
+                    
+                    cfc810010Obj.NumberofInstallmentDue =   str(account.installmentnumofpayment.text.strip()     if account.find("installmentnumofpayment")   is not None     and account.installmentnumofpayment.text.strip() != "" else "00000") #5,0
+                    cfc810010Obj.CarBrand =                 str(account.unitmake.text.strip()                       if account.find("unitmake")                     is not None     and account.unitmake.text.strip()                   != "" else "") #15A
+                    cfc810010Obj.CarModel =                 str(account.unitmodel.text.strip()                      if account.find("unitmodel")                    is not None     and account.unitmodel.text.strip()                  != "" else "") #15A
+                    cfc810010Obj.DefaultDate =              str(account.defaultdate.text.strip()                    if account.find("defaultdate")                  is not None     and account.defaultdate.text.strip()                != "" else "00000000") #8,0
+                    
+                    #set 36 value of payment
+                    debug("Start set 36 value of payment.")
+                    pCount = 0
+                    lastPaymentDate = "0"
+                    lastPaymentStatus = "0"
+                    while pCount < 36:
+                        pCount = pCount + 1
+                        pRunningStr = str(pCount)
+                        if pCount < 10:
+                            pRunningStr = "0" + str(pCount)
+                        
+                        if account.find("paymtdate" + pRunningStr) is not None:
+                            lastPaymentDate = pRunningStr
+                            setattr(cfc810010Obj, "PaymentDate" + pRunningStr,      str(getattr(account, "paymtdate" + pRunningStr).text.strip())   if str(getattr(account, "paymtdate" + pRunningStr).text.strip())    != "" else "00000000") #8,0
+                        else:
+                            setattr(cfc810010Obj, "PaymentDate" + pRunningStr, "00000000") #8,0
+                        
+                        if account.find("paymt" + pRunningStr) is not None:
+                            lastPaymentStatus = pRunningStr
+                            setattr(cfc810010Obj, "PaymentStatus" + pRunningStr,    str(getattr(account, "paymt" + pRunningStr).text.strip())       if str(getattr(account, "paymt" + pRunningStr).text.strip())        != "" else "") #3A
+                        else:
+                            setattr(cfc810010Obj, "PaymentStatus" + pRunningStr, "") #3A
+                    debug("END set 36 value of payment")
+                    debug("Last PaymentDate : " + lastPaymentDate)
+                    debug("Last PaymentStatus : " + lastPaymentStatus)
+                    
+                    #find history
+                    debug("Find history")
+                    historyCount = 0
+                    checkHistory = account.find("history")
+                    if checkHistory is not None:
+                        #count history
+                        historyCount = len(account.history)
+                        debug("history found : " + str(historyCount))
+                    else:
+                        debug("history not found!")
+                    
+                    hisIndex = 0
+                    if historyCount > 0:
+                        #loop history from count
+                        for history in account.history:
+                                                            
+                            historyRunningNo = hisIndex + 1
+                            historyRunningStr = str(historyRunningNo)
+                            if historyRunningNo < 10:
+                                historyRunningStr = "0" + str(historyRunningNo)    
+                            
+                            #set history value    
+                            history1 = str(account.history[hisIndex].asofdate.text.strip() if account.history[hisIndex].find("asofdate") is not None else "") #8,0
+                            if history1 is None or history1 == "": 
+                                history1 = "00000000"
+                            setattr(cfc810010Obj, "AsofDate" + historyRunningStr, history1)
+                            
+                            history2 = str(account.history[hisIndex].overduemonth.text.strip() if account.history[hisIndex].find("overduemonth") is not None else "") #6A
+                            if history2 is None or history2 == "":
+                                history2 = ""
+                            setattr(cfc810010Obj, "OverDueMonth" + historyRunningStr, history2)
+                            
+                            history3 = str(account.history[hisIndex].creditlimit.text.strip() if account.history[hisIndex].find("creditlimit") is not None else "") #17,2
+                            if history3 is None or history3 == "":
+                                history3 = "00000000000000000"
+                            else:
+                                history3 = str(makeStringNumeric172(history3))
+                            setattr(cfc810010Obj, "CreditLimit" + historyRunningStr, history3)
+                            
+                            history4 = str(account.history[hisIndex].amountowed.text.strip() if account.history[hisIndex].find("amountowed") is not None else "") #17,2
+                            if history4 is None or history4 == "":
+                                history4 = "00000000000000000"
+                            else:
+                                #history4 = str(int(history4) * 100)
+                                history4 = str(makeStringNumeric172(history4))
+                            setattr(cfc810010Obj, "LoanBalance" + historyRunningStr, history4)
+                            
+                            hisIndex = hisIndex + 1
+                    
+                    #continue set history complete to 36
+                    count = historyCount
+                    while hisIndex < 36:
+                        historyRunningNo = hisIndex + 1
+                        historyRunningStr = str(historyRunningNo)
+                        if historyRunningNo < 10:
+                            historyRunningStr = "0" + str(historyRunningNo)
+                            
+                        setattr(cfc810010Obj, "AsofDate" + historyRunningStr, "00000000") #8,0
+                        setattr(cfc810010Obj, "OverDueMonth" + historyRunningStr, "") #6A
+                        setattr(cfc810010Obj, "CreditLimit" + historyRunningStr, "00000000000000000") #17,2
+                        setattr(cfc810010Obj, "LoanBalance" + historyRunningStr, "00000000000000000") #17,2
+                        
+                        hisIndex = hisIndex + 1
+                    
+                    
+                    cfc810010Obj.LastMaintainanceUserID = "" #10A
+                    cfc810010Obj.LastMaintainanceTime = "" #26A
+                    
+                    #add cfc8100010Obj to list
+                    debug(cfc810010Obj)
+                    cfc810010List.append(cfc810010Obj)
+                    
+                    debug("end account : "+str(acIndex)+"---------------------------------------")
+            else:
+                debug("account not found!")
+    else:
+        debug("tuefresponse or subject not found!")
+    
+    debug("total running number : " + str(runningNumber))
+    
+    debug("object count : " + str(len(cfc810010List)))
+    
+    #object count <= 0 then create one cfc810010 empty object ot return to SL
+    if refNo != "":
+        if len(cfc810010List) <= 0:
+            debug("object count = 0, Create one empty cfc810010 object to send back to SL.")
+            cfc810010EmptyObj = createOneEmptyCfc810010Object(refNo)
+            cfc810010List.append(cfc810010EmptyObj)
+    #End create one empty cfc810010 object
+    
+    #add total account value, added 20190722
+    totalAccountCount = runningNumber
+    debug("totalAccountCount = " + str(totalAccountCount))
+    for accObj in cfc810010List:
+        accObj.AccountCount = totalAccountCount
+        #if no account then total is 0
+        if accObj.RunningNumber == 0:
+            accObj.AccountCount = 0
+    
+    
+    #return list
+    return cfc810010List
+
+def createNonResponseCfc810010Object(refNo):
+    from ultra.Ultra.UFL_MBASE_CFC810010IR import CFC810010I_RQ_TI
+    
+    cfc810010Obj = inputEmptyCfc810010Obj(refNo, "99999") #Empty response body. non response from NCB.
+    return cfc810010Obj
+    
+def createAuthenFailResponseCfc810010Object(refNo):
+    from ultra.Ultra.UFL_MBASE_CFC810010IR import CFC810010I_RQ_TI
+    
+    cfc810010Obj = inputEmptyCfc810010Obj(refNo, "11111") #Can't authenticate user XXXXX : Username or Password is invalid.<
+    return cfc810010Obj
+
+def createOneEmptyCfc810010Object(refNo):
+    from ultra.Ultra.UFL_MBASE_CFC810010IR import CFC810010I_RQ_TI
+    
+    cfc810010Obj = inputEmptyCfc810010Obj(refNo, "00000") #No account found.
+    return cfc810010Obj
+    
+def createErrorCfc810010Object(refNo,errorMessage):
+    from ultra.Ultra.UFL_MBASE_CFC810010IR import CFC810010I_RQ_TI
+    
+    cfc810010Obj = inputEmptyCfc810010Obj(refNo, errorMessage)
+    return cfc810010Obj
+
+def inputEmptyCfc810010Obj(refNo , reservedMessage):
+    from ultra.Ultra.UFL_MBASE_CFC810010IR import CFC810010I_RQ_TI
+    cfc810010Obj = CFC810010I_RQ_TI()
+    cfc810010Obj.ReferenceNumber =          refNo
+    cfc810010Obj.RunningNumber =            0
+    cfc810010Obj.AccountCount =             0
+    cfc810010Obj.Reserved =                 reservedMessage
+    cfc810010Obj.ShortName =                "" #25A
+    cfc810010Obj.AccountType =              "00" #2,0
+    cfc810010Obj.CreditCardType =           "00" #2,0
+    cfc810010Obj.AsofDate =                 "00000000" #8,0
+    cfc810010Obj.AccountNumber =            "" #40A
+    cfc810010Obj.AccountOpenDate =          "00000000" #8,0
+    cfc810010Obj.AccountCloseDate =         "00000000" #8,0
+    cfc810010Obj.LastPaymentDate =          "00000000" #8,0
+    cfc810010Obj.LastRestructedDate =       "00000000" #8,0
+    cfc810010Obj.AccountStatus =            "" #2A
+    cfc810010Obj.AccountMode =              "" #1A
+    cfc810010Obj.NumberofHolder =           "00" #2,0
+    cfc810010Obj.CreditLimit =              "00000000000000000" #17,2
+    cfc810010Obj.AvailvableBalance =        "00000000000000000" #17,2
+    cfc810010Obj.AmountPastDueDate =        "00000000000000000" #17,2
+    cfc810010Obj.MonthlyInstallment =       "00000000000000000" #17,2
+    cfc810010Obj.NumberofInstallmentDue =   "00000" #5,0
+    cfc810010Obj.CarBrand =                 "" #15A
+    cfc810010Obj.CarModel =                 "" #15A
+    cfc810010Obj.DefaultDate =              "00000000" #8,0
+    
+    pCount = 0
+    while pCount < 36:
+        pCount = pCount + 1
+        pRunningStr = str(pCount)
+        if pCount < 10:
+            pRunningStr = "0" + str(pCount)
+        setattr(cfc810010Obj, "PaymentDate" + pRunningStr, "00000000") #8,0
+        setattr(cfc810010Obj, "PaymentStatus" + pRunningStr, "") #3A
+    
+    hisIndex = 0
+    while hisIndex < 36:
+        historyRunningNo = hisIndex + 1
+        historyRunningStr = str(historyRunningNo)
+        if historyRunningNo < 10:
+            historyRunningStr = "0" + str(historyRunningNo)
+        setattr(cfc810010Obj, "AsofDate" + historyRunningStr, "00000000") #8,0
+        setattr(cfc810010Obj, "OverDueMonth" + historyRunningStr, "") #6A
+        setattr(cfc810010Obj, "CreditLimit" + historyRunningStr, "00000000000000000") #17,2
+        setattr(cfc810010Obj, "LoanBalance" + historyRunningStr, "00000000000000000") #17,2
+        hisIndex = hisIndex + 1
+    
+    cfc810010Obj.LastMaintainanceUserID = "" #10A
+    cfc810010Obj.LastMaintainanceTime = "" #26A    
+    
+    return cfc810010Obj
+    
+def makeStringNumeric172(value):
+    
+    if value == "":
+        return "0"
+    
+    checkDot = value.find(".")
+    
+    if checkDot < 0 :
+        #no dot then *100
+        return str(int(value) * 100)
+    else:
+        #has dot then shift dot 2 position right side
+        return str(int(Decimal(value).shift(2)))
+
+
+
+]]></string>
+               </object>
+            </storable>
+         </object>
+         <boolean name="Source Code active" value="true"/>
+         <string name="Source Code extref key" null="true"/>
+         <enum name="Source Code fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+         <boolean name="Source Code mod" value="false"/>
+         <boolean name="Source Code pres" value="true"/>
+      </storable>
+      <string name="Folder" value="NCB"/>
+      <boolean name="Is Dirty" value="false"/>
+      <boolean name="Is Encrypted" value="false"/>
+      <boolean name="Is Locked" value="false"/>
+      <boolean name="Is Valid" value="true"/>
+      <string name="Key" value="MZ1526370755732"/>
+      <string name="Modified By" value="mzadmin"/>
+      <long name="Modified Date" value="1566466759438"/>
+      <string name="Name" value="PYM_PythonNCB"/>
+      <string name="Owner" value="mzadmin"/>
+      <string name="Type" value="Python Module"/>
+      <int name="Version" value="4"/>
+      <string name="documentation" value=""/>
+      <string name="parameters" value=""/>
+   </storable>
+</pythonmodule_profile>
