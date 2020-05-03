@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Ultra_Format" ref_path="ultra_format[Internal]/storable[ultra_format]/storable[Data]">
+   <string name="Definition"><![CDATA[external MBASE_LN83123_RQ {
+    ascii IFLD01_AccountSeqID : character_encoding("cp838"), static_size(9), align(right), padded_with(0xf0);
+	ascii IFLD02_AccountNO : character_encoding("cp838"), static_size(19), align(right), padded_with(0xf0);
+	ascii IFLD03_CreateDate : character_encoding("cp838"), static_size(8), align(right), padded_with(0xf0);
+	ascii IFLD04_UserCreate : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii IFLD05_FlagDelete : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii IFLD06_UpdatedDate : character_encoding("cp838"), static_size(8), align(right), padded_with(0xf0);
+	ascii IFLD07_UpdatedBy : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii IFLD08_LegalStatus : character_encoding("cp838"), static_size(5), align(right), padded_with(0xf0);
+	ascii IFLD09_LegalStatusDate : character_encoding("cp838"), static_size(8), align(right), padded_with(0xf0);
+	ascii IFLD10_LAWOffice : character_encoding("cp838"), static_size(100), align(left), padded_with(0x40);
+	ascii IFLD11_FreezeFlag : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+};
+
+external MBASE_LN83123_RS {
+    ascii IFLD01_AccountSeqID : character_encoding("cp838"), static_size(9), align(right), padded_with(0xf0);
+	ascii IFLD02_AccountNo : character_encoding("cp838"), static_size(19), align(right), padded_with(0xf0);
+	ascii IFLD03_CreateDate : character_encoding("cp838"), static_size(8);
+	ascii IFLD04_UserCreate : character_encoding("cp838"), static_size(10);
+	ascii IFLD05_DeleteFlag : character_encoding("cp838"), static_size(1);
+	ascii IFLD06_ChangeDate : character_encoding("cp838"), static_size(8);
+	ascii IFLD07_UserChange : character_encoding("cp838"), static_size(10);
+	ascii IFLD08_LegalStatus : character_encoding("cp838"), static_size(5), align(right), padded_with(0xf0);
+	ascii IFLD09_LegalStatusDate : character_encoding("cp838"), static_size(8);
+	ascii IFLD10_LAWOffice : character_encoding("cp838"), static_size(100);
+	ascii IFLD11_FreezeFlag : character_encoding("cp838"), static_size(1);
+};
+
+//Input
+in_map MBASE_LN83123_RQ_InMap: external (MBASE_LN83123_RQ), target_internal(MBASE_LN83123_RQ_TI){automatic;};
+out_map MBASE_LN83123_RQ_OutMap: external (MBASE_LN83123_RQ), internal(MBASE_LN83123_RQ_TI) {automatic;};
+encoder MBASE_LN83123_RQ_Encode: out_map(MBASE_LN83123_RQ_OutMap);
+decoder MBASE_LN83123_RQ_Decode: in_map(MBASE_LN83123_RQ_InMap);
+
+
+// Response
+in_map MBASE_LN83123_RS_InMap: external(MBASE_LN83123_RS), target_internal(MBASE_LN83123_RS_TI) {automatic;};
+out_map MBASE_LN83123_RS_OutMap: external (MBASE_LN83123_RS), internal(MBASE_LN83123_RS_TI) {automatic;};
+encoder MBASE_LN83123_RS_Encode: out_map(MBASE_LN83123_RS_OutMap);
+decoder MBASE_LN83123_RS_Decode: in_map(MBASE_LN83123_RS_InMap);]]></string>
+   <boolean name="IsValid" value="true"/>
+</exportmultiplex>

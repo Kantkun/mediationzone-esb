@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Ultra_Format" ref_path="ultra_format[Internal]/storable[ultra_format]/storable[Data]">
+   <string name="Definition"><![CDATA[external MBASE_LN86309_RQ{
+    ascii ACCTNO_AccountNumber : static_size(19),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii ACTYPE_AccountType : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left); 
+}; /* total 20 */
+
+external MBASE_LN86309_RS{
+    ascii ACCTNO_AccountNumber : static_size(19),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii ACTYPE_AccountType : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CIFNO_CIFNumber : static_size(19),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii BRN_BranchNumber : static_size(5),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii PP_PartOfAccount : static_size(2),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii ACName_AccountName : static_size(80),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii TYPE_LoanType : static_size(10),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii PSHDSC_ShortDescription : static_size(20),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii AFFCDE_FacilityCode : static_size(10),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii LKFTYP_FacilityType : static_size(20),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii NOFAC_NoOfLimitLine : static_size(5),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii AFSTAT_FacilityStatus : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii AFPJCD_ProjectCode : static_size(10),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii LEPDSC_Description : static_size(50),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CRDTRM_CreditTerm : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii TERM_LoanTerm : static_size(5),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii TMCODE_LoanTermCode : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii AFCPNO_CPNo : static_size(20),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii AFARD8_DateOfMgmtApproval : static_size(8),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii ORGDT8_OriginalLoanDate : static_size(8),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii MATDT8_MaturityDate : static_size(8),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii AFTCDE_AFTIndicator : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii DRACCT_AFTDebitAccountNo : static_size(19),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii DRTYPE_AFTDebitAccountType : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii RATE_LoanInterestRate : static_size(11),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii PRATEN_PrimeRateNumber : static_size(5),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii PVCODE_PrimeVarianceCode : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii PVARI_PrimeVariance : static_size(11),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii ARATE_LoanInterestRate : static_size(11),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii APRATN_PrimeRateNumber : static_size(5),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii APVCD_PrimeVarianceCode : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii APRAVI_PrimeVariance : static_size(11),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii AAPCOD_CampaignCode : static_size(10),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CAMDT8_CampaignExpiredDate : static_size(8),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii SPEARN_MonthlyAccruedInterestSuspend : static_size(19),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii STDRAT_StandardRate : static_size(11),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii STDRTN_StandardRateNumber : static_size(5),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii STDVAC_StandardRateVarianceCode : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii STDVAR_StandardRateVariance : static_size(11),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii LCMRAT_InterestRateMaximum : static_size(11),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii DCPRT_DiscountPromotionRate : static_size(11),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii PDIEM_DailyAccrual : static_size(19),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii LSTCID_LastCalculateInterest : static_size(8),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii PMTCOD_PaymentCode : static_size(1),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii FREQ_PaymentFrequency : static_size(3),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii FRCODE_PaymentFreqCode : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii IPFREQ_IntPaymentFrequency : static_size(3),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii IPCODE_IntPaymentFreqCode : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii DRLIMT_DrawingLimit : static_size(17),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii USEAMT_UsedLimit : static_size(17),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii AVALMT_AvailableLimit : static_size(17),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii UNUSE_UnutilizedLimit : static_size(17),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii HOLD_EarmarkAmount : static_size(17),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii LLALD8_LastTopUpCampaign : static_size(8),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii LLALA8_TopUpApprovedDate : static_size(8),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii LLALLS_AccumulateTopUpAmt : static_size(17),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii LLALLT_LastTopUpAmount : static_size(17),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii LLPAYT_LastReleaseChannel : static_size(23),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CBAL_CurrentBalance : static_size(17),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii BILPNO_BilledPrinAmtOD : static_size(17),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii LBTAMT_OSBilledTotalAmount : static_size(17),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii LBTAMO_OrgBilledTotalAmount : static_size(17),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii LBTATT_StatementTotalDue : static_size(17),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii LBTAOT_StatementTotalDueOS : static_size(17),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii LPDT8_LastStatementDate : static_size(8),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii NPDT8_PaymentDueDate : static_size(8),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii NIPDT8_PaymentInterestDueDate : static_size(8),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii NSPDT8_StatementPaymentDueDate : static_size(8),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii NSIPD8_StatementIntPaymentDueDate : static_size(8),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii NPDAY_CycleStatementPaymentDueDate : static_size(2),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii NIPDAY_CycleStatementInterestDueDate : static_size(2),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii MTDIP_InterestReceivedMTD : static_size(17),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii TOTIN_InterestReceivableLTD : static_size(17),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii OSINT_OSInterest : static_size(17),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii LPWCOD_NewPaymentCondition : static_size(1),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii LPWDU8_NewPaymentConditionDate : static_size(8),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii LPWPMT_NewPaymentAmount : static_size(17),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii TODPMR_TotalPrepaymentToday : static_size(17),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii MTDPMR_MTDPaymentsReceived : static_size(17),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii FULLCHQ_FullChequeAmount : static_size(17),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii YESCHQ_YesterdayChequeAmount : static_size(17),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii FEEAMT_TotalFeeChargeAmount : static_size(17),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii OTHCHG_TotalAdvanceFeeAmount : static_size(17),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii FEEOTH_OtherFeeAmount : static_size(17),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii DEBFEE_FeeChargeThisMonth : static_size(17),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii YTDFEE_InterestFeeReceiveeYear : static_size(17),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii BILFEE_TotalFeePrintStatementRead : static_size(17),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii STOPD8_DateStopCalculateInterest : static_size(8),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii SUPDT8_DateOfInterestSuspensedBeg : static_size(8),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii SUPINT_InterestSuspensedAccrued : static_size(17),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii IISTAX_InterestSuspensedReverseInc : static_size(17),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii CURPO_OutstandingBalanceAmt : static_size(17),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii LFPD_AgingHistoryNoOfDayDFTPR : static_size(72),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii LFID_AgingHistoryNoOfDayDFTIN : static_size(72),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii PSTDAY_AgingByDays : static_size(5),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii DELDSC_TotalDelinquencyNoTotalAC : static_size(12),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii FLPAYT_FirstReleaseChannel : static_size(23),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii FLPAYF_FirstPaymentChannel : static_size(23),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii LATFEE_LateCharge : static_size(19),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii EXPECD_ExpiryEarlyClosedDate : static_size(8),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii WJDNAME_BranchName : static_size(50),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii YSCBAL_YesterdayCurrentBalance : static_size(17),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii AFAPPR_ApprovedName : static_size(10),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii HMAIL_HoldMailCode : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii AFLIMT_DrawingLimit : static_size(17),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii AFUSE_LimitUsedAmount : static_size(17),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii AFUNUSE_UnutilizeLimit : static_size(17),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii ACCINT_DailyAccrual : static_size(19),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii LHAREF_AdditionalRefNo : static_size(30),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii LRELD8_LastReleaseDate : static_size(8),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii YTDMXI_YTDMaximumIncome : static_size(19),character_encoding("cp838"),padded_with(0xf0),align(right); 
+}; /* total 1560 */
+
+//Input Encoder
+in_map MBASE_LN86309_RQ_InMap : external(MBASE_LN86309_RQ), target_internal(MBASE_LN86309_RQ_TI){automatic;};
+out_map MBASE_LN86309_RQ_OutMap : external(MBASE_LN86309_RQ), internal(MBASE_LN86309_RQ_TI){automatic;};
+encoder MBASE_LN86309_RQ_Encode : out_map(MBASE_LN86309_RQ_OutMap); 
+
+
+//Response Decoders
+in_map MBASE_LN86309_RS_InMap : external(MBASE_LN86309_RS), target_internal(MBASE_LN86309_RS_TI){automatic;};
+decoder MBASE_LN86309_RS_Decode : in_map(MBASE_LN86309_RS_InMap);]]></string>
+   <boolean name="IsValid" value="true"/>
+</exportmultiplex>

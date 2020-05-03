@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Ultra_Format" ref_path="ultra_format[Internal]/storable[ultra_format]/storable[Data]">
+   <string name="Definition"><![CDATA[external TMQBK : identified_by(RSPCOD_ResponseCode == "BK") {
+	bcd RSPLEN_ResponseLength	: static_size(2), align(right);
+	ascii RSPCOD_ResponseCode : character_encoding("cp838"), static_size(2), align(left), padded_with(0x40);
+	bcd TMPDACCT_AccountNumber	: static_size(10), align(right);
+	ascii TMPDTYPE_AccountType : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	bcd TMPDCRSEQ_ItemSequenceNo	: static_size(5), align(right);
+	bcd TMPDNUM_AccountGroupNumber	: static_size(10), align(right);
+	bcd TMPDNBSQ_Sequence	: static_size(5), align(right);
+	ascii TMPDNBTP_RecordType : character_encoding("cp838"), static_size(2), align(left), padded_with(0x40);
+	ascii TMPDNBST_EntryStatus : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii TMPDNBTL_Teller : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	bcd TMPDNBLN_LineNumberPosted	: static_size(2), align(right);
+	bcd TMPDNBD8_DatePostedInPB	: static_size(5), align(right);
+	bcd TMPDEND8_DateEntered	: static_size(5), align(right);
+	bcd TMPDNBAM_Amount	: static_size(9), align(right);
+	bcd TMPDNBPB_PassbookBalance	: static_size(9), align(right);
+	bcd TMPDNBTC_TransactionCode	: static_size(2), align(right);
+	ascii TMPDNBDC_DebitcreditCode : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii TMPDNBRS_ReasonCode : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii TMPDNCDE_Mnemonic : character_encoding("cp838"), static_size(3), align(left), padded_with(0x40);
+	ascii TMPDNTTC_TellerTransCode : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	bcd TMPDNBMD_MaturityDate	: static_size(5), align(right);
+	bcd TMPDNBTM_Term	: static_size(3), align(right);
+	bcd TMPDNBRT_InterestAmount	: static_size(6), align(right);    
+    ascii TMPDPRS1_PrintingControl : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii TMPDPRS2_PrintingControl : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);    
+	ascii TMPDTRCD_Term : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);	
+};
+
+in_map TMQBK_InMap: external(TMQBK), target_internal(TMQBK_TgIn) {automatic;};
+out_map TMQBK_OutMap: external(TMQBK), internal(TMQBK_TgIn) {automatic;};
+decoder TMQBK_Decoder: in_map(TMQBK_InMap);
+encoder TMQBK_Encoder: out_map(TMQBK_OutMap);]]></string>
+   <boolean name="IsValid" value="true"/>
+</exportmultiplex>

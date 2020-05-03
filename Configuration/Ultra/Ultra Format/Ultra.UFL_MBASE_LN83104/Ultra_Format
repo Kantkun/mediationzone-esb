@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Ultra_Format" ref_path="ultra_format[Internal]/storable[ultra_format]/storable[Data]">
+   <string name="Definition"><![CDATA[external MBASE_LN83104_RQ {
+    ascii LNYREF_LRMGeneratedReferenceNumber : character_encoding("cp838"), static_size(30), align(left), padded_with(0x40);
+    ascii CFSSNO_IDNumber : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+    ascii CFSSCD_IDTypeCode : character_encoding("cp838"), static_size(3), align(left), padded_with(0x40);
+    ascii CFCIDT_IDIssuedCountryCode : character_encoding("cp838"), static_size(3), align(left), padded_with(0x40);
+    //total 76
+};
+
+external MBASE_LN83104_RS {
+    ascii LNYREF_LRMGeneratedReferenceNumber : character_encoding("cp838"), static_size(30), align(left), padded_with(0x40);
+    ascii ACCTNO_LoanAccountNumber : character_encoding("cp838"), static_size(19), align(right), padded_with(0xf0);
+    ascii SAMEFG_IsInputAcct : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+    ascii CIFNO_CustomerNumber : character_encoding("cp838"), static_size(19), align(right), padded_with(0xf0);
+    ascii ACNAME_CustomerNameTH : character_encoding("cp838"), static_size(200), align(left), padded_with(0x40);
+    ascii ACSNAME_CustomerNameEN : character_encoding("cp838"), static_size(200), align(left), padded_with(0x40);
+    ascii ACRREL_AcctPoaAsRecType : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+    ascii HOLDST_FreezeCode : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+    ascii TYPE_TypeLoanProduct : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+    ascii PMTAMT_EmiAmt : character_encoding("cp838"), static_size(17), align(right), padded_with(0xf0);
+    ascii PRNBIL_OutPrnAmt : character_encoding("cp838"), static_size(17), align(right), padded_with(0xf0);
+    ascii INTBIL_OutIntAmt : character_encoding("cp838"), static_size(17), align(right), padded_with(0xf0);
+    ascii FEEAMT_OutChrgAmt : character_encoding("cp838"), static_size(17), align(right), padded_with(0xf0);
+    ascii CURPO_OutSumAmt : character_encoding("cp838"), static_size(17), align(right), padded_with(0xf0);
+    //total 566
+};
+
+//Input
+in_map MBASE_LN83104_RQ_InMap: external (MBASE_LN83104_RQ), target_internal(MBASE_LN83104_RQ_TI){automatic;};
+out_map MBASE_LN83104_RQ_OutMap: external (MBASE_LN83104_RQ), internal(MBASE_LN83104_RQ_TI) {automatic;};
+encoder MBASE_LN83104_RQ_Encode: out_map(MBASE_LN83104_RQ_OutMap);
+decoder MBASE_LN83104_RQ_Decode: in_map(MBASE_LN83104_RQ_InMap);
+
+
+// Response
+in_map MBASE_LN83104_RS_InMap: external(MBASE_LN83104_RS), target_internal(MBASE_LN83104_RS_TI) {automatic;};
+out_map MBASE_LN83104_RS_OutMap: external (MBASE_LN83104_RS), internal(MBASE_LN83104_RS_TI) {automatic;};
+encoder MBASE_LN83104_RS_Encode: out_map(MBASE_LN83104_RS_OutMap);
+decoder MBASE_LN83104_RS_Decode: in_map(MBASE_LN83104_RS_InMap);]]></string>
+   <boolean name="IsValid" value="true"/>
+</exportmultiplex>

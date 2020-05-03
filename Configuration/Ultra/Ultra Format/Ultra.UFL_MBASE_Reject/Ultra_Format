@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Ultra_Format" ref_path="ultra_format[Internal]/storable[ultra_format]/storable[Data]">
+   <string name="Definition"><![CDATA[external MBASE_Reject{
+    ascii ErrorCode:static_size(7),character_encoding("cp838");
+    ascii ErrorIndicator:static_size(1),character_encoding("cp838");
+    ascii ErrorServerity:static_size(2),character_encoding("cp838");
+    ascii ErrorField:static_size(10),character_encoding("cp838");
+    ascii OverrideBitPosition:static_size(3),character_encoding("cp838");
+    //ascii ErrorDescription:character_encoding("cp838");
+    //ascii ExtendedData:static_size(83),character_encoding("cp838");
+};
+
+external MBASE_Reject_With_Payload: terminated_by(EOF){
+    MBASE_Reject mbaseReject;
+    bytearray errorDesc: dynamic_size(remaining_size);
+};
+
+in_map MBASE_Reject_InMap: external(MBASE_Reject), target_internal(MBASE_Reject_TI){automatic;};
+out_map MBASE_Reject_OutMap: external(MBASE_Reject), internal(MBASE_Reject_TI){automatic;};
+encoder MBASE_Reject_Encode: out_map(MBASE_Reject_OutMap);
+
+in_map MBASE_Reject_With_Payload_InMap: external(MBASE_Reject_With_Payload), target_internal(MBASE_Reject_With_Payload_TI) {automatic;};
+decoder MBASE_Reject_With_Payload_Decode: in_map(MBASE_Reject_With_Payload_InMap);]]></string>
+   <boolean name="IsValid" value="true"/>
+</exportmultiplex>

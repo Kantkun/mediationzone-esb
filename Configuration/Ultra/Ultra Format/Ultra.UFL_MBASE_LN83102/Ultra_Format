@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Ultra_Format" ref_path="ultra_format[Internal]/storable[ultra_format]/storable[Data]">
+   <string name="Definition"><![CDATA[external MBASE_LN83102_RQ {
+    ascii	ACCTNO_LoanAccountNumber	: character_encoding("cp838"), 	static_size(19),	align(right), padded_with(0xf0);
+    ascii	LHPST8_StartDate	: character_encoding("cp838"), 	static_size(8),	align(right), padded_with(0xf0);
+    ascii	LHEST8_EndDate	: character_encoding("cp838"), 	static_size(8),	align(right), padded_with(0xf0);
+};
+
+external MBASE_LN83102_RS {
+    ascii ACCTNO_LoanAccountNumber : character_encoding("cp838"), static_size(19), align(right), padded_with(0xf0);
+	ascii LHPST8_PostingDate : character_encoding("cp838"), static_size(8);
+	ascii LHAXTC_TxnCode : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii TLTXDS_TxcDescription : character_encoding("cp838"), static_size(50), align(left), padded_with(0x40);
+	ascii DISAMT_DisbursementAmount : character_encoding("cp838"), static_size(17);
+	ascii LPAMT_TotalPaymentAmount : character_encoding("cp838"), static_size(17);
+	ascii LPPPMT_PrincipalPaymentAmount : character_encoding("cp838"), static_size(17);
+	ascii LPIPMT_InterestPaymentAmount : character_encoding("cp838"), static_size(17);
+	ascii LPFPMT_FeePaymentAmount : character_encoding("cp838"), static_size(17);
+	ascii CBAL_PrincipalBal : character_encoding("cp838"), static_size(17);
+	ascii LHSSID_Channel : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii LHTXN_TransactionRefNo : character_encoding("cp838"), static_size(22), align(left), padded_with(0x40);
+	ascii LHEFD8_EffectiveDate : character_encoding("cp838"), static_size(8);
+	ascii LHTIME_Time : character_encoding("cp838"), static_size(6);
+	ascii ORGAMT_OriginalBalance : character_encoding("cp838"), static_size(17);
+	ascii LHAMT_TransactionAmount : character_encoding("cp838"), static_size(17);
+	ascii LHDORC_DrCrCode : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii LHAFFT_AffectsCode : character_encoding("cp838"), static_size(2), align(left), padded_with(0x40);
+	ascii LHTTYP_TransactionType : character_encoding("cp838"), static_size(2), align(left), padded_with(0x40);
+	ascii LHTRAN_TranCode : character_encoding("cp838"), static_size(3), align(right), padded_with(0xf0);
+	ascii L3TCDS_TranCodeDescription : character_encoding("cp838"), static_size(50), align(left), padded_with(0x40);
+	ascii LHRMNO_RemmitanceNo : character_encoding("cp838"), static_size(20), align(left), padded_with(0x40);
+	ascii LHSRC_InputSource : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii LHRACC_RetailGLCardAccountNo : character_encoding("cp838"), static_size(19), align(right), padded_with(0xf0);
+	ascii LHRCPT_ReceiptNumber : character_encoding("cp838"), static_size(20), align(left), padded_with(0x40);
+};
+
+//Input
+in_map MBASE_LN83102_RQ_InMap: external (MBASE_LN83102_RQ), target_internal(MBASE_LN83102_RQ_TI){automatic;};
+out_map MBASE_LN83102_RQ_OutMap: external (MBASE_LN83102_RQ), internal(MBASE_LN83102_RQ_TI) {automatic;};
+encoder MBASE_LN83102_RQ_Encode: out_map(MBASE_LN83102_RQ_OutMap);
+decoder MBASE_LN83102_RQ_Decode: in_map(MBASE_LN83102_RQ_InMap);
+
+
+// Response
+in_map MBASE_LN83102_RS_InMap: external(MBASE_LN83102_RS), target_internal(MBASE_LN83102_RS_TI) {automatic;};
+out_map MBASE_LN83102_RS_OutMap: external (MBASE_LN83102_RS), internal(MBASE_LN83102_RS_TI) {automatic;};
+encoder MBASE_LN83102_RS_Encode: out_map(MBASE_LN83102_RS_OutMap);
+decoder MBASE_LN83102_RS_Decode: in_map(MBASE_LN83102_RS_InMap);]]></string>
+   <boolean name="IsValid" value="true"/>
+</exportmultiplex>

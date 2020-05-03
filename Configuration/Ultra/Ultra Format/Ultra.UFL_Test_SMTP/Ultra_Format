@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Ultra_Format" ref_path="ultra_format[Internal]/storable[ultra_format]/storable[Data]">
+   <string name="Definition"><![CDATA[internal SMTP_Structor_RQ{       
+    string MessageRQ;
+};
+
+internal SMTP_Structor_RS{    
+    string MessageRS;
+};]]></string>
+   <boolean name="IsValid" value="true"/>
+</exportmultiplex>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Ultra_Format" ref_path="ultra_format[Internal]/storable[ultra_format]/storable[Data]">
+   <string name="Definition"><![CDATA[//GetProcessingMode
+external MBASE_SS86903_RS{
+    ascii CurrentProcessingMode : static_size(10),padded_with(0x40) , align(left) , character_encoding("cp838");
+};
+
+// Response Decoders
+in_map MBASE_SS86903_RS_InMap: external(MBASE_SS86903_RS), target_internal(MBASE_SS86903_RS_TI) {automatic;};
+decoder MBASE_SS86903_RS_Decode: in_map(MBASE_SS86903_RS_InMap);]]></string>
+   <boolean name="IsValid" value="true"/>
+</exportmultiplex>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Ultra_Format" ref_path="ultra_format[Internal]/storable[ultra_format]/storable[Data]">
+   <string name="Definition"><![CDATA[external MBASE_IFS55541_RQ {
+    ascii	INICNO_IDnumberRegistrationnumber	: character_encoding("cp838"),	static_size(13),	align(left), padded_with(0x40);
+    ascii	INNAME_Name	: character_encoding("cp838"),	static_size(100),	align(left), padded_with(0x40);
+    ascii	INLNAM_LastName	: character_encoding("cp838"),	static_size(100),	align(left), padded_with(0x40);
+    ascii	ININDI_CustomerType	: character_encoding("cp838"),	static_size(1),	align(left), padded_with(0x40);
+    ascii	INFRDT_FromDate	: character_encoding("cp838"),	static_size(8),	align(right), padded_with(0xf0);
+    ascii	INTODT_ToDate	: character_encoding("cp838"),	static_size(8),	align(right), padded_with(0xf0);
+};
+
+external MBASE_IFS55541_RS{
+    ascii	OBANKNO_BankNumber	: character_encoding("cp838"),	static_size(3),	align(right), padded_with(0xf0);
+    ascii	OBRANCH_BranchNumber	: character_encoding("cp838"),	static_size(5),	align(right), padded_with(0xf0);
+    ascii	OJDNAME_BranchName	: character_encoding("cp838"),	static_size(50),	align(left), padded_with(0x40);
+    ascii	OACTYPE_AccountType	: character_encoding("cp838"),	static_size(1),	align(left), padded_with(0x40);
+    ascii	OACCTNO_AccountNumber	: character_encoding("cp838"),	static_size(20),	align(right), padded_with(0xf0);
+    ascii	OACCNAM_AccountName	: character_encoding("cp838"),	static_size(100),	align(left), padded_with(0x40);
+    ascii	OSTATUS_Status	: character_encoding("cp838"),	static_size(1),	align(left), padded_with(0x40);
+    ascii	ODATOP7_Dateopened	: character_encoding("cp838"),	static_size(8); //,	align(right), padded_with(0xf0);
+    ascii	ODLA7_Datelastactive	: character_encoding("cp838"),	static_size(8); //,	align(right), padded_with(0xf0);
+    ascii	OORGAMT_OriginalAmount	: character_encoding("cp838"),	static_size(20); //,	align(right), padded_with(0xf0);
+    ascii	OAMSIGN_BalanceSign	: character_encoding("cp838"),	static_size(1),	align(left), padded_with(0x40);
+    ascii	OCBAL_CurrentBalance	: character_encoding("cp838"),	static_size(20);//,	align(right), padded_with(0xf0);
+    ascii	OSYSDTE_SystemDate	: character_encoding("cp838"),	static_size(8); //,	align(right), padded_with(0xf0);
+    ascii	OCFRREL_Relationship	: character_encoding("cp838"),	static_size(1),	align(left), padded_with(0x40);
+    ascii	ONAME_Name	: character_encoding("cp838"),	static_size(50),	align(left), padded_with(0x40);
+    ascii	OLNAME_LastName	: character_encoding("cp838"),	static_size(50),	align(left), padded_with(0x40);
+    ascii	OCFBIR8_DateofBirthIncorporation	: character_encoding("cp838"),	static_size(8); //,	align(right), padded_with(0xf0);
+    ascii	OCFSSNO_IDnumberRegistrationnumber	: character_encoding("cp838"),	static_size(13),	align(left), padded_with(0x40);
+    ascii	OCFCIFN_CustomerNumber	: character_encoding("cp838"),	static_size(19),	align(right), padded_with(0xf0);
+};
+
+//Input Encoder
+in_map MBASE_IFS55541_RQ_InMap: external (MBASE_IFS55541_RQ), target_internal(MBASE_IFS55541_RQ_TI){automatic;};
+out_map MBASE_IFS55541_RQ_OutMap: external (MBASE_IFS55541_RQ), internal(MBASE_IFS55541_RQ_TI) {automatic;};
+encoder MBASE_IFS55541_RQ_Encode: out_map(MBASE_IFS55541_RQ_OutMap);
+
+
+// Response Decoders
+in_map MBASE_IFS55541_RS_InMap: external(MBASE_IFS55541_RS), target_internal(MBASE_IFS55541_RS_TI) {automatic;};
+decoder MBASE_IFS55541_RS_Decode: in_map(MBASE_IFS55541_RS_InMap);]]></string>
+   <boolean name="IsValid" value="true"/>
+</exportmultiplex>

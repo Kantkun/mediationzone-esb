@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Ultra_Format" ref_path="ultra_format[Internal]/storable[ultra_format]/storable[Data]">
+   <string name="Definition"><![CDATA[internal RestLOS_RQ{
+    bytearray restBody;
+    long requestMillisec;
+    string uuid;
+    ws.AbstractWSCycle soapRequest;
+};
+
+
+internal RestLOS_RS{
+    string Status;
+    string ErrCode;
+    string ErrMessage;
+
+    string ApplicationNumber;
+    string Objective;
+    string ObjectiveEN;
+    string ApprovedLimit;
+    string ApplicationStatus;
+    string Statusdes_TH;
+    string Statusdes_EN;
+    string BranchCode;
+    string BranchName;
+    string BranchNameEN;
+    string OfficerName;
+    long requestMillisec;
+    string uuid;
+    ws.AbstractWSCycle soapRequest;
+    string restResponse;
+    
+    //additional value
+    string GHBApplicationStatus;
+    string GHBApplicationStatusDesc;
+    string GHBApplicationStatusDescEN;
+};
+
+]]></string>
+   <boolean name="IsValid" value="true"/>
+</exportmultiplex>
