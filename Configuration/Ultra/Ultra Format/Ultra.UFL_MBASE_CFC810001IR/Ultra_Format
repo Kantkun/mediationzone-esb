@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Ultra_Format" ref_path="ultra_format[Internal]/storable[ultra_format]/storable[Data]">
+   <string name="Definition"><![CDATA[//RequestNCBByCustomer Request
+external CFC810001I_RQ{
+    ascii	ReferenceNumber	:static_size(40)	,padded_with(0x40),align(left),character_encoding("cp838");
+    ascii   CustomerNumber : static_size(19)    ,character_encoding("cp838") ;//,padded_with(0xf0),align(right); //19,0
+    ascii	IDType	:static_size(3)	,padded_with(0x40),align(left),character_encoding("cp838"); //06 = Thai , 07 = foreigner
+    ascii	IDCountryCode	:static_size(3)	,padded_with(0x40),align(left),character_encoding("cp838");
+    ascii	IDNumber	:static_size(40)	,padded_with(0x40),align(left),character_encoding("cp838");
+    //ascii	IDCountryCode	:static_size(3)	,padded_with(0x40),align(left),character_encoding("cp838");
+    ascii	CustomerFormattedName	:static_size(200)	,padded_with(0x40),align(left),character_encoding("cp838");
+    ascii	DateofBirth	:static_size(8)	,character_encoding("cp838") ;//,padded_with(0xf0),align(right); //8,0
+    ascii	ReturnCode	:static_size(1)	,padded_with(0x40),align(left),character_encoding("cp838");
+    //ascii	Reserved	:static_size(25)	,padded_with(0x40),align(left),character_encoding("cp838");
+    //ascii	Reserved	:static_size(111)	,padded_with(0x40),align(left),character_encoding("cp838");
+    ascii	Reserved	:static_size(100)	,padded_with(0x40),align(left),character_encoding("cp838");
+    ascii   InquiryCode   :static_size(2)     ,padded_with(0x40),align(left),character_encoding("cp838");
+    ascii   InquiryAmount :static_size(9)     ,padded_with(0xf0),align(right),character_encoding("cp838");
+    ascii   ConsentFlag   :static_size(1)     ,padded_with(0x40),align(left),character_encoding("cp838");
+    
+    ascii   CustomerName    :static_size(200)	,padded_with(0x40),align(left),character_encoding("cp838");
+    
+    //add 6 columns after go live
+    ascii   ThaiFirstName   :static_size(200)	,padded_with(0x40),align(left),character_encoding("cp838");
+    ascii   ThaiMiddleName  :static_size(200)	,padded_with(0x40),align(left),character_encoding("cp838");
+    ascii   ThaiLastName    :static_size(200)	,padded_with(0x40),align(left),character_encoding("cp838");
+    ascii   EngFirstName    :static_size(200)	,padded_with(0x40),align(left),character_encoding("cp838");
+    ascii   EngMiddleName   :static_size(200)	,padded_with(0x40),align(left),character_encoding("cp838");
+    ascii   EngLastName     :static_size(200)	,padded_with(0x40),align(left),character_encoding("cp838");
+};
+
+//RequestNCBByCustomer Response
+external CFC810001R_RS{
+    ascii	ReferenceNumber	:static_size(40)	,padded_with(0x40),align(left),character_encoding("cp838");
+    ascii   CustomerNumber : static_size(19)    ,character_encoding("cp838");//,padded_with(0xf0),align(right); //19,0
+    ascii	IDType	:static_size(3)	,padded_with(0x40),align(left),character_encoding("cp838");
+    ascii	IDCountryCode	:static_size(3)	,padded_with(0x40),align(left),character_encoding("cp838");
+    ascii	IDNumber	:static_size(40)	,padded_with(0x40),align(left),character_encoding("cp838");
+    //ascii	IDCountryCode	:static_size(3)	,padded_with(0x40),align(left),character_encoding("cp838");
+    ascii	CustomerFormattedName	:static_size(200)	,padded_with(0x40),align(left),character_encoding("cp838");
+    ascii	DateofBirth	:static_size(8)	,character_encoding("cp838");//,padded_with(0x40),align(left); //8,0
+    ascii	ReturnCode	:static_size(1)	,padded_with(0x40),align(left),character_encoding("cp838");
+    ascii	Reserved	:static_size(25)	,padded_with(0x40),align(left),character_encoding("cp838");
+};
+
+//Input
+in_map CFC810001I_RQ_InMap: external (CFC810001I_RQ), target_internal(CFC810001I_RQ_TI){automatic;};
+out_map CFC810001I_RQ_OutMap: external (CFC810001I_RQ), internal(CFC810001I_RQ_TI) {automatic;};
+encoder CFC810001I_RQ_Encode: out_map(CFC810001I_RQ_OutMap);
+decoder CFC810001I_RQ_Decode: in_map(CFC810001I_RQ_InMap);
+
+// Response
+in_map CFC810001R_RS_InMap: external(CFC810001R_RS), target_internal(CFC810001R_RS_TI) {automatic;};
+out_map CFC810001R_RS_OutMap: external (CFC810001R_RS), internal(CFC810001R_RS_TI) {automatic;};
+encoder CFC810001R_RS_RS_Encode: out_map(CFC810001R_RS_OutMap);
+decoder CFC810001R_RS_RS_Decode: in_map(CFC810001R_RS_InMap);
+
+//PYTHON DATASET
+external CFC810001I_PYTHON_DATASET{
+    ascii	ReferenceNumber	:static_size(40)	,padded_with(0x40),align(left),character_encoding("cp838");
+    bytearray XmlRequestBa: dynamic_size(remaining_size);
+};
+
+//Input DATASET
+in_map CFC810001I_PYTHON_DATASET_InMap: external (CFC810001I_PYTHON_DATASET), target_internal(CFC810001I_PYTHON_DATASET_TI){automatic;};
+out_map CFC810001I_PYTHON_DATASET_OutMap: external (CFC810001I_PYTHON_DATASET), internal(CFC810001I_PYTHON_DATASET_TI) {automatic;};
+encoder CFC810001I_PYTHON_DATASET_Encode: out_map(CFC810001I_PYTHON_DATASET_OutMap);
+decoder CFC810001I_PYTHON_DATASET_Decode: in_map(CFC810001I_PYTHON_DATASET_InMap);
+
+// ////////////////////////////////////
+// external CFC810001I_RQ_v2{
+//     ascii	ReferenceNumber	:static_size(40)	,padded_with(0x40),align(left),character_encoding("cp838");
+//     ascii   CustomerNumber : static_size(19)    ,character_encoding("cp838") ;//,padded_with(0xf0),align(right); //19,0
+//     ascii	IDType	:static_size(3)	,padded_with(0x40),align(left),character_encoding("cp838"); //06 = Thai , 07 = foreigner
+//     ascii	IDCountryCode	:static_size(3)	,padded_with(0x40),align(left),character_encoding("cp838");
+//     ascii	IDNumber	:static_size(40)	,padded_with(0x40),align(left),character_encoding("cp838");
+//     //ascii	IDCountryCode	:static_size(3)	,padded_with(0x40),align(left),character_encoding("cp838");
+//     ascii	CustomerFormattedName	:static_size(200)	,padded_with(0x40),align(left),character_encoding("cp838");
+//     ascii	DateofBirth	:static_size(8)	,character_encoding("cp838") ;//,padded_with(0xf0),align(right); //8,0
+//     ascii	ReturnCode	:static_size(1)	,padded_with(0x40),align(left),character_encoding("cp838");
+//     //ascii	Reserved	:static_size(25)	,padded_with(0x40),align(left),character_encoding("cp838");    
+//     //ascii	Reserved	:static_size(111)	,padded_with(0x40),align(left),character_encoding("cp838");
+//     
+//     ascii	Reserved	  :static_size(99)	  ,padded_with(0x40),align(left),character_encoding("cp838");
+//     ascii   InquiryCode   :static_size(2)     ,padded_with(0x40),align(left),character_encoding("cp838");
+//     ascii   InquiryAmount :static_size(9)     ,padded_with(0xf0),align(right),character_encoding("cp838");
+//     ascii   ConsentFlag   :static_size(1)     ,padded_with(0x40),align(left),character_encoding("cp838");
+//     
+//     ascii   CustomerName    :static_size(200)	,padded_with(0x40),align(left),character_encoding("cp838");
+// };
+// 
+// //Input
+// in_map CFC810001I_RQ_v2_InMap: external (CFC810001I_RQ_v2), target_internal(CFC810001I_RQ_v2_TI){automatic;};
+// out_map CFC810001I_RQ_v2_OutMap: external (CFC810001I_RQ_v2), internal(CFC810001I_RQ_v2_TI) {automatic;};
+// encoder CFC810001I_RQ_v2_Encode: out_map(CFC810001I_RQ_v2_OutMap);
+// decoder CFC810001I_RQ_v2_Decode: in_map(CFC810001I_RQ_v2_InMap);
+]]></string>
+   <boolean name="IsValid" value="true"/>
+</exportmultiplex>

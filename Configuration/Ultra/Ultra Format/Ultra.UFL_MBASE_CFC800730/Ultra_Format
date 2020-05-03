@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Ultra_Format" ref_path="ultra_format[Internal]/storable[ultra_format]/storable[Data]">
+   <string name="Definition"><![CDATA[external MBASE_CFC800730_RQ{
+    ascii CFCIFN:static_size(19),padded_with(0xf0),align(right),character_encoding("cp838");
+    ascii CFCHNL:static_size(10),padded_with(0x40),align(left),character_encoding("cp838");
+    ascii CFCARN:static_size(25),padded_with(0x40),align(left),character_encoding("cp838");
+    ascii ACCTNO:static_size(19),padded_with(0xf0),align(right),character_encoding("cp838");
+    ascii ACTYPE:static_size(1),padded_with(0x40),align(left),character_encoding("cp838");
+    ascii ACCREF:static_size(40),padded_with(0x40),align(left),character_encoding("cp838");
+    ascii CFATYP:static_size(10),padded_with(0x40),align(left),character_encoding("cp838");
+    ascii CFSYID:static_size(10),padded_with(0x40),align(left),character_encoding("cp838");
+    ascii CFUSTS:static_size(1),padded_with(0x40),align(right),character_encoding("cp838");
+    ascii CFPROD:static_size(5),padded_with(0x40),align(right),character_encoding("cp838");
+    ascii CFPDES:static_size(20),padded_with(0x40),align(left),character_encoding("cp838");
+    ascii CFSREL:static_size(2),padded_with(0x40),align(left),character_encoding("cp838");
+    ascii CFMAIN:static_size(1),padded_with(0x40),align(left),character_encoding("cp838");
+    ascii MNLUID:static_size(10),padded_with(0x40),align(left),character_encoding("cp838");
+    ascii MNLTIM:static_size(26),padded_with(0x40),align(left),character_encoding("cp838");
+};
+
+external MBASE_CFC800730_RS{
+    ascii CFCIFN:static_size(19),padded_with("0"),align(right),character_encoding("cp838");
+    ascii CFCHNL:static_size(10),character_encoding("cp838");
+    ascii CFCARN:static_size(25),character_encoding("cp838");
+    ascii ACCTNO:static_size(19),padded_with("0"),align(right),character_encoding("cp838");
+    ascii ACTYPE:static_size(1),character_encoding("cp838");
+    ascii ACCREF:static_size(40),character_encoding("cp838");
+    ascii CFATYP:static_size(10),character_encoding("cp838");
+    ascii CFSYID:static_size(10),character_encoding("cp838");
+    ascii CFUSTS:static_size(1),padded_with("0"),align(right),character_encoding("cp838");
+    ascii CFPROD:static_size(5),padded_with("0"),align(right),character_encoding("cp838");
+    ascii CFPDES:static_size(20),character_encoding("cp838");
+    ascii CFSREL:static_size(2),character_encoding("cp838");
+    ascii CFMAIN:static_size(1),character_encoding("cp838");
+    ascii MNLUID:static_size(10),character_encoding("cp838");
+    ascii MNLTIM:static_size(26),character_encoding("cp838");
+};
+
+//Input Encoder
+in_map MBASE_CFC800730_RQ_InMap: external (MBASE_CFC800730_RQ), target_internal(MBASE_CFC800730_RQ_TI){automatic;};
+out_map MBASE_CFC800730_RQ_OutMap: external (MBASE_CFC800730_RQ), internal(MBASE_CFC800730_RQ_TI) {automatic;};
+encoder MBASE_CFC800730_RQ_Encode: out_map(MBASE_CFC800730_RQ_OutMap);
+
+
+// Response Decoders
+in_map MBASE_CFC800730_RS_InMap: external(MBASE_CFC800730_RS), target_internal(MBASE_CFC800730_RS_TI) {automatic;};
+decoder MBASE_CFC800730_RS_Decode: in_map(MBASE_CFC800730_RS_InMap);]]></string>
+   <boolean name="IsValid" value="true"/>
+</exportmultiplex>

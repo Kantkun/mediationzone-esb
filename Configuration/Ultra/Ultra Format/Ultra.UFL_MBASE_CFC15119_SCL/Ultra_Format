@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Ultra_Format" ref_path="ultra_format[Internal]/storable[ultra_format]/storable[Data]">
+   <string name="Definition"><![CDATA[//SCL
+external MBASE_CFC15119_RQ{
+    ascii CustomerName          : static_size(100), character_encoding("cp838"),    padded_with(0x40),  align(left);
+    ascii CustomerLastName      : static_size(100), character_encoding("cp838"),    padded_with(0x40),  align(left);
+    ascii IDNumber              : static_size(40),  character_encoding("cp838"),    padded_with(0x40),  align(left); //edit by:Prapas Ngootip,detail: ID number from 13,N to 40A
+    //ascii IDNumber              : static_size(13),  character_encoding("cp838"),    padded_with(0x40),  align(left);
+    ascii RequestType           : static_size(1),   character_encoding("cp838"),    padded_with(0x40),  align(left);
+    ascii Key                   : static_size(1),   character_encoding("cp838"),    padded_with(0x40),  align(left);
+}; /* total 215 */
+
+external MBASE_CFC15119_RS{
+    ascii CustomerName          : static_size(100), character_encoding("cp838"),    padded_with(0x40),  align(left);
+    ascii CustomerLastName      : static_size(100), character_encoding("cp838"),    padded_with(0x40),  align(left);
+    //edit by:Prapas Ngootip,detail: ID number from 13,N to 40A
+    //ascii IDNumber              : static_size(40),  character_encoding("cp838"),    padded_with(0xf0),  align(right); 
+    ascii IDNumber              : static_size(40),  character_encoding("cp838");
+    ascii RequestType           : static_size(1),   character_encoding("cp838"),    padded_with(0x40),  align(left);
+    
+    //ascii BANKNO_BankNo         : static_size(3),  character_encoding("cp838"),     padded_with(0xf0),  align(right);
+    ascii BANKNO_BankNo         : static_size(3),  character_encoding("cp838"),     padded_with(0x40),  align(left);
+    
+    //ascii BRANCH_BranchNo       : static_size(5),  character_encoding("cp838"),     padded_with(0xf0),  align(right);
+    ascii BRANCH_BranchNo       : static_size(5),  character_encoding("cp838"),     padded_with(0x40),  align(left);
+    
+    ascii JDNAME_BranchName     : static_size(50),   character_encoding("cp838"),   padded_with(0x40),  align(left);
+    ascii ACTYPE_AccountType    : static_size(1),   character_encoding("cp838"),    padded_with(0x40),  align(left);
+    ascii ACCTNO_AccountNo      : static_size(12),   character_encoding("cp838");
+    ascii AccountName           : static_size(200),   character_encoding("cp838"),  padded_with(0x40),  align(left); 
+    ascii Sign                  : static_size(1),   character_encoding("cp838"),    padded_with(0x40),  align(left);
+    ascii CBAL_AvailableBalance : static_size(20),  character_encoding("cp838"),    padded_with(0xf0),  align(right);
+    ascii Remark                : static_size(1),   character_encoding("cp838"),    padded_with(0x40),  align(left); 
+    ascii CFNA1_FirstName       : static_size(50),   character_encoding("cp838"),   padded_with(0x40),  align(left);
+    ascii CFNA1B_LastName       : static_size(50),   character_encoding("cp838"),   padded_with(0x40),  align(left);
+    ascii BirthDate             : static_size(10),   character_encoding("cp838"),   padded_with(0x40),  align(left);
+    //edit by:Prapas Ngootip,detail: ID number from 13,N to 40A
+    //ascii CFSSNO_CitizenID      : static_size(40),   character_encoding("cp838"),   padded_with(0x40),  align(left); 
+    ascii CFSSNO_CitizenID      : static_size(40),   character_encoding("cp838");
+    ascii CIFNO_CustomerNo      : static_size(9),   character_encoding("cp838"),padded_with(0xf0),align(right);
+}; /* total 639 */
+
+//Input Encoder
+in_map MBASE_CFC15119_RQ_InMap : external(MBASE_CFC15119_RQ), target_internal(MBASE_CFC15119_RQ_TI){automatic;};
+out_map MBASE_CFC15119_RQ_OutMap : external(MBASE_CFC15119_RQ), internal(MBASE_CFC15119_RQ_TI){automatic;};
+encoder MBASE_CFC15119_RQ_Encode : out_map(MBASE_CFC15119_RQ_OutMap); 
+
+
+//Response Decoders
+in_map MBASE_CFC15119_RS_InMap : external(MBASE_CFC15119_RS), target_internal(MBASE_CFC15119_RS_TI){automatic;};
+decoder MBASE_CFC15119_RS_Decode : in_map(MBASE_CFC15119_RS_InMap);]]></string>
+   <boolean name="IsValid" value="true"/>
+</exportmultiplex>

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Ultra_Format" ref_path="ultra_format[Internal]/storable[ultra_format]/storable[Data]">
+   <string name="Definition"><![CDATA[//SCL
+external MBASE_CFC15120_RQ{
+    ascii TransactionType   : static_size(1), character_encoding("cp838"),    padded_with(0x40),  align(left);
+    ascii RequestedDate     : static_size(8), character_encoding("cp838"),    padded_with(0x40),  align(left); //8,0
+    ascii SearchType        : static_size(1), character_encoding("cp838"),    padded_with(0x40),  align(left);
+    ascii SearchKey         : static_size(13),  character_encoding("cp838"),    padded_with(0xf0),  align(right); //13,0
+}; /* total 23 */
+
+external MBASE_CFC15120_RS{
+    ascii AccountNo                 : static_size(19),  character_encoding("cp838"); //12,0 edit by: Prapas Ngootip[27/02/2019] change lenght from 12 to 19
+    ascii AccountType               : static_size(1), character_encoding("cp838"),    padded_with(0x40),  align(left);
+    ascii OutputDate                : static_size(20), character_encoding("cp838"),    padded_with(0x40),  align(left);
+    ascii TxType                    : static_size(1), character_encoding("cp838"),    padded_with(0x40),  align(left);
+    
+    //ascii Available                 : static_size(20),  character_encoding("cp838"),    padded_with(0xf0),  align(right);
+    ascii Available                 : static_size(20),  character_encoding("cp838"),    padded_with(0x40),  align(left); //20,0
+    
+    ascii Deadline                  : static_size(8),  character_encoding("cp838"),    padded_with(0x40),  align(left); //8,0
+    
+    //ascii InterestRatePercentage    : static_size(6),  character_encoding("cp838"),    padded_with(0xf0),  align(right);
+    //ascii AccuranceAmount           : static_size(20),  character_encoding("cp838"),    padded_with(0xf0),  align(right);
+    ascii InterestRatePercentage    : static_size(6),  character_encoding("cp838"),    padded_with(0x40),  align(left); //6,2
+    ascii AccuranceAmount           : static_size(20),  character_encoding("cp838"),    padded_with(0x40),  align(left); //20,0
+    
+    ascii Obligation                : static_size(5), character_encoding("cp838"),    padded_with(0x40),  align(left);
+    ascii Collatteral               : static_size(50), character_encoding("cp838"),    padded_with(0x40),  align(left);
+    ascii AccountStatus             : static_size(1), character_encoding("cp838"),    padded_with(0x40),  align(left);
+    ascii LoanPeriod                : static_size(8),  character_encoding("cp838"),    padded_with(0xf0),  align(right);
+}; /* total 152 */
+
+//Input Encoder
+in_map MBASE_CFC15120_RQ_InMap : external(MBASE_CFC15120_RQ), target_internal(MBASE_CFC15120_RQ_TI){automatic;};
+out_map MBASE_CFC15120_RQ_OutMap : external(MBASE_CFC15120_RQ), internal(MBASE_CFC15120_RQ_TI){automatic;};
+encoder MBASE_CFC15120_RQ_Encode : out_map(MBASE_CFC15120_RQ_OutMap); 
+
+
+//Response Decoders
+in_map MBASE_CFC15120_RS_InMap : external(MBASE_CFC15120_RS), target_internal(MBASE_CFC15120_RS_TI){automatic;};
+decoder MBASE_CFC15120_RS_Decode : in_map(MBASE_CFC15120_RS_InMap);]]></string>
+   <boolean name="IsValid" value="true"/>
+</exportmultiplex>

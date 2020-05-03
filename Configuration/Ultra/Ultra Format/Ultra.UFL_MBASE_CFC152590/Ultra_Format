@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Ultra_Format" ref_path="ultra_format[Internal]/storable[ultra_format]/storable[Data]">
+   <string name="Definition"><![CDATA[external MBASE_CFC152590_RQ {
+	ascii CFCIFN_CustomerNumber : character_encoding("cp838"), static_size(19), align(right), padded_with(0xf0);
+	ascii WFUSTS_AccountStatus : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii ACCTNO_AccountNumber : character_encoding("cp838"), static_size(19), align(right), padded_with(0xf0);
+	ascii ACTYPE_AccountType : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii CFOWNR_IncludeJointAccountFlag : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+};
+
+external MBASE_CFC152590_RS {
+	ascii ACCTNO_AccountNumber : character_encoding("cp838"), static_size(19);
+	ascii ACTYPE_AccountType : character_encoding("cp838"), static_size(1);
+	ascii ACCREF_ReferenceNumber : character_encoding("cp838"), static_size(40);
+	ascii CFENTN_EntityNumber	: static_size(19),character_encoding("cp838");
+	ascii CFRREL_RelationshipCode : character_encoding("cp838"), static_size(2);
+	ascii CFRLE8_RelationshipEndDate : character_encoding("cp838"), static_size(8);
+	ascii CFACIF_AddressCustomerNumber : character_encoding("cp838"), static_size(19);
+	ascii CFZSEQ_SequenceNumber : character_encoding("cp838"), static_size(5);
+	ascii CFSYID_SystemCode : character_encoding("cp838"), static_size(10);
+	ascii CFATYP_AccountTypeCode : character_encoding("cp838"), static_size(10);
+	ascii WFUSTS_AccountStatus : character_encoding("cp838"), static_size(1);
+	ascii WKPROD_ProductCode : character_encoding("cp838"), static_size(20);
+	ascii WHOLDE_Holder	: static_size(3), character_encoding("cp838");
+	ascii WOGCCY_OriginalCurrency : character_encoding("cp838"), static_size(4);
+	ascii WCBAL_CurrentBalance	: static_size(17),character_encoding("cp838");
+	ascii WEBAL_EquivalentBalance	: static_size(17),character_encoding("cp838");
+	ascii WECCY_EquivalentCurrency : character_encoding("cp838"), static_size(4);
+	ascii WAUTYN_MaskedBalance : character_encoding("cp838"), static_size(1);
+	ascii CFCIFN_CustomerNumber : character_encoding("cp838"), static_size(19),padded_with(0xf0),align(right);
+	ascii CFULD8_DateLastTransaction : character_encoding("cp838"), static_size(8);
+	ascii WFFMNS_CustomerName : character_encoding("cp838"), static_size(200);
+	ascii WFFMSH_AccountName : character_encoding("cp838"), static_size(200);
+	ascii CFEADD_AccountEmail : character_encoding("cp838"), static_size(100);
+	ascii CFEDD2_AccountMobile : character_encoding("cp838"), static_size(100);
+	ascii G9DESC_Product_name : character_encoding("cp838"), static_size(50);
+    ascii CFLEGL_SuitStatusCode : character_encoding("cp838"), static_size(10);
+    ascii WFSTST_AccountCondition : character_encoding("cp838"), static_size(2);
+    ascii WFSDES_ConditionDesc : character_encoding("cp838"), static_size(50);
+    ascii FILL01_AccountClose : character_encoding("cp838"), static_size(1);
+	ascii FILL02_MainJoint : character_encoding("cp838"), static_size(1);
+	ascii FILL03_AccountType : character_encoding("cp838"), static_size(3);
+	ascii FILL04_LoanInsurance : character_encoding("cp838"), static_size(17);
+};
+
+
+//Input Encoder 
+in_map MBASE_CFC152590_RQ_InMap: external(MBASE_CFC152590_RQ), target_internal(MBASE_CFC152590_RQ_TgIn) {automatic;};
+out_map MBASE_CFC152590_RQ_OutMap: external(MBASE_CFC152590_RQ), internal(MBASE_CFC152590_RQ_TgIn) {automatic;};
+encoder MBASE_CFC152590_RQ_Encoder: out_map(MBASE_CFC152590_RQ_OutMap);
+
+//Response Decoder
+in_map MBASE_CFC152590_RS_InMap: external(MBASE_CFC152590_RS), target_internal(MBASE_CFC152590_RS_TgIn) {automatic;};
+decoder MBASE_CFC152590_RS_Decoder: in_map(MBASE_CFC152590_RS_InMap);
+
+]]></string>
+   <boolean name="IsValid" value="true"/>
+</exportmultiplex>

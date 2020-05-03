@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Ultra_Format" ref_path="ultra_format[Internal]/storable[ultra_format]/storable[Data]">
+   <string name="Definition"><![CDATA[external DD22003_RQ {
+    ascii IATMCD_ATMCard : character_encoding("cp838"), static_size(25), align(left), padded_with(0x40);
+	ascii ICREFNO_CardReferenceNo : character_encoding("cp838"), static_size(25), align(left), padded_with(0x40);
+	ascii IREFNM_PINREFNO : character_encoding("cp838"), static_size(20), align(left), padded_with(0x40);
+	ascii CFCHNL_SystemID : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii CIFNO_CIFNumber : character_encoding("cp838"), static_size(19), align(right), padded_with(0xf0);
+	ascii ITITCD_TitleCode : character_encoding("cp838"), static_size(20), align(left), padded_with(0x40); //+19
+	ascii IENAME_EnglishName : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+	ascii IBIRD8_BirthDate : character_encoding("cp838"), static_size(8), align(right), padded_with(0xf0);
+	ascii IIDNUM_IDNumber : character_encoding("cp838"), static_size(30), align(left), padded_with(0x40);
+	ascii IIDTYP_IDTypeCode : character_encoding("cp838"), static_size(3), align(left), padded_with(0x40);
+	ascii IIDCTY_IDIssueCountryCode : character_encoding("cp838"), static_size(3), align(left), padded_with(0x40);
+	ascii IAFEE8_AnnualFeeDate : character_encoding("cp838"), static_size(8), align(right), padded_with(0xf0);
+	ascii IBRNIS_BranchNumber : character_encoding("cp838"), static_size(5), align(right), padded_with(0xf0);
+	ascii ISTATS_Status : character_encoding("cp838"), static_size(1), align(right), padded_with(0xf0);
+	ascii IPINER_PinErrorCount : character_encoding("cp838"), static_size(4), align(right), padded_with(0xf0);
+	ascii IADDD8_DateAdd : character_encoding("cp838"), static_size(8), align(right), padded_with(0xf0);
+	ascii IISSD8_DateIssue : character_encoding("cp838"), static_size(8), align(right), padded_with(0xf0);
+	ascii ILMND8_DateLastMaint : character_encoding("cp838"), static_size(8), align(right), padded_with(0xf0);
+	ascii ILUSE8_LastUsed : character_encoding("cp838"), static_size(8), align(right), padded_with(0xf0);
+	ascii IACTYP_AccountType : character_encoding("cp838"), static_size(2), align(left), padded_with(0x40);
+	ascii ICFINDI_CustomerType : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii ITRFINT_TransferIndicator : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii IISSSTS_IssuanceStatus : character_encoding("cp838"), static_size(2), align(left), padded_with(0x40);
+	ascii ITRFLMT_XFRLimitAmount : character_encoding("cp838"), static_size(10), align(right), padded_with(0xf0);
+	ascii IPAYLMT_PAYLimitAmount : character_encoding("cp838"), static_size(10), align(right), padded_with(0xf0);
+	ascii IACCNT_NumberOfAccount : character_encoding("cp838"), static_size(2), align(right), padded_with(0xf0);
+	
+	ascii ITYPE01_AccountType : character_encoding("cp838"), static_size(2), align(left), padded_with(0x40);
+	ascii IACCT01_AccountNo : character_encoding("cp838"), static_size(19);
+    ascii HACCT01_AccountNo : character_encoding("cp838"), static_size(19);
+	ascii IACBR01_AccountBranch : character_encoding("cp838"), static_size(5), align(right), padded_with(0xf0);
+	ascii IFILL01_AccountFiller : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii ISTAT01_AccountStatus : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii IACNM01_AccountName : character_encoding("cp838"), static_size(20), align(left), padded_with(0x40);
+	ascii IOPTN01_AccountOption : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	
+	ascii ITYPE02_AccountType : character_encoding("cp838"), static_size(2), align(left), padded_with(0x40);
+	ascii IACCT02_AccountNo :  character_encoding("cp838"), static_size(19);
+	ascii IACBR02_AccountBranch : character_encoding("cp838"), static_size(5), align(right), padded_with(0xf0);
+	ascii IFILL02_AccountFiller : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii ISTAT02_AccountStatus : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii IACNM02_AccountName : character_encoding("cp838"), static_size(20), align(left), padded_with(0x40);
+	ascii IOPTN02_AccountOption : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	
+	ascii ITYPE03_AccountType : character_encoding("cp838"), static_size(2), align(left), padded_with(0x40);
+	ascii IACCT03_AccountNo : character_encoding("cp838"), static_size(19);
+	ascii IACBR03_AccountBranch : character_encoding("cp838"), static_size(5), align(right), padded_with(0xf0);
+	ascii IFILL03_AccountFiller : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii ISTAT03_AccountStatus : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii IACNM03_AccountName : character_encoding("cp838"), static_size(20), align(left), padded_with(0x40);
+	ascii IOPTN03_AccountOption : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	
+	ascii ITYPE04_AccountType : character_encoding("cp838"), static_size(2), align(left), padded_with(0x40);
+	ascii IACCT04_AccountNo : character_encoding("cp838"), static_size(19);
+	ascii IACBR04_AccountBranch : character_encoding("cp838"), static_size(5), align(right), padded_with(0xf0);
+	ascii IFILL04_AccountFiller : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii ISTAT04_AccountStatus : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii IACNM04_AccountName : character_encoding("cp838"), static_size(20), align(left), padded_with(0x40);
+	ascii IOPTN04_AccountOption : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	
+	ascii ITYPE05_AccountType : character_encoding("cp838"), static_size(2), align(left), padded_with(0x40);
+	ascii IACCT05_AccountNo : character_encoding("cp838"), static_size(19);
+	ascii IACBR05_AccountBranch : character_encoding("cp838"), static_size(5), align(right), padded_with(0xf0);
+	ascii IFILL05_AccountFiller : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii ISTAT05_AccountStatus : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii IACNM05_AccountName : character_encoding("cp838"), static_size(20), align(left), padded_with(0x40);
+	ascii IOPTN05_AccountOption : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	
+	ascii ITYPE06_AccountType : character_encoding("cp838"), static_size(2), align(left), padded_with(0x40);
+	ascii IACCT06_AccountNo : character_encoding("cp838"), static_size(19);
+	ascii IACBR06_AccountBranch : character_encoding("cp838"), static_size(5), align(right), padded_with(0xf0);
+	ascii IFILL06_AccountFiller : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii ISTAT06_AccountStatus : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii IACNM06_AccountName : character_encoding("cp838"), static_size(20), align(left), padded_with(0x40);
+	ascii IOPTN06_AccountOption : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	
+	ascii ITYPE07_AccountType : character_encoding("cp838"), static_size(2), align(left), padded_with(0x40);
+	ascii IACCT07_AccountNo : character_encoding("cp838"), static_size(19);
+	ascii IACBR07_AccountBranch : character_encoding("cp838"), static_size(5), align(right), padded_with(0xf0);
+	ascii IFILL07_AccountFiller : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii ISTAT07_AccountStatus : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii IACNM07_AccountName : character_encoding("cp838"), static_size(20), align(left), padded_with(0x40);
+	ascii IOPTN07_AccountOption : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	
+	ascii ITYPE08_AccountType : character_encoding("cp838"), static_size(2), align(left), padded_with(0x40);
+	ascii IACCT08_AccountNo : character_encoding("cp838"), static_size(19);
+	ascii IACBR08_AccountBranch : character_encoding("cp838"), static_size(5), align(right), padded_with(0xf0);
+	ascii IFILL08_AccountFiller : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii ISTAT08_AccountStatus : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii IACNM08_AccountName : character_encoding("cp838"), static_size(20), align(left), padded_with(0x40);
+	ascii IOPTN08_AccountOption : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+};
+
+external DD22003_RS {
+    ascii IATMCD_ATMCard : character_encoding("cp838"), static_size(25), align(left), padded_with(0x40);
+	ascii ICREFNO_CardReferenceNo : character_encoding("cp838"), static_size(25), align(left), padded_with(0x40);
+	ascii IREFNM_PINREFNO : character_encoding("cp838"), static_size(20), align(left), padded_with(0x40);
+	ascii CFCHNL_SystemID : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii CIFNO_CIFNumber : character_encoding("cp838"), static_size(19), align(right), padded_with(0xf0);
+	ascii ITITCD_TitleCode : character_encoding("cp838"), static_size(20), align(left), padded_with(0x40);//+19
+	ascii IENAME_EnglishName : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+	ascii IBIRD8_BirthDate : character_encoding("cp838"), static_size(8), align(right), padded_with(0xf0);
+	ascii IIDNUM_IDNumber : character_encoding("cp838"), static_size(30), align(left), padded_with(0x40);
+	ascii IIDTYP_IDTypeCode : character_encoding("cp838"), static_size(3), align(left), padded_with(0x40);
+	ascii IIDCTY_IDIssueCountryCode : character_encoding("cp838"), static_size(3), align(left), padded_with(0x40);
+	ascii IAFEE8_AnnualFeeDate : character_encoding("cp838"), static_size(8), align(right), padded_with(0xf0);
+	ascii IBRNIS_BranchNumber : character_encoding("cp838"), static_size(5), align(right), padded_with(0xf0);
+	ascii ISTATS_Status : character_encoding("cp838"), static_size(1), align(right), padded_with(0xf0);
+	ascii IPINER_PinErrorCount : character_encoding("cp838"), static_size(4), align(right), padded_with(0xf0);
+	ascii IADDD8_DateAdd : character_encoding("cp838"), static_size(8), align(right), padded_with(0xf0);
+	ascii IISSD8_DateIssue : character_encoding("cp838"), static_size(8), align(right), padded_with(0xf0);
+	ascii ILMND8_DateLastMaint : character_encoding("cp838"), static_size(8), align(right), padded_with(0xf0);
+	ascii ILUSE8_LastUsed : character_encoding("cp838"), static_size(8), align(right), padded_with(0xf0);
+	ascii IACTYP_AccountType : character_encoding("cp838"), static_size(2), align(left), padded_with(0x40);
+	ascii ICFINDI_CustomerType : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii ITRFINT_TransferIndicator : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii IISSSTS_IssuanceStatus : character_encoding("cp838"), static_size(2), align(left), padded_with(0x40);
+	ascii ITRFLMT_XFRLimitAmount : character_encoding("cp838"), static_size(10), align(right), padded_with(0xf0);
+	ascii IPAYLMT_PAYLimitAmount : character_encoding("cp838"), static_size(10), align(right), padded_with(0xf0);
+	ascii IACCNT_NumberOfAccount : character_encoding("cp838"), static_size(2), align(right), padded_with(0xf0);
+	
+	ascii ITYPE01_AccountType : character_encoding("cp838"), static_size(2), align(left), padded_with(0x40);
+	ascii IACCT01_AccountNo : character_encoding("cp838"), static_size(19), align(right), padded_with(0xf0);
+    ascii HACCT01_AccountNo : character_encoding("cp838"), static_size(19);
+	ascii IACBR01_AccountBranch : character_encoding("cp838"), static_size(5), align(right), padded_with(0xf0);
+	ascii IFILL01_AccountFiller : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii ISTAT01_AccountStatus : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii IACNM01_AccountName : character_encoding("cp838"), static_size(20), align(left), padded_with(0x40);
+	ascii IOPTN01_AccountOption : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	
+	ascii ITYPE02_AccountType : character_encoding("cp838"), static_size(2), align(left), padded_with(0x40);
+	ascii IACCT02_AccountNo : character_encoding("cp838"), static_size(19), align(right), padded_with(0xf0);
+	ascii IACBR02_AccountBranch : character_encoding("cp838"), static_size(5), align(right), padded_with(0xf0);
+	ascii IFILL02_AccountFiller : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii ISTAT02_AccountStatus : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii IACNM02_AccountName : character_encoding("cp838"), static_size(20), align(left), padded_with(0x40);
+	ascii IOPTN02_AccountOption : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	
+	ascii ITYPE03_AccountType : character_encoding("cp838"), static_size(2), align(left), padded_with(0x40);
+	ascii IACCT03_AccountNo : character_encoding("cp838"), static_size(19), align(right), padded_with(0xf0);
+	ascii IACBR03_AccountBranch : character_encoding("cp838"), static_size(5), align(right), padded_with(0xf0);
+	ascii IFILL03_AccountFiller : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii ISTAT03_AccountStatus : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii IACNM03_AccountName : character_encoding("cp838"), static_size(20), align(left), padded_with(0x40);
+	ascii IOPTN03_AccountOption : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	
+	ascii ITYPE04_AccountType : character_encoding("cp838"), static_size(2), align(left), padded_with(0x40);
+	ascii IACCT04_AccountNo : character_encoding("cp838"), static_size(19), align(right), padded_with(0xf0);
+	ascii IACBR04_AccountBranch : character_encoding("cp838"), static_size(5), align(right), padded_with(0xf0);
+	ascii IFILL04_AccountFiller : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii ISTAT04_AccountStatus : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii IACNM04_AccountName : character_encoding("cp838"), static_size(20), align(left), padded_with(0x40);
+	ascii IOPTN04_AccountOption : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	
+	ascii ITYPE05_AccountType : character_encoding("cp838"), static_size(2), align(left), padded_with(0x40);
+	ascii IACCT05_AccountNo : character_encoding("cp838"), static_size(19), align(right), padded_with(0xf0);
+	ascii IACBR05_AccountBranch : character_encoding("cp838"), static_size(5), align(right), padded_with(0xf0);
+	ascii IFILL05_AccountFiller : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii ISTAT05_AccountStatus : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii IACNM05_AccountName : character_encoding("cp838"), static_size(20), align(left), padded_with(0x40);
+	ascii IOPTN05_AccountOption : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	
+	ascii ITYPE06_AccountType : character_encoding("cp838"), static_size(2), align(left), padded_with(0x40);
+	ascii IACCT06_AccountNo : character_encoding("cp838"), static_size(19), align(right), padded_with(0xf0);
+	ascii IACBR06_AccountBranch : character_encoding("cp838"), static_size(5), align(right), padded_with(0xf0);
+	ascii IFILL06_AccountFiller : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii ISTAT06_AccountStatus : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii IACNM06_AccountName : character_encoding("cp838"), static_size(20), align(left), padded_with(0x40);
+	ascii IOPTN06_AccountOption : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	
+	ascii ITYPE07_AccountType : character_encoding("cp838"), static_size(2), align(left), padded_with(0x40);
+	ascii IACCT07_AccountNo : character_encoding("cp838"), static_size(19), align(right), padded_with(0xf0);
+	ascii IACBR07_AccountBranch : character_encoding("cp838"), static_size(5), align(right), padded_with(0xf0);
+	ascii IFILL07_AccountFiller : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii ISTAT07_AccountStatus : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii IACNM07_AccountName : character_encoding("cp838"), static_size(20), align(left), padded_with(0x40);
+	ascii IOPTN07_AccountOption : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	
+	ascii ITYPE08_AccountType : character_encoding("cp838"), static_size(2), align(left), padded_with(0x40);
+	ascii IACCT08_AccountNo : character_encoding("cp838"), static_size(19), align(right), padded_with(0xf0);
+	ascii IACBR08_AccountBranch : character_encoding("cp838"), static_size(5), align(right), padded_with(0xf0);
+	ascii IFILL08_AccountFiller : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii ISTAT08_AccountStatus : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii IACNM08_AccountName : character_encoding("cp838"), static_size(20), align(left), padded_with(0x40);
+	ascii IOPTN08_AccountOption : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+};
+
+//Input
+in_map DD22003_RQ_InMap: external (DD22003_RQ), target_internal(DD22003_RQ_TI){automatic;};
+out_map DD22003_RQ_OutMap: external (DD22003_RQ), internal(DD22003_RQ_TI) {automatic;};
+encoder DD22003_RQ_Encode: out_map(DD22003_RQ_OutMap);
+decoder DD22003_RQ_Decode: in_map(DD22003_RQ_InMap);
+
+
+// Response
+in_map DD22003_RS_InMap: external(DD22003_RS), target_internal(DD22003_RS_TI) {automatic;};
+out_map DD22003_RS_OutMap: external (DD22003_RS), internal(DD22003_RS_TI) {automatic;};
+encoder DD22003_RS_Encode: out_map(DD22003_RS_OutMap);
+decoder DD22003_RS_Decode: in_map(DD22003_RS_InMap);]]></string>
+   <boolean name="IsValid" value="true"/>
+</exportmultiplex>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Ultra_Format" ref_path="ultra_format[Internal]/storable[ultra_format]/storable[Data]">
+   <string name="Definition"><![CDATA[external MBASE_CFC150200_RQ{
+    ascii CFCIFN_CustomerNumber : static_size(19),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii CFCATC_CategoryCode : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFEASQ_ElectronicAddressSeq : static_size(5),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii ACCTNO_AccountNumber : static_size(19),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii ACTYPE_AccountType : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii WKOPTN_Option : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+}; // total 46 
+
+external MBASE_CFC150200_RS{
+    ascii CFZSEQ_SequenceNumber : static_size(5),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii CFADFM_AddressFormat : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFADTP_AddressType : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFNA2_AddressLine1 : static_size(40),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFNA3_AddressLine2 : static_size(40),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFNA4_AddressLine3 : static_size(40),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFNA5_AddressLine4 : static_size(40),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFNA6_AddressLine5 : static_size(40),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFNA7_AddressLine6 : static_size(40),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFNA8_AddressLine7 : static_size(40),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFBADA_InsufficientAddress : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFRMKS_Remark : static_size(40),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFRMKS_PostalCode : static_size(9),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFSTAT_StateCode : static_size(3),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFCOUN_CountryCode : static_size(3),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii WDEFLT_DefaultAddress : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii WACLNK_AccountLinked : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii WADDRL_AddressLinkIndicator : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii WACCTL_AccountLinkIndicator : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);  
+}; // total 347
+
+//Input Encoder
+in_map MBASE_CFC150200_RQ_InMap : external(MBASE_CFC150200_RQ), target_internal(MBASE_CFC150200_RQ_TI){automatic;};
+out_map MBASE_CFC150200_RQ_OutMap : external(MBASE_CFC150200_RQ), internal(MBASE_CFC150200_RQ_TI){automatic;};
+encoder MBASE_CFC150200_RQ_Encode : out_map(MBASE_CFC150200_RQ_OutMap); 
+
+
+//Response Decoders
+in_map MBASE_CFC150200_RS_InMap : external(MBASE_CFC150200_RS), target_internal(MBASE_CFC150200_RS_TI){automatic;};
+decoder MBASE_CFC150200_RS_Decode : in_map(MBASE_CFC150200_RS_InMap);]]></string>
+   <boolean name="IsValid" value="true"/>
+</exportmultiplex>

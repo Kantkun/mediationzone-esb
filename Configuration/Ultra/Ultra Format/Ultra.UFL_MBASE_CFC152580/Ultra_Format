@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Ultra_Format" ref_path="ultra_format[Internal]/storable[ultra_format]/storable[Data]">
+   <string name="Definition"><![CDATA[external MBASE_CFC152580_RQ{
+    ascii CFCIFN_CustomerNumber:static_size(19),padded_with(0xf0),align(right),character_encoding("cp838");
+    ascii CFSSNO_IDNumber:static_size(40),padded_with(0x40),align(left),character_encoding("cp838");
+    ascii CFSSCD_IDTypeCode:static_size(3),padded_with(0x40),align(left),character_encoding("cp838");
+    ascii CFCIDT_IDIssueCountryCode:static_size(3),padded_with(0x40),align(left),character_encoding("cp838");
+};
+
+external MBASE_CFC152580_RS{
+    ascii CFCIFN_CustomerNumber : character_encoding("cp838"), static_size(19),padded_with(0xf0),align(right);
+	ascii CFZSEQ_SequenceNumber : character_encoding("cp838"), static_size(5);
+	ascii CFADFM_AddressFormat : character_encoding("cp838"), static_size(1);
+	ascii CFADTP_AddressType : character_encoding("cp838"), static_size(1);
+	ascii CFNA2_AddressLine1 : character_encoding("cp838"), static_size(40);
+	ascii CFNA3_AddressLine2 : character_encoding("cp838"), static_size(40);
+	ascii CFNA4_AddressLine3 : character_encoding("cp838"), static_size(40);
+	ascii CFNA5_AddressLine4 : character_encoding("cp838"), static_size(40);
+	ascii CFNA6_AddressLine5 : character_encoding("cp838"), static_size(40);
+	ascii CFNA7_AddressLine6 : character_encoding("cp838"), static_size(40);
+	ascii CFNA8_AddressLine7 : character_encoding("cp838"), static_size(40);
+	ascii CFBADA_InsufficientAddressContact : character_encoding("cp838"), static_size(1);
+	ascii CFRMKS_Remarks : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+	ascii CFZIP_PostalCode : character_encoding("cp838"), static_size(9);
+	ascii CFSTAT_StateCode : character_encoding("cp838"), static_size(3);
+	ascii CFCOUN_CountryCode : character_encoding("cp838"), static_size(3);
+    ascii WCOUNTRY_Country : character_encoding("cp838"), static_size(50);
+	ascii WDEFLT_DefaultAddress : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii WACLNK_AccountLinked : character_encoding("cp838"), static_size(1);
+	ascii WCONTL_AccountLinked : character_encoding("cp838"), static_size(1);
+	ascii CFSSNO_IDNumber : character_encoding("cp838"), static_size(40);
+	ascii WCFNA1A_PrimaryFirstName : character_encoding("cp838"), static_size(80);
+	ascii WCFNA1B_PrimaryLastName : character_encoding("cp838"), static_size(80);
+	ascii WCFNA2A_SecondaryName1 : character_encoding("cp838"), static_size(80);
+	ascii WCFNA2B_SecondaryName2 : character_encoding("cp838"), static_size(80);
+	ascii WCFNA2C_SecondaryName3 : character_encoding("cp838"), static_size(80);
+	ascii CFHMNO_HouseNumber : character_encoding("cp838"), static_size(40);
+	ascii CFAMOO_MOO : character_encoding("cp838"), static_size(20);
+    ascii CFAFLR_Floor : character_encoding("cp838"), static_size(40);
+    ascii CFAROM_Room : character_encoding("cp838"), static_size(40);
+	ascii CFASOI_Soi : character_encoding("cp838"), static_size(40);
+	ascii CFABUI_Building : character_encoding("cp838"), static_size(40);
+	ascii CFAROD_Road : character_encoding("cp838"), static_size(40);
+	ascii CFASDT_SubDistrict : character_encoding("cp838"), static_size(50);
+	ascii CFADIS_District : character_encoding("cp838"), static_size(50);
+	ascii CFAPRO_Province : character_encoding("cp838"), static_size(40);
+    //additional new structure
+    ascii CFDFC2_SubDistrictCode : character_encoding("cp838"), static_size(10); //SubDistrinctCode
+	ascii CFDFC1_DistrictCode : character_encoding("cp838"), static_size(10); //DistrinctCode
+    ascii MNLUID_LastMaintenanceUserID : character_encoding("cp838"), static_size(10);
+	ascii MNLTIM_LastMaintenanceTime : character_encoding("cp838"), static_size(26);
+    //Email
+	ascii CFZSEQ1_SequenceNumber : character_encoding("cp838"), static_size(5);
+	ascii CFAREA_AreaCode : character_encoding("cp838"), static_size(10);
+	ascii CFEADD_EContactDetail : character_encoding("cp838"), static_size(100);
+	ascii CFEEXT_ContactExtensionNo : character_encoding("cp838"), static_size(20);
+	ascii MNLUIDC_LastMaintenanceUserID : character_encoding("cp838"), static_size(10);
+	ascii MNLTIMC_LastMaintenanceTime : character_encoding("cp838"), static_size(26);
+    //Mobile
+	ascii CFZSEQ2_SequenceNumber : character_encoding("cp838"), static_size(5);
+	ascii CFAREA2_AreaCode : character_encoding("cp838"), static_size(10);
+	ascii CFEADD2_EContactDetail : character_encoding("cp838"), static_size(100);
+	ascii CFEEXT2_ContactExtensionNo : character_encoding("cp838"), static_size(20);
+	ascii MNLUIDD_LastMaintenanceUserID : character_encoding("cp838"), static_size(10);
+	ascii MNLTIMD_LastMaintenanceTime : character_encoding("cp838"), static_size(26);
+    //Phone1
+	ascii CFZSEQ3_SequenceNumber : character_encoding("cp838"), static_size(5);
+	ascii CFAREA3_AreaCode : character_encoding("cp838"), static_size(10);
+	ascii CFEADD3_EContactDetail : character_encoding("cp838"), static_size(100);
+	ascii CFEEXT3_ContactExtensionNo : character_encoding("cp838"), static_size(20);
+	ascii MNLUIDE_LastMaintenanceUserID : character_encoding("cp838"), static_size(10);
+	ascii MNLTIME_LastMaintenanceTime : character_encoding("cp838"), static_size(26);
+	ascii CFZSEQ4_SequenceNumber : character_encoding("cp838"), static_size(5);
+    //Phone2
+	ascii CFAREA4_AreaCode : character_encoding("cp838"), static_size(10);
+	ascii CFEADD4_EContactDetail : character_encoding("cp838"), static_size(100);
+	ascii CFEEXT4_ContactExtensionNo : character_encoding("cp838"), static_size(20);
+	ascii MNLUIDF_LastMaintenanceUserID : character_encoding("cp838"), static_size(10);
+	ascii MNLTIMF_LastMaintenanceTime : character_encoding("cp838"), static_size(26);
+    //end new
+
+    //old structure
+	/*ascii CFDFC2_SubDistrictCode : character_encoding("cp838"), static_size(10);
+	ascii CFDFC1_DistrictCode : character_encoding("cp838"), static_size(10);
+	ascii CFEADD_eMail : character_encoding("cp838"), static_size(100);
+	ascii CFEDD2_Mobile : character_encoding("cp838"), static_size(100);
+	ascii CFEDD3_Phone1 : character_encoding("cp838"), static_size(100);
+	ascii CFEDD4_Phone2 : character_encoding("cp838"), static_size(100);
+    ascii MNLUID_LastMaintenanceUserID : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii MNLTIM_LastMaintenanceTime : character_encoding("cp838"), static_size(26), align(left), padded_with(0x40);*/
+    //end old
+};
+
+//Input Encoder
+in_map MBASE_CFC152580_RQ_InMap: external (MBASE_CFC152580_RQ), target_internal(MBASE_CFC152580_RQ_TI){automatic;};
+out_map MBASE_CFC152580_RQ_OutMap: external (MBASE_CFC152580_RQ), internal(MBASE_CFC152580_RQ_TI) {automatic;};
+encoder MBASE_CFC152580_RQ_Encode: out_map(MBASE_CFC152580_RQ_OutMap);
+
+
+// Response Decoders
+in_map MBASE_CFC152580_RS_InMap: external(MBASE_CFC152580_RS), target_internal(MBASE_CFC152580_RS_TI) {automatic;};
+decoder MBASE_CFC152580_RS_Decode: in_map(MBASE_CFC152580_RS_InMap);
+
+out_map MBASE_CFC152580_RS_OutMap: external (MBASE_CFC152580_RS), internal(MBASE_CFC152580_RS_TI) {automatic;};
+encoder MBASE_CFC152580_RS_Encode: out_map(MBASE_CFC152580_RS_OutMap);
+]]></string>
+   <boolean name="IsValid" value="true"/>
+</exportmultiplex>

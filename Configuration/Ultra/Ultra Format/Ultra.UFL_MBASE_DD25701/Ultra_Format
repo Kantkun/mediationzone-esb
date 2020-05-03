@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Ultra_Format" ref_path="ultra_format[Internal]/storable[ultra_format]/storable[Data]">
+   <string name="Definition"><![CDATA[external MBASE_DD25701_RQ {
+	ascii ACCTNO_AccountNumber : character_encoding("cp838"), static_size(19), align(right), padded_with(0xf0);
+	ascii ACTYPE_AccountType : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii RUNSEQ_RunningSequence : character_encoding("cp838"), static_size(9), align(right), padded_with(0xf0);
+	ascii FILIND_FileIndicator : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii FRDAT8_StartDate : character_encoding("cp838"), static_size(8), align(right), padded_with(0xf0);
+	ascii TODAT8_EndDate : character_encoding("cp838"), static_size(8), align(right), padded_with(0xf0);
+};
+
+external MBASE_DD25701_RS {
+	ascii THACCT_AccountNumber : character_encoding("cp838"), static_size(19);
+	ascii THATYP_AccountType : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii RUNSEQ_RunningSequence : character_encoding("cp838"), static_size(9), align(right), padded_with(0xf0);
+	ascii FILIND_FileIndicator : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii FRDAT8_StartDate : character_encoding("cp838"), static_size(8);
+	ascii TODAT8_EndDate : character_encoding("cp838"), static_size(8);
+	ascii WTHDAT8_BusinessDate : character_encoding("cp838"), static_size(8); //TransactionDate
+	ascii THSEQN_TellerJournalSequence : character_encoding("cp838"), static_size(9), align(right), padded_with(0xf0);
+	ascii THUSER_UserID : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii THAMTA_TransactionAcAmount : character_encoding("cp838"), static_size(17); //, align(right), padded_with(0xf0);
+	ascii THCBAL_RunningLedgerBalance : character_encoding("cp838"), static_size(17); //, align(right), padded_with(0xf0);
+	ascii THDORC_DebitCreditCode : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii THCHKN_CheckNumber : character_encoding("cp838"), static_size(9), align(right), padded_with(0xf0);
+	ascii THSTMT_StatementMnemonic : character_encoding("cp838"), static_size(3), align(left), padded_with(0x40);
+	ascii WTHEFF8_EffectiveDate : character_encoding("cp838"), static_size(8); //EffectiveDate
+	ascii TH24CD_ChannelCode : character_encoding("cp838"), static_size(5), align(left), padded_with(0x40);
+	ascii NEWFLD3_InduceBICI : character_encoding("cp838"), static_size(2), align(left), padded_with(0x40);
+	ascii REMARK_Remarks : character_encoding("cp838"), static_size(50), align(left), padded_with(0x40);
+	ascii THSUPV_SupervisorID : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii THSREF_SystemRefNo : character_encoding("cp838"), static_size(22), align(left), padded_with(0x40);
+	ascii REMARK2_TxnParticular : character_encoding("cp838"), static_size(50), align(left), padded_with(0x40);
+	ascii OverSpaceData : character_encoding("cp838"), static_size(5), align(left), padded_with(0x40);
+    ascii THSTIM_TransactionTimestamp : character_encoding("cp838"), static_size(26); 
+};
+
+//Input Encoder
+in_map MBASE_DD25701_RQ_InMap: external (MBASE_DD25701_RQ), target_internal(MBASE_DD25701_RQ_TI){automatic;};
+out_map MBASE_DD25701_RQ_OutMap: external (MBASE_DD25701_RQ), internal(MBASE_DD25701_RQ_TI) {automatic;};
+encoder MBASE_DD25701_RQ_Encode: out_map(MBASE_DD25701_RQ_OutMap);
+
+
+// Response Decoders
+in_map MBASE_DD25701_RS_InMap: external(MBASE_DD25701_RS), target_internal(MBASE_DD25701_RS_TI) {automatic;};
+decoder MBASE_DD25701_RS_Decode: in_map(MBASE_DD25701_RS_InMap);]]></string>
+   <boolean name="IsValid" value="true"/>
+</exportmultiplex>

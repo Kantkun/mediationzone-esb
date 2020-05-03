@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Ultra_Format" ref_path="ultra_format[Internal]/storable[ultra_format]/storable[Data]">
+   <string name="Definition"><![CDATA[external MBASE_CFC800200_RQ{
+    ascii CFCIFN_CustomerNumber : static_size(19),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii CFEASQ_ElectronicAddressSeq : static_size(5),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii CFEADC_EContactCode : static_size(3),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFAREA_AreaCode : static_size(10),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFEADD_EContactDetail : static_size(100),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFEEXT_ContactExtensionNo : static_size(20),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFEINT_InternationalAddressFormat : static_size(100),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFCOUN_CountryCode : static_size(3),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFPRFR_Priority : static_size(3),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii CFEAN1_ContactName : static_size(40),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFEDEP_ContactDepartmentName : static_size(40),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFEJCD_JobTitle : static_size(5),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFCREL_RelationshipCode : static_size(2),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFCINS_CustomerInstruction : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFBADA_InsufficientAddress : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFRMKS_Remarks : static_size(40),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii WOVRID_OverrideIndicator : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii MNLUID_LastMaintenanceUserID : static_size(10),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii MNLTIM_LastMaintenanceTime : static_size(26),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii WOPTION_HandleOption : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+};  // total 430
+
+external MBASE_CFC800200_RS{
+    ascii CFCIFN_CustomerNumber : static_size(19),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii CFEASQ_ElectronicAddressSeq : static_size(5),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii CFEADC_EContactCode : static_size(3),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFAREA_AreaCode : static_size(10),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFEADD_EContactDetail : static_size(100),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFEEXT_ContactExtensionNo : static_size(20),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFEINT_InternationalAddressFormat : static_size(100),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFCOUN_CountryCode : static_size(3),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFPRFR_Priority : static_size(3),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii CFEAN1_ContactName : static_size(40),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFEDEP_ContactDepartmentName : static_size(40),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFEJCD_JobTitle : static_size(5),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFCREL_RelationshipCode : static_size(2),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFCINS_CustomerInstruction : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFBADA_InsufficientAddress : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFRMKS_Remarks : static_size(40),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii WOVRID_OverrideIndicator : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii MNLUID_LastMaintenanceUserID : static_size(10),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii MNLTIM_LastMaintenanceTime : static_size(26),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii WOPTION_HandleOption : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+}; // total 430
+
+//Input Encoder
+in_map MBASE_CFC800200_RQ_InMap : external(MBASE_CFC800200_RQ), target_internal(MBASE_CFC800200_RQ_TI){automatic;};
+out_map MBASE_CFC800200_RQ_OutMap : external(MBASE_CFC800200_RQ), internal(MBASE_CFC800200_RQ_TI){automatic;};
+encoder MBASE_CFC800200_RQ_Encode : out_map(MBASE_CFC800200_RQ_OutMap); 
+
+
+//Response Decoders
+in_map MBASE_CFC800200_RS_InMap : external(MBASE_CFC800200_RS), target_internal(MBASE_CFC800200_RS_TI){automatic;};
+decoder MBASE_CFC800200_RS_Decode : in_map(MBASE_CFC800200_RS_InMap);]]></string>
+   <boolean name="IsValid" value="true"/>
+</exportmultiplex>

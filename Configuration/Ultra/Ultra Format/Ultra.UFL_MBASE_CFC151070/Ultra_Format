@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Ultra_Format" ref_path="ultra_format[Internal]/storable[ultra_format]/storable[Data]">
+   <string name="Definition"><![CDATA[//CFC151070 InquiryCustomerMobile
+external MBASE_CFC151070_RQ {
+    ascii	CFCIFN_CustomerNumber	:static_size(19)	,padded_with(0xf0),align(right),character_encoding("cp838");
+    ascii	ACCTNO_AccountNumber	:static_size(19)	,padded_with(0xf0),align(right),character_encoding("cp838");
+    ascii	ACTYPE_AccountType	:static_size(1)	,padded_with(0x40),align(left),character_encoding("cp838");
+    ascii	WKOPTN_Option	:static_size(1)	,padded_with(0x40),align(left),character_encoding("cp838");
+};
+
+external MBASE_CFC151070_RS {
+    /*old response message structure
+    ascii	CFPRFR_Priority	:static_size(3)	,padded_with(0xf0),align(right),character_encoding("cp838");
+    ascii	CFEASQ_ElectronicAddressSeq	:static_size(5)	,padded_with(0xf0),align(right),character_encoding("cp838");
+    ascii	CFEADC_EContactCode	:static_size(3)	,padded_with(0x40),align(left),character_encoding("cp838");
+    ascii	CFCOUN_CountryCode	:static_size(3)	,padded_with(0x40),align(left),character_encoding("cp838");
+    ascii	SSIDDC_IntDirectDiallingCode	:static_size(4)	,padded_with(0xf0),align(right),character_encoding("cp838");
+    ascii	WKEADD_Cellno	:static_size(150)	,padded_with(0x40),align(left),character_encoding("cp838");
+    ascii	CFEAN1_ContactName	:static_size(40)	,padded_with(0x40),align(left),character_encoding("cp838");
+    ascii	CFBADA_InsufficientAddressContact	:static_size(1)	,padded_with(0x40),align(left),character_encoding("cp838");
+    ascii	CFAREA_AreaCode	:static_size(10)	,padded_with(0x40),align(left),character_encoding("cp838");
+    ascii	CFEEXT_ContactExtensionNo	:static_size(20)	,padded_with(0x40),align(left),character_encoding("cp838");
+    ascii	CFEJCD_JobTitle	:static_size(5)	,padded_with(0x40),align(left),character_encoding("cp838");
+    ascii	WADDRL_AddressLinkIndicator	:static_size(1)	,padded_with(0x40),align(left),character_encoding("cp838");
+    ascii	WACCTL_AccountLinkIndicator	:static_size(1)	,padded_with(0x40),align(left),character_encoding("cp838");
+    ascii	ACCTNO_AccountNumber	:static_size(19)	,padded_with(0xf0),align(right),character_encoding("cp838");
+    ascii	CFADTP_AddressType	:static_size(1)	,padded_with(0x40),align(left),character_encoding("cp838");
+    ascii	WKADTP_AddresscategoryText	:static_size(10)	,padded_with(0x40),align(left),character_encoding("cp838");*/
+    
+    ascii CFEASQ_ElectronicAddressSeq: static_size(5),padded_with(0xf0),align(right),character_encoding("cp838");
+	ascii CFEADC_EContactCode: static_size(3),character_encoding("cp838");
+	ascii CFCOUN_CountryCode: static_size(3),character_encoding("cp838");
+	ascii WKEADD_EContactDetail: static_size(150),character_encoding("cp838");
+	ascii CFAREA_AreaCode: static_size(10),character_encoding("cp838");
+	ascii CFEEXT_ContactExtensionNo: static_size(20),character_encoding("cp838");
+	ascii WADDRL_AddressLinkIndicator: static_size(1),character_encoding("cp838");
+	ascii WACCTL_AccountLinkIndicator: static_size(1),character_encoding("cp838");
+	ascii ACCTNO_AccountNumber: static_size(19),padded_with(0xf0),align(right),character_encoding("cp838");
+	ascii CFADTP_AddressType: static_size(1),character_encoding("cp838");
+	ascii WKADTP_AddressCategoryText: static_size(10),character_encoding("cp838");
+};
+
+
+//Input Encoder
+in_map MBASE_CFC151070_RQ_InMap: external (MBASE_CFC151070_RQ), target_internal(MBASE_CFC151070_RQ_TI){automatic;};
+out_map MBASE_CFC151070_RQ_OutMap: external (MBASE_CFC151070_RQ), internal(MBASE_CFC151070_RQ_TI) {automatic;};
+encoder MBASE_CFC151070_RQ_Encode: out_map(MBASE_CFC151070_RQ_OutMap);
+
+
+// Response Decoders
+in_map MBASE_CFC151070_RS_InMap: external(MBASE_CFC151070_RS), target_internal(MBASE_CFC151070_RS_TI) {automatic;};
+decoder MBASE_CFC151070_RS_Decode: in_map(MBASE_CFC151070_RS_InMap);]]></string>
+   <boolean name="IsValid" value="true"/>
+</exportmultiplex>

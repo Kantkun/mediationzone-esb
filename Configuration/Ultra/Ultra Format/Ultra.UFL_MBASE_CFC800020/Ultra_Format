@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Ultra_Format" ref_path="ultra_format[Internal]/storable[ultra_format]/storable[Data]">
+   <string name="Definition"><![CDATA[/*external MBASE_CFC800020_RQ{
+    ascii CFCIFN_CustomerNumber : character_encoding("cp838"), static_size(19), align(right), padded_with(0xf0);
+	ascii CFZSEQ_SequenceNumber : character_encoding("cp838"), static_size(5), align(right), padded_with(0xf0);
+	ascii CFADFM_AddressFormat : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii CFADTP_AddressType : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii CFNA2_AddressLine1 : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+	ascii CFNA3_AddressLine2 : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+	ascii CFNA4_AddressLine3 : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+	ascii CFNA5_AddressLine4 : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+	ascii CFNA6_AddressLine5 : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+	ascii CFNA7_AddressLine6 : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+	ascii CFNA8_AddressLine7 : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+	ascii CFCINS_CustomerInstruction : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii CFBADA_InsufficientAddressContact : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii CFRMKS_Remarks : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+	ascii CFZIP_PostalCode : character_encoding("cp838"), static_size(9), align(left), padded_with(0x40);
+	ascii CFSTAT_StateCode : character_encoding("cp838"), static_size(3), align(left), padded_with(0x40);
+	ascii CFDFC1_DistrictCode : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii CFDFC2_SubDistrictCode : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii CFDFC3_DefaultCode3 : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii CFDFC4_DefaultCode4 : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii CFCOUN_CountryCode : character_encoding("cp838"), static_size(3), align(left), padded_with(0x40);
+	ascii CFOWNT_HomeCode : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii CFSTY8_StaySince : character_encoding("cp838"), static_size(8), align(right), padded_with(0xf0);
+	ascii WOVRID_OverrideIndicator : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii WDEFLT_DEFAULTADDRESS : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii MNLUID_LastMaintenanceUserID : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii MNLTIM_LastMaintenanceTime : character_encoding("cp838"), static_size(26), align(left), padded_with(0x40);
+	ascii WOPTION_HandleOption : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii CFHMNO_HouseNumber : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+};
+
+external MBASE_CFC800020_RS{
+    ascii CFCIFN_CustomerNumber : character_encoding("cp838"), static_size(19), align(right), padded_with(0xf0);
+	ascii CFZSEQ_SequenceNumber : character_encoding("cp838"), static_size(5), align(right), padded_with(0xf0);
+	ascii CFADFM_AddressFormat : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii CFADTP_AddressType : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii CFNA2_AddressLine1 : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+	ascii CFNA3_AddressLine2 : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+	ascii CFNA4_AddressLine3 : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+	ascii CFNA5_AddressLine4 : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+	ascii CFNA6_AddressLine5 : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+	ascii CFNA7_AddressLine6 : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+	ascii CFNA8_AddressLine7 : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+	ascii CFCINS_CustomerInstruction : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii CFBADA_InsufficientAddressContact : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii CFRMKS_Remarks : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+	ascii CFZIP_PostalCode : character_encoding("cp838"), static_size(9), align(left), padded_with(0x40);
+	ascii CFSTAT_StateCode : character_encoding("cp838"), static_size(3), align(left), padded_with(0x40);
+	ascii CFDFC1_SubDistrictCode : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii CFDFC2_DistrictCode : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii CFDFC3_DefaultCode3 : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii CFDFC4_DefaultCode4 : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii CFCOUN_CountryCode : character_encoding("cp838"), static_size(3), align(left), padded_with(0x40);
+	ascii CFOWNT_HomeCode : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii CFSTY8_StaySince : character_encoding("cp838"), static_size(8), align(right), padded_with(0xf0);
+	ascii WOVRID_OverrideIndicator : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii WDEFLT_DEFAULTADDRESS : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii MNLUID_LastMaintenanceUserID : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii MNLTIM_LastMaintenanceTime : character_encoding("cp838"), static_size(26), align(left), padded_with(0x40);
+	ascii WOPTION_HandleOption : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii CFHMNO_HouseNumber : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+};
+*/
+external MBASE_CFC800020_RQ{
+    ascii CFCIFN_CustomerNumber : character_encoding("cp838"), static_size(19), align(right), padded_with(0xf0);
+    ascii CFZSEQ_SequenceNumber : character_encoding("cp838"), static_size(5), align(right), padded_with(0xf0);
+    ascii CFADFM_AddressFormat : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+    ascii CFADTP_AddressType : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii CFNA2_AddressLine1 : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+	ascii CFNA3_AddressLine2 : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+	ascii CFNA4_AddressLine3 : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+	ascii CFNA5_AddressLine4 : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+	ascii CFNA6_AddressLine5 : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+	ascii CFNA7_AddressLine6 : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+	ascii CFNA8_AddressLine7 : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+    ascii CFCINS_CustomerInstruction : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii CFBADA_InsufficientAddressContact : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii CFRMKS_Remarks : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+	ascii CFZIP_PostalCode : character_encoding("cp838"), static_size(9), align(left), padded_with(0x40);
+	ascii CFSTAT_StateCode : character_encoding("cp838"), static_size(3), align(left), padded_with(0x40);
+    ascii CFDFC1_DistrictCode : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+    ascii CFDFC2_SubDistrictCode : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+    ascii CFDFC3_DefaultCode3 : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+    ascii CFDFC4_DefaultCode4 : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+    ascii CFCOUN_CountryCode : character_encoding("cp838"), static_size(3), align(left), padded_with(0x40);
+	ascii CFOWNT_HomeCode : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii CFSTY8_StaySince : character_encoding("cp838"), static_size(8), align(right), padded_with(0xf0);
+    ascii WOVRID_OverrideIndicator : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+    ascii WDEFLT_DEFAULTADDRESS : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+    ascii MNLUID_LastMaintenanceUserID : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii MNLTIM_LastMaintenanceTime : character_encoding("cp838"), static_size(26), align(left), padded_with(0x40);
+    ascii WOPTION_HandleOption : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii CFHMNO_HouseNumber : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+    ascii CFBOI1_BOICAddress : character_encoding("cp838"), static_size(3), align(left), padded_with(0x40);
+    ascii CFLEF8_MoveOutDate : character_encoding("cp838"), static_size(8), align(right), padded_with(0xf0);
+    ascii CFADR1_ExtentAdr1 : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+    ascii CFADR2_ExtentAdr2 : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+    ascii CFADR3_ExtentAdr3 : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+    ascii CFADR4_ExtentAdr4 : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+    ascii CFADR5_ExtentAdr5 : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+    ascii CFAIND_AdrIndicator1 : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+    ascii CFAIN2_AdrIndicator2 : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+    ascii CFAIN3_AdrIndicator3 : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+    ascii CFATXT_AdrText1 : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+    ascii CFATX2_AdrText2 : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+    ascii CFATX3_AdrText3 : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+};
+
+external MBASE_CFC800020_RS{
+    ascii CFCIFN_CustomerNumber : character_encoding("cp838"), static_size(19), align(right), padded_with(0xf0);
+    ascii CFZSEQ_SequenceNumber : character_encoding("cp838"), static_size(5), align(right), padded_with(0xf0);
+    ascii CFADFM_AddressFormat : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+    ascii CFADTP_AddressType : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii CFNA2_AddressLine1 : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+	ascii CFNA3_AddressLine2 : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+	ascii CFNA4_AddressLine3 : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+	ascii CFNA5_AddressLine4 : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+	ascii CFNA6_AddressLine5 : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+	ascii CFNA7_AddressLine6 : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+	ascii CFNA8_AddressLine7 : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+    ascii CFCINS_CustomerInstruction : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii CFBADA_InsufficientAddressContact : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii CFRMKS_Remarks : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+	ascii CFZIP_PostalCode : character_encoding("cp838"), static_size(9), align(left), padded_with(0x40);
+	ascii CFSTAT_StateCode : character_encoding("cp838"), static_size(3), align(left), padded_with(0x40);
+    ascii CFDFC1_DistrictCode : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+    ascii CFDFC2_SubDistrictCode : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+    ascii CFDFC3_DefaultCode3 : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+    ascii CFDFC4_DefaultCode4 : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+    ascii CFCOUN_CountryCode : character_encoding("cp838"), static_size(3), align(left), padded_with(0x40);
+	ascii CFOWNT_HomeCode : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii CFSTY8_StaySince : character_encoding("cp838"), static_size(8), align(right), padded_with(0xf0);
+    ascii WOVRID_OverrideIndicator : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+    ascii WDEFLT_DEFAULTADDRESS : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+    ascii MNLUID_LastMaintenanceUserID : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii MNLTIM_LastMaintenanceTime : character_encoding("cp838"), static_size(26), align(left), padded_with(0x40);
+    ascii WOPTION_HandleOption : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii CFHMNO_HouseNumber : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+    ascii CFBOI1_BOICAddress : character_encoding("cp838"), static_size(3), align(left), padded_with(0x40);
+    ascii CFLEF8_MoveOutDate : character_encoding("cp838"), static_size(8), align(right), padded_with(0xf0);
+    ascii CFADR1_ExtentAdr1 : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+    ascii CFADR2_ExtentAdr2 : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+    ascii CFADR3_ExtentAdr3 : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+    ascii CFADR4_ExtentAdr4 : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+    ascii CFADR5_ExtentAdr5 : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+    ascii CFAIND_AdrIndicator1 : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+    ascii CFAIN2_AdrIndicator2 : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+    ascii CFAIN3_AdrIndicator3 : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+    ascii CFATXT_AdrText1 : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+    ascii CFATX2_AdrText2 : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+    ascii CFATX3_AdrText3 : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+};
+
+//Input Encoder
+in_map MBASE_CFC800020_RQ_InMap: external (MBASE_CFC800020_RQ), target_internal(MBASE_CFC800020_RQ_TI){automatic;};
+out_map MBASE_CFC800020_RQ_OutMap: external (MBASE_CFC800020_RQ), internal(MBASE_CFC800020_RQ_TI) {automatic;};
+encoder MBASE_CFC800020_RQ_Encode: out_map(MBASE_CFC800020_RQ_OutMap);
+
+
+// Response Decoders
+in_map MBASE_CFC800020_RS_InMap: external(MBASE_CFC800020_RS), target_internal(MBASE_CFC800020_RS_TI) {automatic;};
+decoder MBASE_CFC800020_RS_Decode: in_map(MBASE_CFC800020_RS_InMap);]]></string>
+   <boolean name="IsValid" value="true"/>
+</exportmultiplex>

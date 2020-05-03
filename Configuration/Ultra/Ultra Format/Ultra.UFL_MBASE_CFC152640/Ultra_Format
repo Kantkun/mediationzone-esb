@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Ultra_Format" ref_path="ultra_format[Internal]/storable[ultra_format]/storable[Data]">
+   <string name="Definition"><![CDATA[//CFC152640 GetCustomerInfo
+external MBASE_CFC152640_RQ {
+    ascii	ACCTNO_Accountnumber	:static_size(19),    padded_with(0xf0),align(right),character_encoding("cp838");
+    ascii	ACTYPE_Accounttype	:static_size(1),   padded_with(0x40),align(left),character_encoding("cp838");    
+};
+
+external MBASE_CFC152640_RS {
+    ascii	ACCTNO_Accountnumber	:static_size(19)	,padded_with(0xf0),align(right),character_encoding("cp838");
+    ascii	ACTYPE_Accounttype	:static_size(1)	,padded_with(0x40),align(left),character_encoding("cp838");
+    ascii	CFANAM_Accountname	:static_size(200)	,padded_with(0x40),align(left),character_encoding("cp838");    
+    ascii	BANKNO_Banknumber	:static_size(2)	,padded_with(0xf0),align(right),character_encoding("cp838");
+    ascii	BRANCH_Branchnumber	:static_size(5)	,character_encoding("cp838");    
+    ascii	CIFNO_CIFnumber	:static_size(19)	,padded_with(0xf0),align(right),character_encoding("cp838");
+    ascii	CUSTYP_CustomerType	:static_size(1)	,padded_with(0x40),align(left),character_encoding("cp838");
+    ascii	CFCCAT_CustomerSubType	:static_size(9)	,padded_with(0xf0),align(right),character_encoding("cp838");
+    ascii	STATUS_Status	:static_size(1)	,padded_with(0xf0),align(right),character_encoding("cp838");
+    ascii	CFSSNO_IDType	:static_size(40)	,padded_with(0x40),align(left),character_encoding("cp838");
+    ascii	WFFMNS_CustomerEnglistName	:static_size(200)	,padded_with(0x40),align(left),character_encoding("cp838");
+    ascii	WHOLDE_Holder	:static_size(3)	,padded_with(0xf0),align(right),character_encoding("cp838");
+    ascii	WKPROD_ProductCode	:static_size(20)	,padded_with(0x40),align(left),character_encoding("cp838");
+    ascii	WKPLAN_SubProductCode	:static_size(20)	,padded_with(0x40),align(left),character_encoding("cp838");
+    ascii	CFZEMP_EmployeeID	:static_size(40)	,padded_with(0x40),align(left),character_encoding("cp838");
+    ascii	WFSSNO_IDTypeNonIndividual	:static_size(40)	,padded_with(0x40),align(left),character_encoding("cp838");
+    ascii	CFBIR8_BOIDate	:static_size(8)	,character_encoding("cp838");
+    ascii	WFSTSD_FreezStatus	:static_size(1)	,padded_with(0x40),align(left),character_encoding("cp838");
+    ascii	CFNA1_PrimaryFirstName	:static_size(200)	,padded_with(0x40),align(left),character_encoding("cp838");
+    ascii	CFNA1A_PrimaryMiddleName	:static_size(200)	,padded_with(0x40),align(left),character_encoding("cp838");
+    ascii	CFNA1B_PrimaryLastName	:static_size(200)	,padded_with(0x40),align(left),character_encoding("cp838");
+    ascii	WCFNA1_SecondaryFirstName	:static_size(200),	padded_with(0x40),align(left),character_encoding("cp838");
+    ascii	WCFNA1A_SecondaryMiddleName	:static_size(200),	padded_with(0x40),align(left),character_encoding("cp838");
+    ascii	WCFNAB_SecondaryLastName	:static_size(200),	padded_with(0x40),align(left),character_encoding("cp838");
+    ascii	WKCLOSE_AccountClosedFlag	:static_size(1),	padded_with(0x40),align(left),character_encoding("cp838");
+    ascii	WKDORM_AccountDormantFlag	:static_size(1),	padded_with(0x40),align(left),character_encoding("cp838");
+};
+
+//Input Encoder
+in_map MBASE_CFC152640_RQ_InMap: external (MBASE_CFC152640_RQ), target_internal(MBASE_CFC152640_RQ_TI){automatic;};
+out_map MBASE_CFC152640_RQ_OutMap: external (MBASE_CFC152640_RQ), internal(MBASE_CFC152640_RQ_TI) {automatic;};
+encoder MBASE_CFC152640_RQ_Encode: out_map(MBASE_CFC152640_RQ_OutMap);
+
+
+// Response Decoders
+in_map MBASE_CFC152640_RS_InMap: external(MBASE_CFC152640_RS), target_internal(MBASE_CFC152640_RS_TI) {automatic;};
+decoder MBASE_CFC152640_RS_Decode: in_map(MBASE_CFC152640_RS_InMap);]]></string>
+   <boolean name="IsValid" value="true"/>
+</exportmultiplex>

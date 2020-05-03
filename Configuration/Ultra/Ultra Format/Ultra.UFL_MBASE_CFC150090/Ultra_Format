@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Ultra_Format" ref_path="ultra_format[Internal]/storable[ultra_format]/storable[Data]">
+   <string name="Definition"><![CDATA[external MBASE_CFC150090_RQ{
+    ascii WSERCH_SearchType : static_size(2),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii WEXACT_ExactSearchIndicator : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFEADD_ElectronicAddress : static_size(100),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFEADC_ElectronicAddressCode : static_size(3),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFCOUN_CountryCode : static_size(3),character_encoding("cp838"),padded_with(0x40),align(left);
+   
+}; // total 109
+
+external MBASE_CFC150090_RS{
+    ascii CFCIFN_CustomerNumber : static_size(19),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii WNMALS_NameAliasIndicator : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii WCFNA11_PrimaryName : static_size(80),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii WCFNA12_AlternateName : static_size(80),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii WIDALS_IDAliasIndicator : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFSSNO_IDNumber : static_size(40),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFSSCD_IDTypeCode : static_size(3),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFCIDT_IDIssueCountryCode : static_size(3),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFCLAS_CustomerCategory : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFBIR8_DateOfBirthIncorporation : static_size(8),character_encoding("cp838");
+    ascii CFCITZ_CountryOfCitizenship : static_size(3),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFSEGC_SegmentCode : static_size(4),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFINSC_InsiderCode : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFEINT_InternationalAddressFormat : static_size(100),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFEADC_EContactCode : static_size(3),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFCOUN_CountryCode : static_size(3),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFINDI_CustomerType : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFORG8_CustomerOriginalCreationDat : static_size(8),character_encoding("cp838");
+    ascii CFOFID_OfficerCode : static_size(10),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii SSOSNA_OfficerShortname : static_size(20),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii WAUTOK_AuthorizedFlag : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+}; // total 390
+
+//Input Encoder
+in_map MBASE_CFC150090_RQ_InMap : external(MBASE_CFC150090_RQ), target_internal(MBASE_CFC150090_RQ_TI){automatic;};
+out_map MBASE_CFC150090_RQ_OutMap : external(MBASE_CFC150090_RQ), internal(MBASE_CFC150090_RQ_TI){automatic;};
+encoder MBASE_CFC150090_RQ_Encode : out_map(MBASE_CFC150090_RQ_OutMap); 
+
+
+//Response Decoders
+in_map MBASE_CFC150090_RS_InMap : external(MBASE_CFC150090_RS), target_internal(MBASE_CFC150090_RS_TI){automatic;};
+decoder MBASE_CFC150090_RS_Decode : in_map(MBASE_CFC150090_RS_InMap);]]></string>
+   <boolean name="IsValid" value="true"/>
+</exportmultiplex>

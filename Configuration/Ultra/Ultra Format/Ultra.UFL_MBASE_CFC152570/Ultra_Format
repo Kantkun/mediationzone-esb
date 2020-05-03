@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Ultra_Format" ref_path="ultra_format[Internal]/storable[ultra_format]/storable[Data]">
+   <string name="Definition"><![CDATA[external MBASE_CFC152570_RQ{
+    ascii WSERCH:static_size(2),padded_with(0x40),align(left),character_encoding("cp838");
+    ascii WEXACT:static_size(1),padded_with(0x40),align(left),character_encoding("cp838");
+    ascii CFSSNO:static_size(40),padded_with(0x40),align(left),character_encoding("cp838");
+    ascii CFSSCD:static_size(3),padded_with(0x40),align(left),character_encoding("cp838");
+    ascii CFCIDT:static_size(3),padded_with(0x40),align(left),character_encoding("cp838");
+    ascii CFINDI:static_size(1),padded_with(0x40),align(right),character_encoding("cp838");
+    ascii CFCIFN:static_size(19),padded_with(0xf0),align(right),character_encoding("cp838");
+};
+
+external MBASE_CFC152570_RS{
+    ascii CFCIFN:static_size(19),character_encoding("cp838"),padded_with(0xf0),align(right); // CustomerNo
+    ascii WNMALS:static_size(1),character_encoding("cp838");
+    ascii WCFNA1A:static_size(80),character_encoding("cp838");
+    ascii WCFNA1B:static_size(80),character_encoding("cp838");
+    ascii WCFNA1C:static_size(80),character_encoding("cp838");
+    ascii WCFNA1D:static_size(80),character_encoding("cp838");
+    ascii WCFNA1E:static_size(80),character_encoding("cp838");
+    ascii WIDALS:static_size(1),character_encoding("cp838");
+    ascii CFSSNO:static_size(40),character_encoding("cp838");
+    ascii CFSSCD:static_size(3),character_encoding("cp838");
+    ascii CFCIDT:static_size(3),character_encoding("cp838");
+    ascii CFCLAS:static_size(1),character_encoding("cp838");
+    ascii CFBIR8:static_size(8),padded_with(0xf0),align(right),character_encoding("cp838");
+    ascii CFCITZ:static_size(3),character_encoding("cp838");
+    ascii CFSEGC:static_size(4),character_encoding("cp838");
+    ascii CFINSC:static_size(1),character_encoding("cp838");
+    ascii CFINDI:static_size(1),character_encoding("cp838");
+    ascii CFORG8:static_size(8),padded_with(0xf0),align(right),character_encoding("cp838");
+    ascii CFOFID:static_size(10),character_encoding("cp838");
+    ascii SSOSNA:static_size(20),character_encoding("cp838");
+    ascii WAUTOK:static_size(1),character_encoding("cp838");
+    ascii CFAOPN:static_size(1),character_encoding("cp838");
+    ascii IBCDTYP:static_size(10),character_encoding("cp838");
+};
+
+//Input Encoder
+in_map MBASE_CFC152570_RQ_InMap: external (MBASE_CFC152570_RQ), target_internal(MBASE_CFC152570_RQ_TI){automatic;};
+out_map MBASE_CFC152570_RQ_OutMap: external (MBASE_CFC152570_RQ), internal(MBASE_CFC152570_RQ_TI) {automatic;};
+encoder MBASE_CFC152570_RQ_Encode: out_map(MBASE_CFC152570_RQ_OutMap);
+
+
+// Response Decoders
+in_map MBASE_CFC152570_RS_InMap: external(MBASE_CFC152570_RS), target_internal(MBASE_CFC152570_RS_TI) {automatic;};
+decoder MBASE_CFC152570_RS_Decode: in_map(MBASE_CFC152570_RS_InMap);]]></string>
+   <boolean name="IsValid" value="true"/>
+</exportmultiplex>

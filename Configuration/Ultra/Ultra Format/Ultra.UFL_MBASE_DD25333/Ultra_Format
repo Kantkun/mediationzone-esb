@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Ultra_Format" ref_path="ultra_format[Internal]/storable[ultra_format]/storable[Data]">
+   <string name="Definition"><![CDATA[external MBASE_DD25333_RQ{
+    ascii CFCIFN_CustomerNumber : static_size(19),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii ACTYPE_AccountType : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii ACCTNO_AccountNumber : static_size(19),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii CFRREL_RelationshipCode : static_size(2),character_encoding("cp838"),padded_with(0x40),align(left);
+}; /* total 41 */
+
+external MBASE_DD25333_RS{
+    ascii CFCIFN_CustomerNumber : static_size(19),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii ACTYPE_AccountType : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii ACCTNO_AccountNumber : static_size(19),character_encoding("cp838"),align(right);
+    ascii CFRREL_RelationshipCode : static_size(2),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFANAM_AccountName : static_size(201),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii SCCODE_DepositTypeCode : static_size(10),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii PSCDES_TypeDescription : static_size(50),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii P2LDSC_LocalDescription : static_size(50),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii PSHDES_ShortDesciption : static_size(20),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii LDGBAL_LedgerBalance : static_size(17),character_encoding("cp838");
+    ascii AVLBAL_AvailableBalance : static_size(17),character_encoding("cp838");
+    ascii BRANCH_BranchNumber : static_size(5),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii JOINAC_JoinAccount : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii ALL2SG_AllToSign : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii PRIMARY_PrimaryHolder : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii DATOP7_DateOpened : static_size(8),character_encoding("cp838");
+}; /* total 422 */
+
+//Input Encoder
+in_map MBASE_DD25333_RQ_InMap : external(MBASE_DD25333_RQ), target_internal(MBASE_DD25333_RQ_TI){automatic;};
+out_map MBASE_DD25333_RQ_OutMap : external(MBASE_DD25333_RQ), internal(MBASE_DD25333_RQ_TI){automatic;};
+encoder MBASE_DD25333_RQ_Encode : out_map(MBASE_DD25333_RQ_OutMap); 
+
+
+//Response Decoders
+in_map MBASE_DD25333_RS_InMap : external(MBASE_DD25333_RS), target_internal(MBASE_DD25333_RS_TI){automatic;};
+decoder MBASE_DD25333_RS_Decode : in_map(MBASE_DD25333_RS_InMap);]]></string>
+   <boolean name="IsValid" value="true"/>
+</exportmultiplex>

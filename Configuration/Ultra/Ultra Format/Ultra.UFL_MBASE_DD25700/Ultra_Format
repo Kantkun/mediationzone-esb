@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Ultra_Format" ref_path="ultra_format[Internal]/storable[ultra_format]/storable[Data]">
+   <string name="Definition"><![CDATA[external MBASE_DD25700_RQ{
+    ascii ACCTNO_AccountNumber : static_size(19),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii ACTYPE_AccountType : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii RUNSEQ_RunningSequence : static_size(9),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii FILIND_FileIndicator : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii FRDAT8_StartDate : static_size(8),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii TRDAT8_EndDate : static_size(8),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii WTHDORC_TransactionType : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii FRTXAM_FromTransactionAmount : static_size(17),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii TOTXAM_ToTransactionAmount : static_size(17),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii WKTHTRAN_TRXCode : static_size(3),character_encoding("cp838"),padded_with(0xf0),align(right);
+    
+}; /* total 84 */
+
+external MBASE_DD25700_RS{
+    ascii ACCTNO_AccountNumber : static_size(19),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii ACTYPE_AccountType : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii RUNSEQ_RunningSequence : static_size(9),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii FILIND_FileIndicator : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii FRDAT8_StartDate : static_size(8),character_encoding("cp838");
+    ascii TRDAT8_EndDate : static_size(8),character_encoding("cp838");
+    ascii WTHDORC_TransactionType : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii FRTXAM_FromTransactionAmount : static_size(17),character_encoding("cp838");
+    ascii TOTXAM_ToTransactionAmount : static_size(17),character_encoding("cp838");
+    ascii THDAT8_TransactionDate : static_size(8),character_encoding("cp838");
+    ascii THSEQN_SequenceNo : static_size(9),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii THCBRN_TransactionBranch : static_size(5),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii JDNAME_TransactionBranchDescription : static_size(50),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii THUSER_TellerID : static_size(10),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii DESC_transactionDescription : static_size(40),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii P3LDSC_LocalTrxDescription : static_size(50),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii THAMTA_TransactionAmount : static_size(17),character_encoding("cp838");
+    ascii THCBAL_LedgerBalance : static_size(17),character_encoding("cp838");
+    ascii WTHSTIM_PostingTimestamp : static_size(26),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii THPODR_GeneratedTxnSeq : static_size(9),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii THTRAN_TransactionCode : static_size(3),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii TMTRECID_RecordID : static_size(35),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii THDORC_DebitCreditCode : static_size(1),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii THCHKN_CheckNumber : static_size(9),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii THSTMT_StatementMnemonic : static_size(3),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii THISRC_InputSource : static_size(1),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii WKTHTRAN_TRXCode : static_size(3),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii DLSTM7_LastStatementDate : static_size(8),character_encoding("cp838");
+    ascii STMBAL_LastStatementBalance : static_size(17),character_encoding("cp838");
+    ascii WCBAL_WithdrawalAmount : static_size(17),character_encoding("cp838");
+    ascii DCBAL_DepositAmount : static_size(17),character_encoding("cp838");
+    ascii THTIM6_PositingTime : static_size(6),character_encoding("cp838");
+    ascii XCPLCN_PlacementNumberYY999 : static_size(5),character_encoding("cp838"),padded_with(0xf0),align(right);
+}; /* total 447 */
+
+//Input Encoder
+in_map MBASE_DD25700_RQ_InMap : external(MBASE_DD25700_RQ), target_internal(MBASE_DD25700_RQ_TI){automatic;};
+out_map MBASE_DD25700_RQ_OutMap : external(MBASE_DD25700_RQ), internal(MBASE_DD25700_RQ_TI){automatic;};
+encoder MBASE_DD25700_RQ_Encode : out_map(MBASE_DD25700_RQ_OutMap); 
+
+
+//Response Decoders
+in_map MBASE_DD25700_RS_InMap : external(MBASE_DD25700_RS), target_internal(MBASE_DD25700_RS_TI){automatic;};
+decoder MBASE_DD25700_RS_Decode : in_map(MBASE_DD25700_RS_InMap);]]></string>
+   <boolean name="IsValid" value="true"/>
+</exportmultiplex>

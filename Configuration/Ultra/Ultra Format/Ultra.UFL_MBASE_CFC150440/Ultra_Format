@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Ultra_Format" ref_path="ultra_format[Internal]/storable[ultra_format]/storable[Data]">
+   <string name="Definition"><![CDATA[external MBASE_CFC150440_RQ{
+    ascii CFCIFN_CustomerNumber : static_size(19),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii WFUSTS_AccountStatus : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+};
+
+external MBASE_CFC150440_RS{
+    ascii ACCTNO_AccountNumber : static_size(19),character_encoding("cp838");
+    ascii ACTYPE_AccountType : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii ACCREF_ReferenceNumber : static_size(40),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFENTN_EntityNumber : static_size(19),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii CFRREL_RelationshipCode : static_size(2),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFRLE8_RelationshipEndDate : static_size(8),character_encoding("cp838");
+    ascii CFACIF_AddressCustomerNumber : static_size(19),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii CFZSEQ_SequenceNumer : static_size(5),character_encoding("cp838"),padded_with(0xf0),align(right); 
+    ascii CFSYID_SystemCode : static_size(10),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFATYP_AccountTypeCode : static_size(10),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii WFUSTS_AccountStatus : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii WKPROD_ProductCode : static_size(20),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii WHOLDE_Holder : static_size(3),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii CFBDCD_BundleCode : static_size(10),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii WOGCCY_OriginalCurrency : static_size(4),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii WCBAL_CurrentBalance : static_size(17),character_encoding("cp838"),padded_with(0xf0),align(right);
+    ascii WEBAL_EquivalentBalance : static_size(17),character_encoding("cp838");
+    ascii WECCY_EquivalentCurrency : static_size(4),character_encoding("cp838"),padded_with(0x40),align(left);
+    ascii WAUTYN_MaskedBalance : static_size(1),character_encoding("cp838"),padded_with(0x40),align(left);
+};
+
+//Input Encoder
+in_map MBASE_CFC150440_RQ_InMap : external(MBASE_CFC150440_RQ), target_internal(MBASE_CFC150440_RQ_TI){automatic;};
+out_map MBASE_CFC150440_RQ_OutMap : external(MBASE_CFC150440_RQ), internal(MBASE_CFC150440_RQ_TI){automatic;};
+encoder MBASE_CFC150440_RQ_Encode : out_map(MBASE_CFC150440_RQ_OutMap); 
+
+
+//Response Decoders
+in_map MBASE_CFC150440_RS_InMap : external(MBASE_CFC150440_RS), target_internal(MBASE_CFC150440_RS_TI){automatic;};
+decoder MBASE_CFC150440_RS_Decode : in_map(MBASE_CFC150440_RS_InMap);]]></string>
+   <boolean name="IsValid" value="true"/>
+</exportmultiplex>
