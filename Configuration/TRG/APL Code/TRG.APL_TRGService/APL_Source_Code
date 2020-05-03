@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="APL_Source_Code" ref_path="apl_script[Internal]/storable[apl_script]/storable[Data]">
+   <string name="Definition"><![CDATA[import ultra.CBS.UFL_DSP_Header;
+import ultra.CBS.UFL_MBASE_Header;
+import apl.Common.APL_Common_MBASE;
+import ultra.Ultra.UFL_GLS696;
+
+final int sizeOf_GLS696 = 256;
+
+bytearray createContentMessageGLS696(string uniqKey,DSP_Header_TgIn tcpRequest){
+   //DSP Header
+    DSP_Header_TgIn dspHeader = createDefaultDSPHeader();
+    dspHeader.SKTMLEN = sizeOf_DSPHeader + sizeOf_MBaseHeader + sizeOf_GLS696 - 9;
+    /*dspHeader.I13FMID = "MBASE";  
+    dspHeader.I13DID = "CMSM";
+    dspHeader.I13ACQN = uniqKey;  
+    dspHeader.I13MSTA = "/AA";*/
+    dspHeader.SKTHEAD = tcpRequest.SKTHEAD;
+    dspHeader.I13HLEN = tcpRequest.I13HLEN;
+    dspHeader.I13MLEN = tcpRequest.I13MLEN;
+    dspHeader.I13VERS = tcpRequest.I13VERS;
+    dspHeader.I13SID = tcpRequest.I13SID;
+    dspHeader.I13DID = tcpRequest.I13DID;
+    dspHeader.I13RTGN = tcpRequest.I13RTGN;
+    dspHeader.I13XID = tcpRequest.I13XID;
+    dspHeader.I13RRNO = tcpRequest.I13RRNO;
+    dspHeader.I13USER = tcpRequest.I13USER;
+    dspHeader.I13HFMID = tcpRequest.I13HFMID;  
+    dspHeader.I13CUTO = tcpRequest.I13CUTO;
+    dspHeader.I13UDTA = tcpRequest.I13UDTA;
+    dspHeader.I13SDTA = tcpRequest.I13SDTA;
+    dspHeader.I13TTYP = tcpRequest.I13TTYP;
+    dspHeader.I13RCNF = tcpRequest.I13RCNF;
+    dspHeader.I13MSTA = "/AA";
+         
+    //MBASE Header
+    list<MBASE_Header_With_Payload_TI> mbaseList = listCreate(MBASE_Header_With_Payload_TI);
+    udrDecode("MBASE_Header_With_Payload_Decode",mbaseList,tcpRequest.data);
+    MBASE_Header_With_Payload_TI mbase = listGet(mbaseList,0);
+    
+    MBASE_Header_TI mbaseHeader = createDefaultMBASEHeader();
+    //mbaseHeader.HDTCOD = "CM4876005";
+    mbaseHeader.HDVERS = mbase.mbaseHeader.HDVERS;
+    mbaseHeader.HDTCOD = mbase.mbaseHeader.HDTCOD;
+    mbaseHeader.HDTXTP = mbase.mbaseHeader.HDTXTP;
+    //mbaseHeader.HDRIND = mbase.mbaseHeader.HDRIND; 
+    mbaseHeader.HDNERR = mbase.mbaseHeader.HDNERR;
+    mbaseHeader.HDSRID = mbase.mbaseHeader.HDSRID;
+    //mbaseHeader.HDDSID = mbase.mbaseHeader.HDDSID;
+    mbaseHeader.HDRTDQ = mbase.mbaseHeader.HDRTDQ;
+    mbaseHeader.HDDTQL = mbase.mbaseHeader.HDDTQL;
+    mbaseHeader.HDTMLI = mbase.mbaseHeader.HDTMLI;
+    mbaseHeader.HDBKNO = mbase.mbaseHeader.HDBKNO;
+    mbaseHeader.HDLGID = mbase.mbaseHeader.HDLGID;
+    mbaseHeader.HDCLDR = mbase.mbaseHeader.HDCLDR; 
+    mbaseHeader.HDBRNO = mbase.mbaseHeader.HDBRNO; 
+    //mbaseHeader.HDUSID = mbase.mbaseHeader.HDUSID;
+    mbaseHeader.HDSUP1 = mbase.mbaseHeader.HDSUP1;
+    mbaseHeader.HDSUP2 = mbase.mbaseHeader.HDSUP2;
+    mbaseHeader.HDSUP3 = mbase.mbaseHeader.HDSUP3;
+    //mbaseHeader.HDACCD = mbase.mbaseHeader.HDACCD;
+    mbaseHeader.HDNXTA = mbase.mbaseHeader.HDNXTA;
+    mbaseHeader.HDTXMD = mbase.mbaseHeader.HDTXMD;
+    mbaseHeader.HDSLKY = mbase.mbaseHeader.HDSLKY;
+    mbaseHeader.HDRREF = mbase.mbaseHeader.HDRREF;
+    mbaseHeader.HDSREF = mbase.mbaseHeader.HDSREF;
+    mbaseHeader.HDRCKY = mbase.mbaseHeader.HDRCKY;
+    mbaseHeader.HDNREC = mbase.mbaseHeader.HDNREC;
+    //mbaseHeader.HDMREC = mbase.mbaseHeader.HDMREC;
+    mbaseHeader.HDSMTD = mbase.mbaseHeader.HDSMTD;
+    mbaseHeader.HDTIMS = mbase.mbaseHeader.HDTIMS;
+    mbaseHeader.HDVFMT = mbase.mbaseHeader.HDVFMT;
+    mbaseHeader.HDDAPV = mbase.mbaseHeader.HDDAPV;
+    mbaseHeader.HDCOUN = mbase.mbaseHeader.HDCOUN;
+    mbaseHeader.HDFCID = mbase.mbaseHeader.HDFCID;
+    mbaseHeader.HDFCSQ = mbase.mbaseHeader.HDFCSQ;
+    mbaseHeader.HDFILR = mbase.mbaseHeader.HDFILR;
+    
+    mbaseHeader.HDDSID = "ESB";
+    mbaseHeader.HDUSID = "ESBUSR";
+    mbaseHeader.HDACCD = "C";
+    mbaseHeader.HDNREC = "1";
+    mbaseHeader.HDRIND = "AA";
+    
+    //Build Socket Message
+    bytearray outgoing = udrEncode("DSP_Header_Encoder", dspHeader);
+    outgoing = baAppend(outgoing, udrEncode("MBASE_Header_Encode", mbaseHeader));
+    outgoing = baAppend(outgoing, mbase.data);
+    return outgoing;
+}]]></string>
+</exportmultiplex>

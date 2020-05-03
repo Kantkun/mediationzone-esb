@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Workflow_Table" ref_path="workflow_data[Internal]/storable[workflow_data]/storable[Data]">
+   <storable name="InstanceTable" storable-id="dr.WorkflowInstanceTableData" ver="0.0">
+      <storable name="Field 0 0" storable-id="dr.WorkflowExecutionConfig.executionSettings" ver="8.0">
+         <object name="Execution Settings">
+            <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+               <object name="Value">
+                  <storable name="Object Internal" storable-id="dr.ExecutionSettings" ver="2.0">
+                     <enum name="dist" storable-id="dr.WorkflowDistType" value="ROUND_ROBIN"/>
+                     <list classname="java.util.LinkedList" name="ecList">
+                        <storable name="0" storable-id="dr.PicoInstanceEntity" ver="1.0">
+                           <string name="Name" value="ecsa1"/>
+                           <int name="Type" value="3"/>
+                        </storable>
+                     </list>
+                     <boolean name="enabled" value="true"/>
+                     <list classname="java.util.LinkedList" name="groupList"/>
+                  </storable>
+               </object>
+            </storable>
+         </object>
+         <boolean name="Execution Settings active" value="true"/>
+         <string name="Execution Settings extref key" null="true"/>
+         <enum name="Execution Settings fit" storable-id="dr.DRFieldInstanceType" value="INSTANCE"/>
+         <boolean name="Execution Settings mod" value="true"/>
+         <boolean name="Execution Settings pres" value="true"/>
+      </storable>
+      <storable name="Field 0 1" storable-id="dr.AggregationConfig.profile" ver="10.6">
+         <object name="Profile Key">
+            <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+               <object name="Value">
+                  <storable name="Object Internal" storable-id="dr.DRConfiguration" ver="1.0">
+                     <string name="Folder" value="IMB"/>
+                     <string name="Key" value="MZ1540360197530"/>
+                     <string name="Name" value="PRF_Aggregation_IMBStatementService"/>
+                     <string name="Type" value="Aggregation Profile"/>
+                  </storable>
+               </object>
+            </storable>
+         </object>
+         <boolean name="Profile Key active" value="true"/>
+         <string name="Profile Key extref key" null="true"/>
+         <enum name="Profile Key fit" storable-id="dr.DRFieldInstanceType" value="DEFAULT"/>
+         <boolean name="Profile Key mod" value="true"/>
+         <boolean name="Profile Key pres" value="true"/>
+      </storable>
+      <storable name="Field 0 2" storable-id="dr.AggregationConfig.profile" ver="10.6">
+         <object name="Profile Key">
+            <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+               <object name="Value">
+                  <storable name="Object Internal" storable-id="dr.DRConfiguration" ver="1.0">
+                     <string name="Folder" value="IMB"/>
+                     <string name="Key" value="MZ1540360856675"/>
+                     <string name="Name" value="PRF_Aggregation_IMBStateMoreService"/>
+                     <string name="Type" value="Aggregation Profile"/>
+                  </storable>
+               </object>
+            </storable>
+         </object>
+         <boolean name="Profile Key active" value="true"/>
+         <string name="Profile Key extref key" null="true"/>
+         <enum name="Profile Key fit" storable-id="dr.DRFieldInstanceType" value="DEFAULT"/>
+         <boolean name="Profile Key mod" value="true"/>
+         <boolean name="Profile Key pres" value="true"/>
+      </storable>
+      <storable name="Field 1 0" storable-id="dr.WorkflowExecutionConfig.executionSettings" ver="8.0">
+         <object name="Execution Settings">
+            <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+               <object name="Value">
+                  <storable name="Object Internal" storable-id="dr.ExecutionSettings" ver="2.0">
+                     <enum name="dist" storable-id="dr.WorkflowDistType" value="ROUND_ROBIN"/>
+                     <list classname="java.util.LinkedList" name="ecList">
+                        <storable name="0" storable-id="dr.PicoInstanceEntity" ver="1.0">
+                           <string name="Name" value="ecsa2"/>
+                           <int name="Type" value="3"/>
+                        </storable>
+                     </list>
+                     <boolean name="enabled" value="true"/>
+                     <list classname="java.util.LinkedList" name="groupList"/>
+                  </storable>
+               </object>
+            </storable>
+         </object>
+         <boolean name="Execution Settings active" value="true"/>
+         <string name="Execution Settings extref key" null="true"/>
+         <enum name="Execution Settings fit" storable-id="dr.DRFieldInstanceType" value="INSTANCE"/>
+         <boolean name="Execution Settings mod" value="true"/>
+         <boolean name="Execution Settings pres" value="true"/>
+      </storable>
+      <storable name="Field 1 1" storable-id="dr.AggregationConfig.profile" ver="10.6">
+         <object name="Profile Key">
+            <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+               <object name="Value">
+                  <storable name="Object Internal" storable-id="dr.DRConfiguration" ver="1.0">
+                     <string name="Folder" value="IMB"/>
+                     <string name="Key" value="MZ1540360302708"/>
+                     <string name="Name" value="PRF_Aggregation_IMBStatementService_1"/>
+                     <string name="Type" value="Aggregation Profile"/>
+                  </storable>
+               </object>
+            </storable>
+         </object>
+         <boolean name="Profile Key active" value="true"/>
+         <string name="Profile Key extref key" null="true"/>
+         <enum name="Profile Key fit" storable-id="dr.DRFieldInstanceType" value="DEFAULT"/>
+         <boolean name="Profile Key mod" value="true"/>
+         <boolean name="Profile Key pres" value="true"/>
+      </storable>
+      <storable name="Field 1 2" storable-id="dr.AggregationConfig.profile" ver="10.6">
+         <object name="Profile Key">
+            <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+               <object name="Value">
+                  <storable name="Object Internal" storable-id="dr.DRConfiguration" ver="1.0">
+                     <string name="Folder" value="IMB"/>
+                     <string name="Key" value="MZ1540361005071"/>
+                     <string name="Name" value="PRF_Aggregation_IMBStateMoreService_1"/>
+                     <string name="Type" value="Aggregation Profile"/>
+                  </storable>
+               </object>
+            </storable>
+         </object>
+         <boolean name="Profile Key active" value="true"/>
+         <string name="Profile Key extref key" null="true"/>
+         <enum name="Profile Key fit" storable-id="dr.DRFieldInstanceType" value="DEFAULT"/>
+         <boolean name="Profile Key mod" value="true"/>
+         <boolean name="Profile Key pres" value="true"/>
+      </storable>
+      <int name="Instance Count" value="2"/>
+      <long name="InstanceID_0" value="1"/>
+      <long name="InstanceID_1" value="2"/>
+      <string name="InstanceName_0" value="IMBStatementService_Workflow_EZ1"/>
+      <string name="InstanceName_1" value="IMBStatementService_Workflow_EZ2"/>
+      <boolean name="InstanceValid_0" value="true"/>
+      <boolean name="InstanceValid_1" value="true"/>
+   </storable>
+   <long name="Workflow ID Counter" value="2"/>
+</exportmultiplex>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Template" ref_path="workflow_data[Internal]/storable[workflow_data]/storable[Data]">
+   <Multiplex_Ref ref_path="exportmultiplex[Workflow_Table]/storable[InstanceTable]">
+      <int name="Field Count" value="0"/>
+   </Multiplex_Ref>
+   <storable name="Execution Config" storable-id="dr.WorkflowExecutionConfig" ver="8.0">
+      <object name="Debug Type">
+         <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+            <object name="Value">
+               <enum name="Object Internal" storable-id="dr.DebugType" value="EVENT"/>
+            </object>
+         </storable>
+      </object>
+      <boolean name="Debug Type active" value="true"/>
+      <string name="Debug Type extref key" null="true"/>
+      <enum name="Debug Type fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+      <boolean name="Debug Type mod" value="false"/>
+      <boolean name="Debug Type pres" value="true"/>
+      <object name="Execution Settings">
+         <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+            <object name="Value">
+               <storable name="Object Internal" storable-id="dr.ExecutionSettings" ver="2.0">
+                  <boolean name="enabled" value="false"/>
+               </storable>
+            </object>
+         </storable>
+      </object>
+      <boolean name="Execution Settings active" value="true"/>
+      <string name="Execution Settings extref key" null="true"/>
+      <enum name="Execution Settings fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+      <boolean name="Execution Settings mod" value="false"/>
+      <boolean name="Execution Settings pres" value="true"/>
+      <object name="Number of Files to Keep">
+         <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+            <object name="Value">
+               <int name="Object Internal" value="0"/>
+            </object>
+         </storable>
+      </object>
+      <boolean name="Number of Files to Keep active" value="true"/>
+      <string name="Number of Files to Keep extref key" null="true"/>
+      <enum name="Number of Files to Keep fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+      <boolean name="Number of Files to Keep mod" value="false"/>
+      <boolean name="Number of Files to Keep pres" value="true"/>
+      <object name="Throughput MIM">
+         <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+            <object name="Value">
+               <null name="Object Internal"/>
+            </object>
+         </storable>
+      </object>
+      <boolean name="Throughput MIM active" value="true"/>
+      <string name="Throughput MIM extref key" null="true"/>
+      <enum name="Throughput MIM fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+      <boolean name="Throughput MIM mod" value="false"/>
+      <boolean name="Throughput MIM pres" value="true"/>
+      <object name="Transaction Handler">
+         <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+            <object name="Value">
+               <string name="Object Internal" value="Default Handler"/>
+            </object>
+         </storable>
+      </object>
+      <boolean name="Transaction Handler active" value="true"/>
+      <string name="Transaction Handler extref key" null="true"/>
+      <enum name="Transaction Handler fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+      <boolean name="Transaction Handler mod" value="false"/>
+      <boolean name="Transaction Handler pres" value="true"/>
+   </storable>
+   <list classname="java.util.ArrayList" name="Field Types"/>
+   <list classname="java.util.ArrayList" name="Logged error MIM"/>
+   <list classname="java.util.ArrayList" name="Nodes">
+      <storable name="0" storable-id="dr.WfNode" ver="2.0">
+         <string name="Classname" value="com.digitalroute.wfc.task.script.ScriptTaskInsp"/>
+         <array classname="com.digitalroute.wf.WfNodeConfig" name="Configuration" size="1">
+            <storable name="0" storable-id="dr.WfNodeConfig" ver="1.0">
+               <string name="Classname" value="com.digitalroute.wfc.task.script.ScriptTaskInsp"/>
+               <storable name="Data" storable-id="dr.ScriptTaskData" ver="1.0">
+                  <object name="Parameters">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <string name="Object Internal" value=""/>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="Parameters active" value="true"/>
+                  <string name="Parameters extref key" null="true"/>
+                  <enum name="Parameters fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="Parameters mod" value="false"/>
+                  <boolean name="Parameters pres" value="true"/>
+                  <object name="Script Name">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <string name="Object Internal" value="/mzapp/cz/scripts/systemexport.sh"/>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="Script Name active" value="true"/>
+                  <string name="Script Name extref key" null="true"/>
+                  <enum name="Script Name fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="Script Name mod" value="false"/>
+                  <boolean name="Script Name pres" value="true"/>
+               </storable>
+            </storable>
+         </array>
+         <string name="Name" value="Script"/>
+      </storable>
+   </list>
+   <list classname="java.util.ArrayList" name="Routes"/>
+   <list classname="java.util.ArrayList" name="Service"/>
+   <boolean name="Template Valid" value="true"/>
+</exportmultiplex>

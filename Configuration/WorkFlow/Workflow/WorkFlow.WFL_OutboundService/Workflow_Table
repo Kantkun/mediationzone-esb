@@ -1,0 +1,640 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Workflow_Table" ref_path="workflow_data[Internal]/storable[workflow_data]/storable[Data]">
+   <storable name="InstanceTable" storable-id="dr.WorkflowInstanceTableData" ver="0.0">
+      <storable name="Field 0 0" storable-id="dr.WorkflowExecutionConfig.executionSettings" ver="8.0">
+         <object name="Execution Settings">
+            <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+               <object name="Value">
+                  <storable name="Object Internal" storable-id="dr.ExecutionSettings" ver="2.0">
+                     <enum name="dist" storable-id="dr.WorkflowDistType" value="ROUND_ROBIN"/>
+                     <list classname="java.util.LinkedList" name="ecList">
+                        <storable name="0" storable-id="dr.PicoInstanceEntity" ver="1.0">
+                           <string name="Name" value="ecsa1"/>
+                           <int name="Type" value="3"/>
+                        </storable>
+                     </list>
+                     <boolean name="enabled" value="true"/>
+                     <list classname="java.util.LinkedList" name="groupList"/>
+                  </storable>
+               </object>
+            </storable>
+         </object>
+         <boolean name="Execution Settings active" value="true"/>
+         <string name="Execution Settings extref key" null="true"/>
+         <enum name="Execution Settings fit" storable-id="dr.DRFieldInstanceType" value="INSTANCE"/>
+         <boolean name="Execution Settings mod" value="true"/>
+         <boolean name="Execution Settings pres" value="true"/>
+      </storable>
+      <storable name="Field 0 1" storable-id="dr.TCPIPCollData.port" ver="5.0">
+         <object name="Port">
+            <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+               <object name="Value">
+                  <int name="Object Internal" value="28001"/>
+               </object>
+            </storable>
+         </object>
+         <boolean name="Port active" value="true"/>
+         <string name="Port extref key" null="true"/>
+         <enum name="Port fit" storable-id="dr.DRFieldInstanceType" value="INSTANCE"/>
+         <boolean name="Port mod" value="true"/>
+         <boolean name="Port pres" value="true"/>
+      </storable>
+      <storable name="Field 0 2" storable-id="dr.AggregationConfig.profile" ver="10.6">
+         <object name="Profile Key">
+            <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+               <object name="Value">
+                  <storable name="Object Internal" storable-id="dr.DRConfiguration" ver="1.0">
+                     <string name="Folder" value="CM"/>
+                     <string name="Key" value="MZ1527133834305"/>
+                     <string name="Name" value="PRF_Aggregation_OutboundService"/>
+                     <string name="Type" value="Aggregation Profile"/>
+                  </storable>
+               </object>
+            </storable>
+         </object>
+         <boolean name="Profile Key active" value="true"/>
+         <string name="Profile Key extref key" null="true"/>
+         <enum name="Profile Key fit" storable-id="dr.DRFieldInstanceType" value="DEFAULT"/>
+         <boolean name="Profile Key mod" value="true"/>
+         <boolean name="Profile Key pres" value="true"/>
+      </storable>
+      <storable name="Field 0 3" storable-id="dr.AggregationConfig.profile" ver="10.6">
+         <object name="Profile Key">
+            <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+               <object name="Value">
+                  <storable name="Object Internal" storable-id="dr.DRConfiguration" ver="1.0">
+                     <string name="Folder" value="CCMS"/>
+                     <string name="Key" value="MZ1528971514969"/>
+                     <string name="Name" value="PRF_Aggregation_CCMSService_1_EZ1"/>
+                     <string name="Type" value="Aggregation Profile"/>
+                  </storable>
+               </object>
+            </storable>
+         </object>
+         <boolean name="Profile Key active" value="true"/>
+         <string name="Profile Key extref key" null="true"/>
+         <enum name="Profile Key fit" storable-id="dr.DRFieldInstanceType" value="DEFAULT"/>
+         <boolean name="Profile Key mod" value="true"/>
+         <boolean name="Profile Key pres" value="true"/>
+      </storable>
+      <storable name="Field 1 0" storable-id="dr.WorkflowExecutionConfig.executionSettings" ver="8.0">
+         <object name="Execution Settings">
+            <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+               <object name="Value">
+                  <storable name="Object Internal" storable-id="dr.ExecutionSettings" ver="2.0">
+                     <enum name="dist" storable-id="dr.WorkflowDistType" value="ROUND_ROBIN"/>
+                     <list classname="java.util.LinkedList" name="ecList">
+                        <storable name="0" storable-id="dr.PicoInstanceEntity" ver="1.0">
+                           <string name="Name" value="ecsa2"/>
+                           <int name="Type" value="3"/>
+                        </storable>
+                     </list>
+                     <boolean name="enabled" value="true"/>
+                     <list classname="java.util.LinkedList" name="groupList"/>
+                  </storable>
+               </object>
+            </storable>
+         </object>
+         <boolean name="Execution Settings active" value="true"/>
+         <string name="Execution Settings extref key" null="true"/>
+         <enum name="Execution Settings fit" storable-id="dr.DRFieldInstanceType" value="INSTANCE"/>
+         <boolean name="Execution Settings mod" value="true"/>
+         <boolean name="Execution Settings pres" value="true"/>
+      </storable>
+      <storable name="Field 1 1" storable-id="dr.TCPIPCollData.port" ver="5.0">
+         <object name="Port">
+            <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+               <object name="Value">
+                  <int name="Object Internal" value="28001"/>
+               </object>
+            </storable>
+         </object>
+         <boolean name="Port active" value="true"/>
+         <string name="Port extref key" null="true"/>
+         <enum name="Port fit" storable-id="dr.DRFieldInstanceType" value="INSTANCE"/>
+         <boolean name="Port mod" value="true"/>
+         <boolean name="Port pres" value="true"/>
+      </storable>
+      <storable name="Field 1 2" storable-id="dr.AggregationConfig.profile" ver="10.6">
+         <object name="Profile Key">
+            <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+               <object name="Value">
+                  <storable name="Object Internal" storable-id="dr.DRConfiguration" ver="1.0">
+                     <string name="Folder" value="CM"/>
+                     <string name="Key" value="MZ1539226333339"/>
+                     <string name="Name" value="PRF_Aggregation_OutboundService_1"/>
+                     <string name="Type" value="Aggregation Profile"/>
+                  </storable>
+               </object>
+            </storable>
+         </object>
+         <boolean name="Profile Key active" value="true"/>
+         <string name="Profile Key extref key" null="true"/>
+         <enum name="Profile Key fit" storable-id="dr.DRFieldInstanceType" value="DEFAULT"/>
+         <boolean name="Profile Key mod" value="true"/>
+         <boolean name="Profile Key pres" value="true"/>
+      </storable>
+      <storable name="Field 1 3" storable-id="dr.AggregationConfig.profile" ver="10.6">
+         <object name="Profile Key">
+            <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+               <object name="Value">
+                  <storable name="Object Internal" storable-id="dr.DRConfiguration" ver="1.0">
+                     <string name="Folder" value="CCMS"/>
+                     <string name="Key" value="MZ1539226108075"/>
+                     <string name="Name" value="PRF_Aggregation_CCMSService_1"/>
+                     <string name="Type" value="Aggregation Profile"/>
+                  </storable>
+               </object>
+            </storable>
+         </object>
+         <boolean name="Profile Key active" value="true"/>
+         <string name="Profile Key extref key" null="true"/>
+         <enum name="Profile Key fit" storable-id="dr.DRFieldInstanceType" value="DEFAULT"/>
+         <boolean name="Profile Key mod" value="true"/>
+         <boolean name="Profile Key pres" value="true"/>
+      </storable>
+      <storable name="Field 2 0" storable-id="dr.WorkflowExecutionConfig.executionSettings" ver="8.0">
+         <object name="Execution Settings">
+            <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+               <object name="Value">
+                  <storable name="Object Internal" storable-id="dr.ExecutionSettings" ver="2.0">
+                     <enum name="dist" storable-id="dr.WorkflowDistType" value="ROUND_ROBIN"/>
+                     <list classname="java.util.LinkedList" name="ecList">
+                        <storable name="0" storable-id="dr.PicoInstanceEntity" ver="1.0">
+                           <string name="Name" value="ecsa1"/>
+                           <int name="Type" value="3"/>
+                        </storable>
+                     </list>
+                     <boolean name="enabled" value="true"/>
+                     <list classname="java.util.LinkedList" name="groupList"/>
+                  </storable>
+               </object>
+            </storable>
+         </object>
+         <boolean name="Execution Settings active" value="true"/>
+         <string name="Execution Settings extref key" null="true"/>
+         <enum name="Execution Settings fit" storable-id="dr.DRFieldInstanceType" value="INSTANCE"/>
+         <boolean name="Execution Settings mod" value="true"/>
+         <boolean name="Execution Settings pres" value="true"/>
+      </storable>
+      <storable name="Field 2 1" storable-id="dr.TCPIPCollData.port" ver="5.0">
+         <object name="Port">
+            <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+               <object name="Value">
+                  <int name="Object Internal" value="28002"/>
+               </object>
+            </storable>
+         </object>
+         <boolean name="Port active" value="true"/>
+         <string name="Port extref key" null="true"/>
+         <enum name="Port fit" storable-id="dr.DRFieldInstanceType" value="INSTANCE"/>
+         <boolean name="Port mod" value="true"/>
+         <boolean name="Port pres" value="true"/>
+      </storable>
+      <storable name="Field 2 2" storable-id="dr.AggregationConfig.profile" ver="10.6">
+         <object name="Profile Key">
+            <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+               <object name="Value">
+                  <storable name="Object Internal" storable-id="dr.DRConfiguration" ver="1.0">
+                     <string name="Folder" value="CM"/>
+                     <string name="Key" value="MZ1552029071092"/>
+                     <string name="Name" value="PRF_Aggregation_OutboundService_2_EZ1"/>
+                     <string name="Type" value="Aggregation Profile"/>
+                  </storable>
+               </object>
+            </storable>
+         </object>
+         <boolean name="Profile Key active" value="true"/>
+         <string name="Profile Key extref key" null="true"/>
+         <enum name="Profile Key fit" storable-id="dr.DRFieldInstanceType" value="DEFAULT"/>
+         <boolean name="Profile Key mod" value="true"/>
+         <boolean name="Profile Key pres" value="true"/>
+      </storable>
+      <storable name="Field 2 3" storable-id="dr.AggregationConfig.profile" ver="10.6">
+         <object name="Profile Key">
+            <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+               <object name="Value">
+                  <storable name="Object Internal" storable-id="dr.DRConfiguration" ver="1.0">
+                     <string name="Folder" value="CCMS"/>
+                     <string name="Key" value="MZ1552029587480"/>
+                     <string name="Name" value="PRF_Aggregation_CCMSService_2_EZ1"/>
+                     <string name="Type" value="Aggregation Profile"/>
+                  </storable>
+               </object>
+            </storable>
+         </object>
+         <boolean name="Profile Key active" value="true"/>
+         <string name="Profile Key extref key" null="true"/>
+         <enum name="Profile Key fit" storable-id="dr.DRFieldInstanceType" value="DEFAULT"/>
+         <boolean name="Profile Key mod" value="true"/>
+         <boolean name="Profile Key pres" value="true"/>
+      </storable>
+      <storable name="Field 3 0" storable-id="dr.WorkflowExecutionConfig.executionSettings" ver="8.0">
+         <object name="Execution Settings">
+            <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+               <object name="Value">
+                  <storable name="Object Internal" storable-id="dr.ExecutionSettings" ver="2.0">
+                     <enum name="dist" storable-id="dr.WorkflowDistType" value="ROUND_ROBIN"/>
+                     <list classname="java.util.LinkedList" name="ecList">
+                        <storable name="0" storable-id="dr.PicoInstanceEntity" ver="1.0">
+                           <string name="Name" value="ecsa2"/>
+                           <int name="Type" value="3"/>
+                        </storable>
+                     </list>
+                     <boolean name="enabled" value="true"/>
+                     <list classname="java.util.LinkedList" name="groupList"/>
+                  </storable>
+               </object>
+            </storable>
+         </object>
+         <boolean name="Execution Settings active" value="true"/>
+         <string name="Execution Settings extref key" null="true"/>
+         <enum name="Execution Settings fit" storable-id="dr.DRFieldInstanceType" value="INSTANCE"/>
+         <boolean name="Execution Settings mod" value="true"/>
+         <boolean name="Execution Settings pres" value="true"/>
+      </storable>
+      <storable name="Field 3 1" storable-id="dr.TCPIPCollData.port" ver="5.0">
+         <object name="Port">
+            <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+               <object name="Value">
+                  <int name="Object Internal" value="28002"/>
+               </object>
+            </storable>
+         </object>
+         <boolean name="Port active" value="true"/>
+         <string name="Port extref key" null="true"/>
+         <enum name="Port fit" storable-id="dr.DRFieldInstanceType" value="INSTANCE"/>
+         <boolean name="Port mod" value="true"/>
+         <boolean name="Port pres" value="true"/>
+      </storable>
+      <storable name="Field 3 2" storable-id="dr.AggregationConfig.profile" ver="10.6">
+         <object name="Profile Key">
+            <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+               <object name="Value">
+                  <storable name="Object Internal" storable-id="dr.DRConfiguration" ver="1.0">
+                     <string name="Folder" value="CM"/>
+                     <string name="Key" value="MZ1552029178603"/>
+                     <string name="Name" value="PRF_Aggregation_OutboundService_2_EZ2"/>
+                     <string name="Type" value="Aggregation Profile"/>
+                  </storable>
+               </object>
+            </storable>
+         </object>
+         <boolean name="Profile Key active" value="true"/>
+         <string name="Profile Key extref key" null="true"/>
+         <enum name="Profile Key fit" storable-id="dr.DRFieldInstanceType" value="DEFAULT"/>
+         <boolean name="Profile Key mod" value="true"/>
+         <boolean name="Profile Key pres" value="true"/>
+      </storable>
+      <storable name="Field 3 3" storable-id="dr.AggregationConfig.profile" ver="10.6">
+         <object name="Profile Key">
+            <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+               <object name="Value">
+                  <storable name="Object Internal" storable-id="dr.DRConfiguration" ver="1.0">
+                     <string name="Folder" value="CCMS"/>
+                     <string name="Key" value="MZ1552029598975"/>
+                     <string name="Name" value="PRF_Aggregation_CCMSService_2_EZ2"/>
+                     <string name="Type" value="Aggregation Profile"/>
+                  </storable>
+               </object>
+            </storable>
+         </object>
+         <boolean name="Profile Key active" value="true"/>
+         <string name="Profile Key extref key" null="true"/>
+         <enum name="Profile Key fit" storable-id="dr.DRFieldInstanceType" value="DEFAULT"/>
+         <boolean name="Profile Key mod" value="true"/>
+         <boolean name="Profile Key pres" value="true"/>
+      </storable>
+      <storable name="Field 4 0" storable-id="dr.WorkflowExecutionConfig.executionSettings" ver="8.0">
+         <object name="Execution Settings">
+            <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+               <object name="Value">
+                  <storable name="Object Internal" storable-id="dr.ExecutionSettings" ver="2.0">
+                     <enum name="dist" storable-id="dr.WorkflowDistType" value="ROUND_ROBIN"/>
+                     <list classname="java.util.LinkedList" name="ecList">
+                        <storable name="0" storable-id="dr.PicoInstanceEntity" ver="1.0">
+                           <string name="Name" value="ecsa1"/>
+                           <int name="Type" value="3"/>
+                        </storable>
+                     </list>
+                     <boolean name="enabled" value="true"/>
+                     <list classname="java.util.LinkedList" name="groupList"/>
+                  </storable>
+               </object>
+            </storable>
+         </object>
+         <boolean name="Execution Settings active" value="true"/>
+         <string name="Execution Settings extref key" null="true"/>
+         <enum name="Execution Settings fit" storable-id="dr.DRFieldInstanceType" value="INSTANCE"/>
+         <boolean name="Execution Settings mod" value="true"/>
+         <boolean name="Execution Settings pres" value="true"/>
+      </storable>
+      <storable name="Field 4 1" storable-id="dr.TCPIPCollData.port" ver="5.0">
+         <object name="Port">
+            <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+               <object name="Value">
+                  <int name="Object Internal" value="28003"/>
+               </object>
+            </storable>
+         </object>
+         <boolean name="Port active" value="true"/>
+         <string name="Port extref key" null="true"/>
+         <enum name="Port fit" storable-id="dr.DRFieldInstanceType" value="INSTANCE"/>
+         <boolean name="Port mod" value="true"/>
+         <boolean name="Port pres" value="true"/>
+      </storable>
+      <storable name="Field 4 2" storable-id="dr.AggregationConfig.profile" ver="10.6">
+         <object name="Profile Key">
+            <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+               <object name="Value">
+                  <storable name="Object Internal" storable-id="dr.DRConfiguration" ver="1.0">
+                     <string name="Folder" value="CM"/>
+                     <string name="Key" value="MZ1552029200111"/>
+                     <string name="Name" value="PRF_Aggregation_OutboundService_3_EZ1"/>
+                     <string name="Type" value="Aggregation Profile"/>
+                  </storable>
+               </object>
+            </storable>
+         </object>
+         <boolean name="Profile Key active" value="true"/>
+         <string name="Profile Key extref key" null="true"/>
+         <enum name="Profile Key fit" storable-id="dr.DRFieldInstanceType" value="DEFAULT"/>
+         <boolean name="Profile Key mod" value="true"/>
+         <boolean name="Profile Key pres" value="true"/>
+      </storable>
+      <storable name="Field 4 3" storable-id="dr.AggregationConfig.profile" ver="10.6">
+         <object name="Profile Key">
+            <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+               <object name="Value">
+                  <storable name="Object Internal" storable-id="dr.DRConfiguration" ver="1.0">
+                     <string name="Folder" value="CCMS"/>
+                     <string name="Key" value="MZ1552029609294"/>
+                     <string name="Name" value="PRF_Aggregation_CCMSService_3_EZ1"/>
+                     <string name="Type" value="Aggregation Profile"/>
+                  </storable>
+               </object>
+            </storable>
+         </object>
+         <boolean name="Profile Key active" value="true"/>
+         <string name="Profile Key extref key" null="true"/>
+         <enum name="Profile Key fit" storable-id="dr.DRFieldInstanceType" value="DEFAULT"/>
+         <boolean name="Profile Key mod" value="true"/>
+         <boolean name="Profile Key pres" value="true"/>
+      </storable>
+      <storable name="Field 5 0" storable-id="dr.WorkflowExecutionConfig.executionSettings" ver="8.0">
+         <object name="Execution Settings">
+            <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+               <object name="Value">
+                  <storable name="Object Internal" storable-id="dr.ExecutionSettings" ver="2.0">
+                     <enum name="dist" storable-id="dr.WorkflowDistType" value="ROUND_ROBIN"/>
+                     <list classname="java.util.LinkedList" name="ecList">
+                        <storable name="0" storable-id="dr.PicoInstanceEntity" ver="1.0">
+                           <string name="Name" value="ecsa2"/>
+                           <int name="Type" value="3"/>
+                        </storable>
+                     </list>
+                     <boolean name="enabled" value="true"/>
+                     <list classname="java.util.LinkedList" name="groupList"/>
+                  </storable>
+               </object>
+            </storable>
+         </object>
+         <boolean name="Execution Settings active" value="true"/>
+         <string name="Execution Settings extref key" null="true"/>
+         <enum name="Execution Settings fit" storable-id="dr.DRFieldInstanceType" value="INSTANCE"/>
+         <boolean name="Execution Settings mod" value="true"/>
+         <boolean name="Execution Settings pres" value="true"/>
+      </storable>
+      <storable name="Field 5 1" storable-id="dr.TCPIPCollData.port" ver="5.0">
+         <object name="Port">
+            <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+               <object name="Value">
+                  <int name="Object Internal" value="28003"/>
+               </object>
+            </storable>
+         </object>
+         <boolean name="Port active" value="true"/>
+         <string name="Port extref key" null="true"/>
+         <enum name="Port fit" storable-id="dr.DRFieldInstanceType" value="INSTANCE"/>
+         <boolean name="Port mod" value="true"/>
+         <boolean name="Port pres" value="true"/>
+      </storable>
+      <storable name="Field 5 2" storable-id="dr.AggregationConfig.profile" ver="10.6">
+         <object name="Profile Key">
+            <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+               <object name="Value">
+                  <storable name="Object Internal" storable-id="dr.DRConfiguration" ver="1.0">
+                     <string name="Folder" value="CM"/>
+                     <string name="Key" value="MZ1552029212181"/>
+                     <string name="Name" value="PRF_Aggregation_OutboundService_3_EZ2"/>
+                     <string name="Type" value="Aggregation Profile"/>
+                  </storable>
+               </object>
+            </storable>
+         </object>
+         <boolean name="Profile Key active" value="true"/>
+         <string name="Profile Key extref key" null="true"/>
+         <enum name="Profile Key fit" storable-id="dr.DRFieldInstanceType" value="DEFAULT"/>
+         <boolean name="Profile Key mod" value="true"/>
+         <boolean name="Profile Key pres" value="true"/>
+      </storable>
+      <storable name="Field 5 3" storable-id="dr.AggregationConfig.profile" ver="10.6">
+         <object name="Profile Key">
+            <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+               <object name="Value">
+                  <storable name="Object Internal" storable-id="dr.DRConfiguration" ver="1.0">
+                     <string name="Folder" value="CCMS"/>
+                     <string name="Key" value="MZ1552029619608"/>
+                     <string name="Name" value="PRF_Aggregation_CCMSService_3_EZ2"/>
+                     <string name="Type" value="Aggregation Profile"/>
+                  </storable>
+               </object>
+            </storable>
+         </object>
+         <boolean name="Profile Key active" value="true"/>
+         <string name="Profile Key extref key" null="true"/>
+         <enum name="Profile Key fit" storable-id="dr.DRFieldInstanceType" value="DEFAULT"/>
+         <boolean name="Profile Key mod" value="true"/>
+         <boolean name="Profile Key pres" value="true"/>
+      </storable>
+      <storable name="Field 6 0" storable-id="dr.WorkflowExecutionConfig.executionSettings" ver="8.0">
+         <object name="Execution Settings">
+            <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+               <object name="Value">
+                  <storable name="Object Internal" storable-id="dr.ExecutionSettings" ver="2.0">
+                     <enum name="dist" storable-id="dr.WorkflowDistType" value="ROUND_ROBIN"/>
+                     <list classname="java.util.LinkedList" name="ecList">
+                        <storable name="0" storable-id="dr.PicoInstanceEntity" ver="1.0">
+                           <string name="Name" value="ecsa1"/>
+                           <int name="Type" value="3"/>
+                        </storable>
+                     </list>
+                     <boolean name="enabled" value="true"/>
+                     <list classname="java.util.LinkedList" name="groupList"/>
+                  </storable>
+               </object>
+            </storable>
+         </object>
+         <boolean name="Execution Settings active" value="true"/>
+         <string name="Execution Settings extref key" null="true"/>
+         <enum name="Execution Settings fit" storable-id="dr.DRFieldInstanceType" value="INSTANCE"/>
+         <boolean name="Execution Settings mod" value="true"/>
+         <boolean name="Execution Settings pres" value="true"/>
+      </storable>
+      <storable name="Field 6 1" storable-id="dr.TCPIPCollData.port" ver="5.0">
+         <object name="Port">
+            <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+               <object name="Value">
+                  <int name="Object Internal" value="28004"/>
+               </object>
+            </storable>
+         </object>
+         <boolean name="Port active" value="true"/>
+         <string name="Port extref key" null="true"/>
+         <enum name="Port fit" storable-id="dr.DRFieldInstanceType" value="INSTANCE"/>
+         <boolean name="Port mod" value="true"/>
+         <boolean name="Port pres" value="true"/>
+      </storable>
+      <storable name="Field 6 2" storable-id="dr.AggregationConfig.profile" ver="10.6">
+         <object name="Profile Key">
+            <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+               <object name="Value">
+                  <storable name="Object Internal" storable-id="dr.DRConfiguration" ver="1.0">
+                     <string name="Folder" value="CM"/>
+                     <string name="Key" value="MZ1552029224236"/>
+                     <string name="Name" value="PRF_Aggregation_OutboundService_4_EZ1"/>
+                     <string name="Type" value="Aggregation Profile"/>
+                  </storable>
+               </object>
+            </storable>
+         </object>
+         <boolean name="Profile Key active" value="true"/>
+         <string name="Profile Key extref key" null="true"/>
+         <enum name="Profile Key fit" storable-id="dr.DRFieldInstanceType" value="DEFAULT"/>
+         <boolean name="Profile Key mod" value="true"/>
+         <boolean name="Profile Key pres" value="true"/>
+      </storable>
+      <storable name="Field 6 3" storable-id="dr.AggregationConfig.profile" ver="10.6">
+         <object name="Profile Key">
+            <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+               <object name="Value">
+                  <storable name="Object Internal" storable-id="dr.DRConfiguration" ver="1.0">
+                     <string name="Folder" value="CCMS"/>
+                     <string name="Key" value="MZ1552029629881"/>
+                     <string name="Name" value="PRF_Aggregation_CCMSService_4_EZ1"/>
+                     <string name="Type" value="Aggregation Profile"/>
+                  </storable>
+               </object>
+            </storable>
+         </object>
+         <boolean name="Profile Key active" value="true"/>
+         <string name="Profile Key extref key" null="true"/>
+         <enum name="Profile Key fit" storable-id="dr.DRFieldInstanceType" value="DEFAULT"/>
+         <boolean name="Profile Key mod" value="true"/>
+         <boolean name="Profile Key pres" value="true"/>
+      </storable>
+      <storable name="Field 7 0" storable-id="dr.WorkflowExecutionConfig.executionSettings" ver="8.0">
+         <object name="Execution Settings">
+            <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+               <object name="Value">
+                  <storable name="Object Internal" storable-id="dr.ExecutionSettings" ver="2.0">
+                     <enum name="dist" storable-id="dr.WorkflowDistType" value="ROUND_ROBIN"/>
+                     <list classname="java.util.LinkedList" name="ecList">
+                        <storable name="0" storable-id="dr.PicoInstanceEntity" ver="1.0">
+                           <string name="Name" value="ecsa2"/>
+                           <int name="Type" value="3"/>
+                        </storable>
+                     </list>
+                     <boolean name="enabled" value="true"/>
+                     <list classname="java.util.LinkedList" name="groupList"/>
+                  </storable>
+               </object>
+            </storable>
+         </object>
+         <boolean name="Execution Settings active" value="true"/>
+         <string name="Execution Settings extref key" null="true"/>
+         <enum name="Execution Settings fit" storable-id="dr.DRFieldInstanceType" value="INSTANCE"/>
+         <boolean name="Execution Settings mod" value="true"/>
+         <boolean name="Execution Settings pres" value="true"/>
+      </storable>
+      <storable name="Field 7 1" storable-id="dr.TCPIPCollData.port" ver="5.0">
+         <object name="Port">
+            <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+               <object name="Value">
+                  <int name="Object Internal" value="28004"/>
+               </object>
+            </storable>
+         </object>
+         <boolean name="Port active" value="true"/>
+         <string name="Port extref key" null="true"/>
+         <enum name="Port fit" storable-id="dr.DRFieldInstanceType" value="INSTANCE"/>
+         <boolean name="Port mod" value="true"/>
+         <boolean name="Port pres" value="true"/>
+      </storable>
+      <storable name="Field 7 2" storable-id="dr.AggregationConfig.profile" ver="10.6">
+         <object name="Profile Key">
+            <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+               <object name="Value">
+                  <storable name="Object Internal" storable-id="dr.DRConfiguration" ver="1.0">
+                     <string name="Folder" value="CM"/>
+                     <string name="Key" value="MZ1552029236142"/>
+                     <string name="Name" value="PRF_Aggregation_OutboundService_4_EZ2"/>
+                     <string name="Type" value="Aggregation Profile"/>
+                  </storable>
+               </object>
+            </storable>
+         </object>
+         <boolean name="Profile Key active" value="true"/>
+         <string name="Profile Key extref key" null="true"/>
+         <enum name="Profile Key fit" storable-id="dr.DRFieldInstanceType" value="DEFAULT"/>
+         <boolean name="Profile Key mod" value="true"/>
+         <boolean name="Profile Key pres" value="true"/>
+      </storable>
+      <storable name="Field 7 3" storable-id="dr.AggregationConfig.profile" ver="10.6">
+         <object name="Profile Key">
+            <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+               <object name="Value">
+                  <storable name="Object Internal" storable-id="dr.DRConfiguration" ver="1.0">
+                     <string name="Folder" value="CCMS"/>
+                     <string name="Key" value="MZ1552029639683"/>
+                     <string name="Name" value="PRF_Aggregation_CCMSService_4_EZ2"/>
+                     <string name="Type" value="Aggregation Profile"/>
+                  </storable>
+               </object>
+            </storable>
+         </object>
+         <boolean name="Profile Key active" value="true"/>
+         <string name="Profile Key extref key" null="true"/>
+         <enum name="Profile Key fit" storable-id="dr.DRFieldInstanceType" value="DEFAULT"/>
+         <boolean name="Profile Key mod" value="true"/>
+         <boolean name="Profile Key pres" value="true"/>
+      </storable>
+      <int name="Instance Count" value="8"/>
+      <long name="InstanceID_0" value="1"/>
+      <long name="InstanceID_1" value="2"/>
+      <long name="InstanceID_2" value="3"/>
+      <long name="InstanceID_3" value="4"/>
+      <long name="InstanceID_4" value="5"/>
+      <long name="InstanceID_5" value="6"/>
+      <long name="InstanceID_6" value="7"/>
+      <long name="InstanceID_7" value="8"/>
+      <string name="InstanceName_0" value="CMS_CMMS_Workflow_1_EZ1"/>
+      <string name="InstanceName_1" value="CMS_CMMS_Workflow_1_EZ2"/>
+      <string name="InstanceName_2" value="CMS_CMMS_Workflow_2_EZ1"/>
+      <string name="InstanceName_3" value="CMS_CMMS_Workflow_2_EZ2"/>
+      <string name="InstanceName_4" value="CMS_CMMS_Workflow_3_EZ1"/>
+      <string name="InstanceName_5" value="CMS_CMMS_Workflow_3_EZ2"/>
+      <string name="InstanceName_6" value="CMS_CMMS_Workflow_4_EZ1"/>
+      <string name="InstanceName_7" value="CMS_CMMS_Workflow_4_EZ2"/>
+      <boolean name="InstanceValid_0" value="true"/>
+      <boolean name="InstanceValid_1" value="true"/>
+      <boolean name="InstanceValid_2" value="true"/>
+      <boolean name="InstanceValid_3" value="true"/>
+      <boolean name="InstanceValid_4" value="true"/>
+      <boolean name="InstanceValid_5" value="true"/>
+      <boolean name="InstanceValid_6" value="true"/>
+      <boolean name="InstanceValid_7" value="true"/>
+   </storable>
+   <long name="Workflow ID Counter" value="8"/>
+</exportmultiplex>

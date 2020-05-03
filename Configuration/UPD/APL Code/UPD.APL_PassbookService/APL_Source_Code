@@ -1,0 +1,866 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="APL_Source_Code" ref_path="apl_script[Internal]/storable[apl_script]/storable[Data]">
+   <string name="Definition"><![CDATA[import ultra.CBS.UFL_DSP_Header;
+import ultra.CBS.UFL_ABCS_Header;
+import ultra.CBS.UFL_TLLOG;
+import ultra.Ultra.UFL_TMQBK;
+import ultra.Ultra.UFL_TMQHB;
+import ultra.CBS.UFL_ABCS_Rejected;
+
+import ultra.ws.UPD.PRF_WS_CBSPassbookService.cycles;
+import ultra.ws.UPD.PRF_WS_CBSPassbookService.tns;
+
+import apl.CBS.APL_Default_ABCS;
+import apl.CBS.APL_Default_TLLOG;
+
+import apl.Common.APL_Common_Utilities;
+import apl.Common.APL_Common_Constant;
+import apl.Common.APL_Common_ABCS;
+import apl.Common.APL_Common_ABCS_Log;
+
+//InquiryPassbook
+bytearray generateInquiryPassbookRequest(string uniqKey, WSCycle_inquiryPassbook in) {
+    
+    list<any> objList = generateInquiryPassbookRequestSocket(uniqKey, in);
+    
+    DSP_Header_TgIn dspHeader = (DSP_Header_TgIn)listGet(objList,0);
+    ABCS_Header_TgIn abcsHeader = (ABCS_Header_TgIn)listGet(objList,1);
+    TLLOG_TgIn tllogRequest = (TLLOG_TgIn)listGet(objList,2);
+    
+    return combineABCSSocket(dspHeader, abcsHeader, tllogRequest);
+}
+
+string generateInquiryPassbookRequestLog(string uniqKey, WSCycle_inquiryPassbook in){
+    
+    list<any> objList = generateInquiryPassbookRequestSocket(uniqKey, in);
+    
+    DSP_Header_TgIn dspHeader = (DSP_Header_TgIn)listGet(objList,0);
+    ABCS_Header_TgIn abcsHeader = (ABCS_Header_TgIn)listGet(objList,1);
+    TLLOG_TgIn tllogRequest = (TLLOG_TgIn)listGet(objList,2);
+    
+    //create request string log
+    string dspLog = generateDSPHeaderLog(dspHeader);
+    string abcsLog = generateABCSHeaderLog(abcsHeader);
+    string tllogLog = generateTLLOGLog(tllogRequest);
+    
+    return dspLog + abcsLog + tllogLog;
+}
+
+list<any> generateInquiryPassbookRequestSocket(string uniqKey, WSCycle_inquiryPassbook in){
+    //DSP HEADER
+    string sourceID = "UPD##";
+    DSP_Header_TgIn dspHeader = createDefaultDSPHeaderForABCS(sourceID , uniqKey);    
+      
+    //ABCS HEADER
+    ABCS_Header_TgIn abcsHeader = createDefaultABCSHeader();
+    
+    //TLLOG
+    TLLOG_TgIn tllogRequest = createDefaultTLLOG();    
+    string channelID = in.param_Header.ChannelID;
+    string tellerID = in.param_Data.TellerID;
+    string journalSeq = (string)in.param_Data.JournalSeq;
+    string transCode = "90250";
+    string transactionDateStr = ""; dateToString(transactionDateStr ,in.param_Header.TransactionDateTime, "yyyyMMdd");
+    string effectiveDateStr = ""; dateToString(effectiveDateStr ,in.param_Data.EffectiveDate, "yyyyMMdd");
+    string controlUnit = getControlUnit(in.param_Header.ChannelID);
+    string workStation = in.param_Data.WorkStationID;
+    string remark = in.param_Data.Remark;    
+    inputDefaultValueTLLOG(tllogRequest, channelID, tellerID, journalSeq, transCode, transactionDateStr, effectiveDateStr, controlUnit, workStation, remark);
+    
+    string passbookSerialNumber = in.param_Passbook.PassbookSerialNumber;
+    string lastLineNumber = (string)in.param_Passbook.LastLineNumber;
+    tllogRequest.TLBF11     = strInsert(tllogRequest.TLBF11,0,passbookSerialNumber); //"XXXX" + "F"
+    tllogRequest.TLBF15     = strInsert(tllogRequest.TLBF15, 0, lastLineNumber); //"XXXX" + "F"
+    
+    list<any> objList = listCreate(any);
+    listAdd(objList,dspHeader);
+    listAdd(objList,abcsHeader);
+    listAdd(objList,tllogRequest);
+    return objList;
+}
+
+
+///RESPONSE
+
+WSCycle_inquiryPassbook generateInquiryPassbookResponse(WSCycle_inquiryPassbook originalRequest , DSP_Header_TgIn tcpResponse ,  date requestDatetime , long requestMillisec,boolean errorUDR){
+    if(errorUDR==false){
+        debug("DSP Status : " + tcpResponse.I13MSTA);
+        
+    //debug(""); debug(""); debug("");
+    //debug("START DSP");
+    //debug(tcpResponse);
+    //debug("END DSP");
+    //debug(""); debug(""); debug("");
+    
+        list<ABCS_Header_With_Payload_TgIn> aList = listCreate(ABCS_Header_With_Payload_TgIn);        
+        udrDecode("ABCS_Header_With_Payload_Decoder", aList, tcpResponse.data);        
+        ABCS_Header_With_Payload_TgIn abcs = listGet(aList,0);
+    
+    //debug(""); debug(""); debug("");
+    //debug("START ABCS");
+    //debug(abcs);    
+    //debug("END ABCS");
+    //debug(""); debug(""); debug("");
+        
+        //Declare Response Object
+        originalRequest.param_Header_01 = udrCreate(InquiryPassbookResponse$Header);
+        
+        //Response Header
+        date responseTransactinDatetime = dateCreateCopy(originalRequest.param_Header.TransactionDateTime);
+        dateSetTimeZone(responseTransactinDatetime, "GMT+7");        
+        originalRequest.param_Header_01.ReferenceNo = originalRequest.param_Header.ReferenceNo;
+        originalRequest.param_Header_01.TransactionDateTime = responseTransactinDatetime;        
+        originalRequest.param_Header_01.ChannelID = originalRequest.param_Header.ChannelID;
+        
+        //Response Status Info
+        originalRequest.param_Header_01.StatusInfo = udrCreate(InquiryPassbookResponse$Header$StatusInfo);
+        originalRequest.param_Header_01.StatusInfo.Status = udrCreate(InquiryPassbookResponse$Header$StatusInfo$Status);    
+        originalRequest.param_Header_01.StatusInfo.Status.UsageTime = dateCreateNowMilliseconds()-requestMillisec;
+        
+        //DSP response nothing then return response error 
+        if(tcpResponse.I13MSTA == "" || tcpResponse.I13MSTA == null){
+                //Response Stattus Info            
+                originalRequest.param_Header_01.StatusInfo.Status.ResponseCode = "";
+                originalRequest.param_Header_01.StatusInfo.Status.ResponseMessage = "Connot connect to host";
+                originalRequest.param_Header_01.StatusInfo.Status.Success = false;       
+                return originalRequest;
+        }
+        
+        if(strStartsWith(tcpResponse.I13MSTA, "/")){
+            //Success
+            debug("SUCCESS RESPONSE");
+            
+            string responseLength = "";
+            string responseCode= "";        
+            
+            originalRequest.param_Header_01.PassbookList = udrCreate(InquiryPassbookResponse$Header$PassbookList);
+            originalRequest.param_Header_01.PassbookList.Passbook = listCreate(InquiryPassbookResponse$Header$PassbookList$Passbook);
+            
+            //response content list        
+            bytearray dataRefilled = refillTrimedColumn(abcs.data,sizeOf_TMQBK);
+            list<TMQBK_TgIn> tmqbkList = listCreate(TMQBK_TgIn);        
+            udrDecode("TMQBK_Decoder",tmqbkList,dataRefilled);
+            //debug("NUMBER OF TMQBK : " + listSize(tmqbkList));              
+            
+            for (TMQBK_TgIn tmqbk: tmqbkList){        
+                //debug(tmqbk);
+                responseLength = tmqbk.RSPLEN_ResponseLength;
+                responseCode = tmqbk.RSPCOD_ResponseCode;
+                
+                InquiryPassbookResponse$Header$PassbookList$Passbook passbook = udrCreate(InquiryPassbookResponse$Header$PassbookList$Passbook);
+                
+                string rawAccountNumber =                       unPackStr(tmqbk.TMPDACCT_AccountNumber);
+                string accountType =                            getStringValue(tmqbk.TMPDTYPE_AccountType);
+                string accountNumber =                          accountNumberFormat(rawAccountNumber,accountType);
+                if(accountType == "T"){
+                    //T in passbook is group, length 12
+                    accountNumber = passbookAccountNumberFormatForTypeT(rawAccountNumber);
+                }
+                passbook.AccountNumber =                        accountNumber;
+                passbook.AccountType =                          accountType;
+                passbook.ItemSequenceNumber =                   unPackStr(tmqbk.TMPDCRSEQ_ItemSequenceNo);
+                passbook.AccountGroupNumber =                   unPackStr(tmqbk.TMPDNUM_AccountGroupNumber);
+                strToLong(passbook.Sequence ,                   unPackStr(tmqbk.TMPDNBSQ_Sequence));
+                passbook.RecordType =                           getStringValue(tmqbk.TMPDNBTP_RecordType);
+                passbook.EntryStatus =                          getStringValue(tmqbk.TMPDNBST_EntryStatus);
+                passbook.TellerID =                             getStringValue(tmqbk.TMPDNBTL_Teller);
+                strToLong(passbook.LineNumberPosted ,           unPackStr(tmqbk.TMPDNBLN_LineNumberPosted));            
+                strToDate(passbook.PassbookPostedDate ,         unPackStr(tmqbk.TMPDNBD8_DatePostedInPB) , "yyyyMMdd" , "GMT+7");
+                strToDate(passbook.PassbookCreatedDate ,        unPackStr(tmqbk.TMPDEND8_DateEntered) , "yyyyMMdd" , "GMT+7");            
+                strToDouble(passbook.TransactionAmount ,        unPackCurrency(tmqbk.TMPDNBAM_Amount,2) );
+                strToDouble(passbook.CurrentBalance ,           unPackCurrency(tmqbk.TMPDNBPB_PassbookBalance,2));
+                strToDouble(passbook.LedgerBalance ,            unPackCurrency(tmqbk.TMPDNBPB_PassbookBalance,2));
+                passbook.TransactionCode =                      unPackStr(tmqbk.TMPDNBTC_TransactionCode);
+                passbook.TransactionType =                      getStringValue(tmqbk.TMPDNBDC_DebitcreditCode);
+                passbook.ReasonCode =                           getStringValue(tmqbk.TMPDNBRS_ReasonCode);
+                passbook.MnemonicCode =                         getStringValue(tmqbk.TMPDNCDE_Mnemonic);
+                passbook.TellerTransactionCode =                getStringValue(tmqbk.TMPDNTTC_TellerTransCode);
+                strToDate(passbook.MaturityDate ,               unPackStr(tmqbk.TMPDNBMD_MaturityDate) , "yyyyMMdd" , "GMT+7");
+                strToLong(passbook.Term ,                       unPackCurrency(tmqbk.TMPDNBTM_Term,0));
+                strToDouble(passbook.InteresRatePercentage ,    unPackPercentage(tmqbk.TMPDNBRT_InterestAmount)); //unpack from length 11,9
+                strToDouble(passbook.InterestAmount ,           "0");
+                
+    //debug("COL1 : " + tmqbk.TMPDPRS1_PrintingControl);
+    //debug("COL2 : " + tmqbk.TMPDPRS2_PrintingControl);
+    //debug("COL3 : " + tmqbk.TMPDTRCD_Term);
+                
+                listAdd(originalRequest.param_Header_01.PassbookList.Passbook, passbook);
+            }
+            
+            //Response Stattus Info
+            originalRequest.param_Header_01.StatusInfo.Status.ResponseCode = responseCode;
+            originalRequest.param_Header_01.StatusInfo.Status.ResponseMessage = "Success";
+            originalRequest.param_Header_01.StatusInfo.Status.Success = true;
+            
+            //Paging
+            boolean hasMoreRecord = false;        
+            if(abcs.abcsHeader.ICEOM == "*RBD"){
+                hasMoreRecord = true;
+            }
+            originalRequest.param_Header_01.PagingInfo = udrCreate(InquiryPassbookResponse$Header$PagingInfo);
+            originalRequest.param_Header_01.PagingInfo.Paging = udrCreate(InquiryPassbookResponse$Header$PagingInfo$Paging);
+            originalRequest.param_Header_01.PagingInfo.Paging.HasMoreRecord = hasMoreRecord;
+            
+        }
+        else{
+            debug("REJECTED RESPONSE");        
+            //Rejected DSP
+            if(strStartsWith(tcpResponse.I13MSTA, ".DSP")){
+                //Response Stattus Info
+                string responseCodeDSP = strREReplaceAll(tcpResponse.I13MSTA, "\\.", "");
+                originalRequest.param_Header_01.StatusInfo.Status.ResponseCode = responseCodeDSP;
+                originalRequest.param_Header_01.StatusInfo.Status.ResponseMessage = getDSPErrorDesc(responseCodeDSP);
+                originalRequest.param_Header_01.StatusInfo.Status.Success = false;       
+                return originalRequest;
+            }
+            //Rejected ABCS                
+            list<ABCS_Rejected_Header_With_Details_TgIn> abcsRejectedHeaderList = listCreate(ABCS_Rejected_Header_With_Details_TgIn);          
+            udrDecode("ABCS_Rejected_Header_With_Details_Decoder",abcsRejectedHeaderList,abcs.data);
+            ABCS_Rejected_Header_With_Details_TgIn abcsRejected = listGet(abcsRejectedHeaderList,0);
+            
+            //debug(abcsRejected);
+            
+            string errorCode = unPackStr(abcsRejected.ABCS_Rejected_Details.ERN1_ErrorCode);
+            string errorDesc = getABCSErrorDesc((string)errorCode);
+            string responseCode = abcsRejected.ABCS_Rejected_Header.RSPCOD_ResponseCode;
+            string responseMessage = strTrim(errorDesc + " " + abcsRejected.ABCS_Rejected_Details.VMSG_ErrorMsgText + " " + abcsRejected.ABCS_Rejected_Details.AVAILB_AvlBalATM);
+            
+            debug("errorCode : " + errorCode);
+            debug("errorDesc : " + errorDesc);
+                    
+            //Response Stattus Info
+            originalRequest.param_Header_01.StatusInfo.Status.ResponseCode = errorCode;
+            originalRequest.param_Header_01.StatusInfo.Status.ResponseMessage = responseMessage;
+            originalRequest.param_Header_01.StatusInfo.Status.Success = false;        
+        }
+    }else{
+            //Response Header
+            originalRequest.param_Header_01 = udrCreate(InquiryPassbookResponse$Header);
+            date responseTransactinDatetime = dateCreateCopy(originalRequest.param_Header.TransactionDateTime);
+            dateSetTimeZone(responseTransactinDatetime, "GMT+7");       
+            originalRequest.param_Header_01.ReferenceNo = originalRequest.param_Header.ReferenceNo;
+            originalRequest.param_Header_01.TransactionDateTime = responseTransactinDatetime;
+            originalRequest.param_Header_01.ChannelID = originalRequest.param_Header.ChannelID;
+            //Response StatusInfo
+            originalRequest.param_Header_01.StatusInfo = udrCreate(InquiryPassbookResponse$Header$StatusInfo);
+            originalRequest.param_Header_01.StatusInfo.Status = udrCreate(InquiryPassbookResponse$Header$StatusInfo$Status);
+            originalRequest.param_Header_01.StatusInfo.Status.UsageTime = dateCreateNowMilliseconds()-requestMillisec;
+            originalRequest.param_Header_01.StatusInfo.Status.Success = false;
+            originalRequest.param_Header_01.StatusInfo.Status.ResponseCode = "CBS8990";
+            originalRequest.param_Header_01.StatusInfo.Status.ResponseMessage = "Connection to CBS lost";
+    }
+    return originalRequest;
+}
+
+string generateInquiryPassbookResponseLog(DSP_Header_TgIn tcpResponse){
+     
+    //DSP Header
+    string dspLog = generateDSPHeaderLog(tcpResponse);
+    
+    //ABCS Header
+    list<ABCS_Header_With_Payload_TgIn> aList = listCreate(ABCS_Header_With_Payload_TgIn);  
+    udrDecode("ABCS_Header_With_Payload_Decoder", aList, tcpResponse.data);        
+    ABCS_Header_With_Payload_TgIn abcs = listGet(aList,0);
+    ABCS_Header_TgIn abcsHeader = mapABCSHeaderTgInFromABCSHeaderWithPayload(abcs);
+    string abcsLog = generateABCSHeaderLog(abcsHeader);
+    
+    //Content
+    string responseContent = "";
+    if(strStartsWith(tcpResponse.I13MSTA, "/")){
+        //success TMQBK
+        bytearray dataRefilled = refillTrimedColumn(abcs.data,sizeOf_TMQBK);
+        list<TMQBK_TgIn> tmqbkList = listCreate(TMQBK_TgIn);        
+        udrDecode("TMQBK_Decoder",tmqbkList,dataRefilled);
+        
+        string tmqbkLog = "";
+        for (TMQBK_TgIn tmqbk: tmqbkList){
+            tmqbkLog = tmqbkLog + padLogNumeric( unPackStrForLog(tmqbk.RSPLEN_ResponseLength,3) ,3);
+            tmqbkLog = tmqbkLog + padLogString ( tmqbk.RSPCOD_ResponseCode ,2);
+            tmqbkLog = tmqbkLog + padLogNumeric( unPackStrForLog(tmqbk.TMPDACCT_AccountNumber,19) ,19);
+            tmqbkLog = tmqbkLog + padLogString ( tmqbk.TMPDTYPE_AccountType ,1);
+            tmqbkLog = tmqbkLog + padLogNumeric( unPackStrForLog(tmqbk.TMPDCRSEQ_ItemSequenceNo,9) ,9);
+            tmqbkLog = tmqbkLog + padLogNumeric( unPackStrForLog(tmqbk.TMPDNUM_AccountGroupNumber,19) ,19);
+            tmqbkLog = tmqbkLog + padLogNumeric( unPackStrForLog(tmqbk.TMPDNBSQ_Sequence,9) ,9);
+            tmqbkLog = tmqbkLog + padLogString ( tmqbk.TMPDNBTP_RecordType ,2);
+            tmqbkLog = tmqbkLog + padLogString ( tmqbk.TMPDNBST_EntryStatus ,1);
+            tmqbkLog = tmqbkLog + padLogString ( tmqbk.TMPDNBTL_Teller ,10);
+            tmqbkLog = tmqbkLog + padLogNumeric( unPackStrForLog(tmqbk.TMPDNBLN_LineNumberPosted,2) ,2);
+            tmqbkLog = tmqbkLog + padLogNumeric( unPackStrForLog(tmqbk.TMPDNBD8_DatePostedInPB,8) ,8);
+            tmqbkLog = tmqbkLog + padLogNumeric( unPackStrForLog(tmqbk.TMPDEND8_DateEntered,8) ,8);
+            tmqbkLog = tmqbkLog + padLogNumeric( unPackStrForLog(tmqbk.TMPDNBAM_Amount,17) ,17);
+            tmqbkLog = tmqbkLog + padLogNumeric( unPackStrForLog(tmqbk.TMPDNBPB_PassbookBalance,17) ,17);
+            tmqbkLog = tmqbkLog + padLogNumeric( unPackStrForLog(tmqbk.TMPDNBTC_TransactionCode,3) ,3);
+            tmqbkLog = tmqbkLog + padLogString ( tmqbk.TMPDNBDC_DebitcreditCode ,1);
+            tmqbkLog = tmqbkLog + padLogString ( tmqbk.TMPDNBRS_ReasonCode ,1);
+            tmqbkLog = tmqbkLog + padLogString ( tmqbk.TMPDNCDE_Mnemonic ,3);
+            tmqbkLog = tmqbkLog + padLogString ( tmqbk.TMPDNTTC_TellerTransCode ,10);
+            tmqbkLog = tmqbkLog + padLogNumeric( unPackStrForLog(tmqbk.TMPDNBMD_MaturityDate,8) ,8);
+            tmqbkLog = tmqbkLog + padLogNumeric( unPackStrForLog(tmqbk.TMPDNBTM_Term,5) ,5);
+            tmqbkLog = tmqbkLog + padLogNumeric( unPackStrForLog(tmqbk.TMPDNBRT_InterestAmount,11) ,11); //=interest rate
+            tmqbkLog = tmqbkLog + padLogString ( tmqbk.TMPDPRS1_PrintingControl ,1);
+            tmqbkLog = tmqbkLog + padLogString ( tmqbk.TMPDPRS2_PrintingControl ,1);
+            tmqbkLog = tmqbkLog + padLogString ( tmqbk.TMPDTRCD_Term ,1);
+        }
+        responseContent = tmqbkLog;
+    }
+    else{
+        //rejected or cannot connect
+       debug("generateABCSRejectedLog");
+        responseContent = generateABCSRejectedLog(tcpResponse);
+    }
+    
+    //Combine socket string
+    return dspLog + abcsLog + responseContent;
+}
+
+
+/////////////////////////////////////////////////////////
+
+
+//ConfirmPassbookPrinted
+bytearray generateConfirmPassbookPrintedRequest(string uniqKey, WSCycle_confirmPassbookPrinted in) {
+    
+    list<any> objList = generateConfirmPassbookPrintedRequestSocket(uniqKey, in);
+    
+    DSP_Header_TgIn dspHeader = (DSP_Header_TgIn)listGet(objList,0);
+    ABCS_Header_TgIn abcsHeader = (ABCS_Header_TgIn)listGet(objList,1);
+    TLLOG_TgIn tllogRequest = (TLLOG_TgIn)listGet(objList,2);
+    
+    return combineABCSSocket(dspHeader, abcsHeader, tllogRequest);
+}
+
+string generateConfirmPassbookPrintedRequestLog(string uniqKey, WSCycle_confirmPassbookPrinted in){
+    
+    list<any> objList = generateConfirmPassbookPrintedRequestSocket(uniqKey, in);
+    
+    DSP_Header_TgIn dspHeader = (DSP_Header_TgIn)listGet(objList,0);
+    ABCS_Header_TgIn abcsHeader = (ABCS_Header_TgIn)listGet(objList,1);
+    TLLOG_TgIn tllogRequest = (TLLOG_TgIn)listGet(objList,2);
+    
+    //create request string log
+    string dspLog = generateDSPHeaderLog(dspHeader);
+    string abcsLog = generateABCSHeaderLog(abcsHeader);
+    string tllogLog = generateTLLOGLog(tllogRequest);
+    
+    return dspLog + abcsLog + tllogLog;
+}
+
+list<any> generateConfirmPassbookPrintedRequestSocket(string uniqKey, WSCycle_confirmPassbookPrinted in){
+    //DSP HEADER
+    string sourceID = "UPD##";
+    DSP_Header_TgIn dspHeader = createDefaultDSPHeaderForABCS(sourceID , uniqKey);    
+      
+    //ABCS HEADER
+    ABCS_Header_TgIn abcsHeader = createDefaultABCSHeader();
+    
+    //TLLOG
+    TLLOG_TgIn tllogRequest = createDefaultTLLOG();    
+    string channelID = in.param_Header.ChannelID;
+    string tellerID = in.param_Data.TellerID;
+    string journalSeq = (string)in.param_Data.JournalSeq;
+    string transCode = "90251";
+    string transactionDateStr = ""; dateToString(transactionDateStr ,in.param_Header.TransactionDateTime, "yyyyMMdd");
+    string effectiveDateStr = ""; dateToString(effectiveDateStr ,in.param_Data.EffectiveDate, "yyyyMMdd");
+    string controlUnit = getControlUnit(in.param_Header.ChannelID);
+    string workStation = in.param_Data.WorkStationID;
+    string remark = in.param_Data.Remark;    
+    inputDefaultValueTLLOG(tllogRequest, channelID, tellerID, journalSeq, transCode, transactionDateStr, effectiveDateStr, controlUnit, workStation, remark);
+    
+    string passbookSerialNumber = in.param_Passbook.PassbookSerialNumber;
+    string totalLinePrinted = (string)in.param_Passbook.TotalLinePrinted;
+    tllogRequest.TLBF11     = strInsert(tllogRequest.TLBF11,0,passbookSerialNumber); //"XXXX" + "F"
+    tllogRequest.TLBF15     = strInsert(tllogRequest.TLBF15, 0, totalLinePrinted); //"XXXX" + "F"
+    
+    list<any> objList = listCreate(any);
+    listAdd(objList,dspHeader);
+    listAdd(objList,abcsHeader);
+    listAdd(objList,tllogRequest);
+    return objList;
+}
+
+WSCycle_confirmPassbookPrinted generateConfirmPassbookPrintedResponse(WSCycle_confirmPassbookPrinted originalRequest , DSP_Header_TgIn tcpResponse ,  date requestDatetime , long requestMillisec,boolean errorUDR){
+    if(errorUDR==false){
+        debug("DSP Status : " + tcpResponse.I13MSTA);
+    
+    //debug(""); debug(""); debug("");
+    //debug("START DSP");
+    //debug(tcpResponse);
+    //debug("END DSP");
+    //debug(""); debug(""); debug("");
+            
+        list<ABCS_Header_With_Payload_TgIn> aList = listCreate(ABCS_Header_With_Payload_TgIn);        
+        udrDecode("ABCS_Header_With_Payload_Decoder", aList, tcpResponse.data);        
+        ABCS_Header_With_Payload_TgIn abcs = listGet(aList,0);
+        
+    //debug(""); debug(""); debug("");
+    //debug("START ABCS");
+    //debug(abcs);    
+    //debug("END ABCS");
+    //debug(""); debug(""); debug("");
+        
+        //Declare Response Object
+        originalRequest.param_Header_01 = udrCreate(ConfirmPassbookPrintedResponse$Header);
+        
+        //Response Header
+        date responseTransactinDatetime = dateCreateCopy(originalRequest.param_Header.TransactionDateTime);
+        dateSetTimeZone(responseTransactinDatetime, "GMT+7");        
+        originalRequest.param_Header_01.ReferenceNo = originalRequest.param_Header.ReferenceNo;
+        originalRequest.param_Header_01.TransactionDateTime = responseTransactinDatetime;        
+        originalRequest.param_Header_01.ChannelID = originalRequest.param_Header.ChannelID;
+        
+        //Response Status Info
+        originalRequest.param_Header_01.StatusInfo = udrCreate(ConfirmPassbookPrintedResponse$Header$StatusInfo);
+        originalRequest.param_Header_01.StatusInfo.Status = udrCreate(ConfirmPassbookPrintedResponse$Header$StatusInfo$Status);    
+        originalRequest.param_Header_01.StatusInfo.Status.UsageTime = dateCreateNowMilliseconds()-requestMillisec;
+        
+        //DSP response nothing then return response error 
+        if(tcpResponse.I13MSTA == "" || tcpResponse.I13MSTA == null){
+                //Response Stattus Info            
+                originalRequest.param_Header_01.StatusInfo.Status.ResponseCode = "";
+                originalRequest.param_Header_01.StatusInfo.Status.ResponseMessage = "Connot connect to host";
+                originalRequest.param_Header_01.StatusInfo.Status.Success = false;       
+                return originalRequest;
+        }
+        
+        if(strStartsWith(tcpResponse.I13MSTA, "/")){
+            //Success
+            debug("SUCCESS RESPONSE");
+            
+            string responseLength = "";
+            string responseCode= "";
+            string hostOk = "";
+                    
+            //response content list        
+            list<TMQHB_TgIn> tmqhbList = listCreate(TMQHB_TgIn);
+            udrDecode("TMQHB_Decoder",tmqhbList,abcs.data);     
+            //debug("NUMBER OF TMQHB : " + listSize(tmqhbList));           
+            for (TMQHB_TgIn tmqhb: tmqhbList){
+                
+                responseLength = tmqhb.RSPLEN_ResponseLength;
+                responseCode = tmqhb.RSPCOD_ResponseCode;
+                hostOk = tmqhb.HOSTOK_HostOK;          
+            }
+            
+            //Response Stattus Info
+            originalRequest.param_Header_01.StatusInfo.Status.ResponseCode = responseCode;
+            originalRequest.param_Header_01.StatusInfo.Status.ResponseMessage = "Success";
+            originalRequest.param_Header_01.StatusInfo.Status.Success = true;
+            
+            //no Paging
+        }
+        else{
+            debug("REJECTED RESPONSE");        
+            //Rejected DSP
+            if(strStartsWith(tcpResponse.I13MSTA, ".DSP")){
+                //Response Stattus Info
+                string responseCodeDSP = strREReplaceAll(tcpResponse.I13MSTA, "\\.", "");
+                originalRequest.param_Header_01.StatusInfo.Status.ResponseCode = responseCodeDSP;
+                originalRequest.param_Header_01.StatusInfo.Status.ResponseMessage = getDSPErrorDesc(responseCodeDSP);
+                originalRequest.param_Header_01.StatusInfo.Status.Success = false;       
+                return originalRequest;
+            }
+            //Rejected ABCS                
+            list<ABCS_Rejected_Header_With_Details_TgIn> abcsRejectedHeaderList = listCreate(ABCS_Rejected_Header_With_Details_TgIn);          
+            udrDecode("ABCS_Rejected_Header_With_Details_Decoder",abcsRejectedHeaderList,abcs.data);
+            ABCS_Rejected_Header_With_Details_TgIn abcsRejected = listGet(abcsRejectedHeaderList,0);
+            
+            //debug(abcsRejected);
+            
+            string errorCode = unPackStr(abcsRejected.ABCS_Rejected_Details.ERN1_ErrorCode);
+            string errorDesc = getABCSErrorDesc((string)errorCode);        
+            string responseCode = abcsRejected.ABCS_Rejected_Header.RSPCOD_ResponseCode;
+            string responseMessage = strTrim(errorDesc + " " + abcsRejected.ABCS_Rejected_Details.VMSG_ErrorMsgText + " " + abcsRejected.ABCS_Rejected_Details.AVAILB_AvlBalATM);
+            
+            debug("errorCode : " + errorCode);
+            debug("errorDesc : " + errorDesc);
+                    
+            //Response Stattus Info
+            originalRequest.param_Header_01.StatusInfo.Status.ResponseCode = errorCode;
+            originalRequest.param_Header_01.StatusInfo.Status.ResponseMessage = responseMessage;
+            originalRequest.param_Header_01.StatusInfo.Status.Success = false;        
+        }
+    }else{
+            //Response Header
+            originalRequest.param_Header_01 = udrCreate(ConfirmPassbookPrintedResponse$Header);
+            date responseTransactinDatetime = dateCreateCopy(originalRequest.param_Header.TransactionDateTime);
+            dateSetTimeZone(responseTransactinDatetime, "GMT+7");       
+            originalRequest.param_Header_01.ReferenceNo = originalRequest.param_Header.ReferenceNo;
+            originalRequest.param_Header_01.TransactionDateTime = responseTransactinDatetime;
+            originalRequest.param_Header_01.ChannelID = originalRequest.param_Header.ChannelID;
+            //Response StatusInfo
+            originalRequest.param_Header_01.StatusInfo = udrCreate(ConfirmPassbookPrintedResponse$Header$StatusInfo);
+            originalRequest.param_Header_01.StatusInfo.Status = udrCreate(ConfirmPassbookPrintedResponse$Header$StatusInfo$Status);
+            originalRequest.param_Header_01.StatusInfo.Status.UsageTime = dateCreateNowMilliseconds()-requestMillisec;
+            originalRequest.param_Header_01.StatusInfo.Status.Success = false;
+            originalRequest.param_Header_01.StatusInfo.Status.ResponseCode = "CBS8990";
+            originalRequest.param_Header_01.StatusInfo.Status.ResponseMessage = "Connection to CBS lost";
+    }
+    return originalRequest;
+}
+
+string generateConfirmPassbookPrintedResponseLog(DSP_Header_TgIn tcpResponse){
+    
+    //DSP Header
+    string dspLog = generateDSPHeaderLog(tcpResponse);
+    
+    //ABCS Header
+    list<ABCS_Header_With_Payload_TgIn> aList = listCreate(ABCS_Header_With_Payload_TgIn);        
+    udrDecode("ABCS_Header_With_Payload_Decoder", aList, tcpResponse.data);        
+    ABCS_Header_With_Payload_TgIn abcs = listGet(aList,0);
+    string abcsLog = generateABCSHeaderLog(mapABCSHeaderTgInFromABCSHeaderWithPayload(abcs));
+    
+    //Content
+    string responseContent = "";
+    if(strStartsWith(tcpResponse.I13MSTA, "/")){
+        //success TMQHB
+        bytearray dataRefilled = refillTrimedColumn(abcs.data,sizeOf_TMQHB);
+        list<TMQHB_TgIn> tmqhbList = listCreate(TMQHB_TgIn);        
+        udrDecode("TMQHB_Decoder",tmqhbList,dataRefilled);
+        
+        string tmqhbLog = "";
+        for (TMQHB_TgIn tmqhb: tmqhbList){
+            tmqhbLog = tmqhbLog + padLogNumeric ( unPackStrForLog(tmqhb.RSPLEN_ResponseLength,3) ,3);
+            tmqhbLog = tmqhbLog + padLogString ( tmqhb.RSPCOD_ResponseCode ,2);
+            tmqhbLog = tmqhbLog + padLogString ( tmqhb.HOSTOK_HostOK ,1);
+        }
+        responseContent = tmqhbLog;
+    }
+    else{
+        //rejected or cannot connect
+        responseContent = generateABCSRejectedLog(tcpResponse);
+    }
+    
+    //Combine socket string
+    return dspLog + abcsLog + responseContent;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+//InquiryPassbook2 Compacted
+bytearray generateInquiryPassbook2Request(string uniqKey, WSCycle_inquiryPassbookCompacted in) {
+    
+    list<any> objList = generateInquiryPassbook2RequestSocket(uniqKey, in);
+    
+    DSP_Header_TgIn dspHeader = (DSP_Header_TgIn)listGet(objList,0);
+    ABCS_Header_TgIn abcsHeader = (ABCS_Header_TgIn)listGet(objList,1);
+    TLLOG_TgIn tllogRequest = (TLLOG_TgIn)listGet(objList,2);
+    
+    return combineABCSSocket(dspHeader, abcsHeader, tllogRequest);
+}
+
+string generateInquiryPassbook2RequestLog(string uniqKey, WSCycle_inquiryPassbookCompacted in){
+    
+    list<any> objList = generateInquiryPassbook2RequestSocket(uniqKey, in);
+    
+    DSP_Header_TgIn dspHeader = (DSP_Header_TgIn)listGet(objList,0);
+    ABCS_Header_TgIn abcsHeader = (ABCS_Header_TgIn)listGet(objList,1);
+    TLLOG_TgIn tllogRequest = (TLLOG_TgIn)listGet(objList,2);
+    
+    //create request string log
+    string dspLog = generateDSPHeaderLog(dspHeader);
+    string abcsLog = generateABCSHeaderLog(abcsHeader);
+    string tllogLog = generateTLLOGLog(tllogRequest);
+    
+    return dspLog + abcsLog + tllogLog;
+}
+
+list<any> generateInquiryPassbook2RequestSocket(string uniqKey, WSCycle_inquiryPassbookCompacted in){
+    //DSP HEADER
+    string sourceID = "UPD##";
+    DSP_Header_TgIn dspHeader = createDefaultDSPHeaderForABCS(sourceID , uniqKey);    
+      
+    //ABCS HEADER
+    ABCS_Header_TgIn abcsHeader = createDefaultABCSHeader();
+    
+    //TLLOG
+    TLLOG_TgIn tllogRequest = createDefaultTLLOG();    
+    string channelID = in.param_Header.ChannelID;
+    string tellerID = in.param_Data.TellerID;
+    string journalSeq = (string)in.param_Data.JournalSeq;
+    string transCode = "90250";
+    string transactionDateStr = ""; dateToString(transactionDateStr ,in.param_Header.TransactionDateTime, "yyyyMMdd");
+    string effectiveDateStr = ""; dateToString(effectiveDateStr ,in.param_Data.EffectiveDate, "yyyyMMdd");
+    string controlUnit = getControlUnit(in.param_Header.ChannelID);
+    string workStation = in.param_Data.WorkStationID;
+    string remark = in.param_Data.Remark;    
+    inputDefaultValueTLLOG(tllogRequest, channelID, tellerID, journalSeq, transCode, transactionDateStr, effectiveDateStr, controlUnit, workStation, remark);
+    
+    string passbookSerialNumber = in.param_Passbook.PassbookSerialNumber;
+    string lastLineNumber = (string)in.param_Passbook.LastLineNumber;
+    tllogRequest.TLBF11     = strInsert(tllogRequest.TLBF11,0,passbookSerialNumber); //"XXXX" + "F"
+    tllogRequest.TLBF15     = strInsert(tllogRequest.TLBF15, 0, lastLineNumber); //"XXXX" + "F"
+    
+    list<any> objList = listCreate(any);
+    listAdd(objList,dspHeader);
+    listAdd(objList,abcsHeader);
+    listAdd(objList,tllogRequest);
+    return objList;
+}
+
+WSCycle_inquiryPassbookCompacted generateInquiryPassbook2Response(WSCycle_inquiryPassbookCompacted originalRequest , DSP_Header_TgIn tcpResponse ,  date requestDatetime , long requestMillisec,boolean errorUDR){
+    if(errorUDR==false){
+        debug("DSP Status : " + tcpResponse.I13MSTA);
+        
+        list<ABCS_Header_With_Payload_TgIn> aList = listCreate(ABCS_Header_With_Payload_TgIn);        
+        udrDecode("ABCS_Header_With_Payload_Decoder", aList, tcpResponse.data);        
+        ABCS_Header_With_Payload_TgIn abcs = listGet(aList,0);
+        
+        //Declare Response Object
+        originalRequest.param_Header_01 = udrCreate(InquiryPassbookCompactedResponse$Header);
+        
+        //Response Header
+        date responseTransactinDatetime = dateCreateCopy(originalRequest.param_Header.TransactionDateTime);
+        dateSetTimeZone(responseTransactinDatetime, "GMT+7");        
+        originalRequest.param_Header_01.ReferenceNo = originalRequest.param_Header.ReferenceNo;
+        originalRequest.param_Header_01.TransactionDateTime = responseTransactinDatetime;        
+        originalRequest.param_Header_01.ChannelID = originalRequest.param_Header.ChannelID;
+        
+        //Response Status Info
+        originalRequest.param_Header_01.StatusInfo = udrCreate(InquiryPassbookCompactedResponse$Header$StatusInfo);
+        originalRequest.param_Header_01.StatusInfo.Status = udrCreate(InquiryPassbookCompactedResponse$Header$StatusInfo$Status);    
+        originalRequest.param_Header_01.StatusInfo.Status.UsageTime = dateCreateNowMilliseconds()-requestMillisec;
+        
+        //DSP response nothing then return response error 
+        if(tcpResponse.I13MSTA == "" || tcpResponse.I13MSTA == null){
+                //Response Stattus Info            
+                originalRequest.param_Header_01.StatusInfo.Status.ResponseCode = "";
+                originalRequest.param_Header_01.StatusInfo.Status.ResponseMessage = "Connot connect to host";
+                originalRequest.param_Header_01.StatusInfo.Status.Success = false;       
+                return originalRequest;
+        }
+        
+        if(strStartsWith(tcpResponse.I13MSTA, "/")){
+            //Success
+            debug("SUCCESS RESPONSE");
+            
+            string responseLength = "";
+            string responseCode= "";        
+            
+            originalRequest.param_Header_01.PassbookList = udrCreate(InquiryPassbookCompactedResponse$Header$PassbookList);
+            originalRequest.param_Header_01.PassbookList.Passbook = listCreate(InquiryPassbookCompactedResponse$Header$PassbookList$Passbook);
+            
+            //response content list        
+            bytearray dataRefilled = refillTrimedColumn(abcs.data,sizeOf_TMQBK);
+            list<TMQBK_TgIn> tmqbkList = listCreate(TMQBK_TgIn);        
+            udrDecode("TMQBK_Decoder",tmqbkList,dataRefilled);
+            //debug("NUMBER OF TMQBK : " + listSize(tmqbkList));              
+            
+            int idx = 0;
+            for (TMQBK_TgIn tmqbk: tmqbkList){        
+                idx = idx + 1;
+                debug((string)idx + "----------------------TMQBK----------------------");
+                debug(tmqbk);
+                debug((string)idx + "----------------------END TMQBK------------------");
+                responseLength = tmqbk.RSPLEN_ResponseLength;
+                responseCode = tmqbk.RSPCOD_ResponseCode;
+                
+                InquiryPassbookCompactedResponse$Header$PassbookList$Passbook passbook = udrCreate(InquiryPassbookCompactedResponse$Header$PassbookList$Passbook);
+                
+                string rawAccountNumber =                       unPackStr(tmqbk.TMPDACCT_AccountNumber);
+                string accountType =                            getStringValue(tmqbk.TMPDTYPE_AccountType);
+                string accountNumber =                          accountNumberFormat(rawAccountNumber,accountType);
+                if(accountType == "T"){
+                    //T in passbook is group, length 12
+                    accountNumber = passbookAccountNumberFormatForTypeT(rawAccountNumber);
+                }
+                string AccountNumber =                                              accountNumber;
+                string AccountType =                                                accountType;
+                string ItemSequenceNumber =                                         unPackStr(tmqbk.TMPDCRSEQ_ItemSequenceNo);
+                string AccountGroupNumber =                                         unPackStr(tmqbk.TMPDNUM_AccountGroupNumber);
+                string Sequence =                                                   unPackStr(tmqbk.TMPDNBSQ_Sequence);
+                string RecordType =                                                 getStringValue(tmqbk.TMPDNBTP_RecordType);
+                string EntryStatus =                                                getStringValue(tmqbk.TMPDNBST_EntryStatus);
+                string TellerID =                                                   getStringValue(tmqbk.TMPDNBTL_Teller);
+                string LineNumberPosted =                                           unPackStr(tmqbk.TMPDNBLN_LineNumberPosted);
+                string PassbookPostedDate =                                         unPackStr(tmqbk.TMPDNBD8_DatePostedInPB);
+                string PassbookCreatedDate =                                        unPackStr(tmqbk.TMPDEND8_DateEntered);
+                string TransactionAmount =                                          unPackCurrency(tmqbk.TMPDNBAM_Amount,2);
+                string CurrentBalance =                                             unPackCurrency(tmqbk.TMPDNBPB_PassbookBalance,2);
+                string LedgerBalance =                                              unPackCurrency(tmqbk.TMPDNBPB_PassbookBalance,2);
+                string TransactionCode =                                            unPackStr(tmqbk.TMPDNBTC_TransactionCode);
+                string TransactionType =                                            getStringValue(tmqbk.TMPDNBDC_DebitcreditCode);
+                string ReasonCode =                                                 getStringValue(tmqbk.TMPDNBRS_ReasonCode);
+                string MnemonicCode =                                               getStringValue(tmqbk.TMPDNCDE_Mnemonic);
+                string TellerTransactionCode =                                      getStringValue(tmqbk.TMPDNTTC_TellerTransCode);
+                string MaturityDate =                                               unPackStr(tmqbk.TMPDNBMD_MaturityDate);
+                string Term =                                                       unPackCurrency(tmqbk.TMPDNBTM_Term,0);
+                string InteresRatePercentage =                                      unPackPercentage(tmqbk.TMPDNBRT_InterestAmount); //unpack from length 11,9
+                string InterestAmount =                                             "0";
+                
+                passbook.Line = AccountNumber;
+                passbook.Line = passbook.Line + "|" + AccountType;
+                passbook.Line = passbook.Line + "|" + ItemSequenceNumber;
+                passbook.Line = passbook.Line + "|" + AccountGroupNumber;
+                passbook.Line = passbook.Line + "|" + Sequence;
+                passbook.Line = passbook.Line + "|" + RecordType;
+                passbook.Line = passbook.Line + "|" + EntryStatus;
+                passbook.Line = passbook.Line + "|" + TellerID;
+                passbook.Line = passbook.Line + "|" + LineNumberPosted;
+                passbook.Line = passbook.Line + "|" + PassbookPostedDate;
+                passbook.Line = passbook.Line + "|" + PassbookCreatedDate;
+                passbook.Line = passbook.Line + "|" + TransactionAmount;
+                passbook.Line = passbook.Line + "|" + CurrentBalance;
+                passbook.Line = passbook.Line + "|" + LedgerBalance;
+                passbook.Line = passbook.Line + "|" + TransactionCode;
+                passbook.Line = passbook.Line + "|" + TransactionType;
+                passbook.Line = passbook.Line + "|"  + ReasonCode;
+                passbook.Line = passbook.Line + "|" + MnemonicCode;
+                passbook.Line = passbook.Line + "|" + TellerTransactionCode;
+                passbook.Line = passbook.Line + "|" + MaturityDate;
+                passbook.Line = passbook.Line + "|" + Term;
+                passbook.Line = passbook.Line + "|" + InteresRatePercentage;
+                passbook.Line = passbook.Line + "|" + InterestAmount;
+                
+                debug((string)idx + "----------------------LINE----------------------");
+                debug(passbook.Line);
+                debug((string)idx + "----------------------END LINE------------------");
+                
+                //string passbbokLineDate = strSubstring(tmqbk.TMPDNBD8_DatePostedInPB, 6, 7) + "/" + strSubstring(tmqbk.TMPDNBD8_DatePostedInPB, 4, 5) + "/" + strSubstring(tmqbk.TMPDNBD8_DatePostedInPB, 0, 3);
+                //long passbookLineCode; strToLong(passbookLineCode, unPackStr(tmqbk.TMPDNBSQ_Sequence));
+                //string deposit = "xxx"; //?
+                //string withdraw = "yyy"; //?
+                //string balance = "zzz"; //?
+                //string code = "1234"; //?
+                //passbook.Line = passbbokLineDate + "|" + (string)passbookLineCode + "|" + deposit + "|" + withdraw + "|" + balance + "|" + code;
+                            
+                listAdd(originalRequest.param_Header_01.PassbookList.Passbook, passbook);
+            }
+            
+            //Response Stattus Info
+            originalRequest.param_Header_01.StatusInfo.Status.ResponseCode = responseCode;
+            originalRequest.param_Header_01.StatusInfo.Status.ResponseMessage = "Success";
+            originalRequest.param_Header_01.StatusInfo.Status.Success = true;
+            
+            //Paging
+            boolean hasMoreRecord = false;        
+            if(abcs.abcsHeader.ICEOM == "*RBD"){
+                hasMoreRecord = true;
+            }
+            originalRequest.param_Header_01.PagingInfo = udrCreate(InquiryPassbookCompactedResponse$Header$PagingInfo);
+            originalRequest.param_Header_01.PagingInfo.Paging = udrCreate(InquiryPassbookCompactedResponse$Header$PagingInfo$Paging);
+            originalRequest.param_Header_01.PagingInfo.Paging.HasMoreRecord = hasMoreRecord;
+            
+        }
+        else{
+            debug("REJECTED RESPONSE");        
+            //Rejected DSP
+            if(strStartsWith(tcpResponse.I13MSTA, ".DSP")){
+                //Response Stattus Info
+                string responseCodeDSP = strREReplaceAll(tcpResponse.I13MSTA, "\\.", "");
+                originalRequest.param_Header_01.StatusInfo.Status.ResponseCode = responseCodeDSP;
+                originalRequest.param_Header_01.StatusInfo.Status.ResponseMessage = getDSPErrorDesc(responseCodeDSP);
+                originalRequest.param_Header_01.StatusInfo.Status.Success = false;       
+                return originalRequest;
+            }
+            //Rejected ABCS                
+            list<ABCS_Rejected_Header_With_Details_TgIn> abcsRejectedHeaderList = listCreate(ABCS_Rejected_Header_With_Details_TgIn);          
+            udrDecode("ABCS_Rejected_Header_With_Details_Decoder",abcsRejectedHeaderList,abcs.data);
+            ABCS_Rejected_Header_With_Details_TgIn abcsRejected = listGet(abcsRejectedHeaderList,0);
+            
+            //debug(abcsRejected);
+            
+            string errorCode = unPackStr(abcsRejected.ABCS_Rejected_Details.ERN1_ErrorCode);
+            string errorDesc = getABCSErrorDesc((string)errorCode);
+            string responseCode = abcsRejected.ABCS_Rejected_Header.RSPCOD_ResponseCode;
+            string responseMessage = strTrim(errorDesc + " " + abcsRejected.ABCS_Rejected_Details.VMSG_ErrorMsgText + " " + abcsRejected.ABCS_Rejected_Details.AVAILB_AvlBalATM);
+            
+            debug("errorCode : " + errorCode);
+            debug("errorDesc : " + errorDesc);
+                    
+            //Response Stattus Info
+            originalRequest.param_Header_01.StatusInfo.Status.ResponseCode = errorCode;
+            originalRequest.param_Header_01.StatusInfo.Status.ResponseMessage = responseMessage;
+            originalRequest.param_Header_01.StatusInfo.Status.Success = false;        
+        }
+    }else{
+            //Response Header
+            originalRequest.param_Header_01 = udrCreate(InquiryPassbookCompactedResponse$Header);
+            date responseTransactinDatetime = dateCreateCopy(originalRequest.param_Header.TransactionDateTime);
+            dateSetTimeZone(responseTransactinDatetime, "GMT+7");       
+            originalRequest.param_Header_01.ReferenceNo = originalRequest.param_Header.ReferenceNo;
+            originalRequest.param_Header_01.TransactionDateTime = responseTransactinDatetime;
+            originalRequest.param_Header_01.ChannelID = originalRequest.param_Header.ChannelID;
+            //Response StatusInfo
+            originalRequest.param_Header_01.StatusInfo = udrCreate(InquiryPassbookCompactedResponse$Header$StatusInfo);
+            originalRequest.param_Header_01.StatusInfo.Status = udrCreate(InquiryPassbookCompactedResponse$Header$StatusInfo$Status);
+            originalRequest.param_Header_01.StatusInfo.Status.UsageTime = dateCreateNowMilliseconds()-requestMillisec;
+            originalRequest.param_Header_01.StatusInfo.Status.Success = false;
+            originalRequest.param_Header_01.StatusInfo.Status.ResponseCode = "CBS8990";
+            originalRequest.param_Header_01.StatusInfo.Status.ResponseMessage = "Connection to CBS lost";
+    }
+    return originalRequest;
+}
+
+string generateInquiryPassbook2ResponseLog(DSP_Header_TgIn tcpResponse){
+    
+    //DSP Header
+    string dspLog = generateDSPHeaderLog(tcpResponse);
+    
+    //ABCS Header
+    list<ABCS_Header_With_Payload_TgIn> aList = listCreate(ABCS_Header_With_Payload_TgIn);        
+    udrDecode("ABCS_Header_With_Payload_Decoder", aList, tcpResponse.data);        
+    ABCS_Header_With_Payload_TgIn abcs = listGet(aList,0);
+    string abcsLog = generateABCSHeaderLog(mapABCSHeaderTgInFromABCSHeaderWithPayload(abcs));
+    
+    //Content
+    string responseContent = "";
+    if(strStartsWith(tcpResponse.I13MSTA, "/")){
+        //success TMQBK
+        bytearray dataRefilled = refillTrimedColumn(abcs.data,sizeOf_TMQBK);
+        list<TMQBK_TgIn> tmqbkList = listCreate(TMQBK_TgIn);        
+        udrDecode("TMQBK_Decoder",tmqbkList,dataRefilled);
+        
+        string tmqbkLog = "";
+        for (TMQBK_TgIn tmqbk: tmqbkList){
+            tmqbkLog = tmqbkLog + padLogNumeric( unPackStrForLog(tmqbk.RSPLEN_ResponseLength,3) ,3);
+            tmqbkLog = tmqbkLog + padLogString ( tmqbk.RSPCOD_ResponseCode ,2);
+            tmqbkLog = tmqbkLog + padLogNumeric( unPackStrForLog(tmqbk.TMPDACCT_AccountNumber,19) ,19);
+            tmqbkLog = tmqbkLog + padLogString ( tmqbk.TMPDTYPE_AccountType ,1);
+            tmqbkLog = tmqbkLog + padLogNumeric( unPackStrForLog(tmqbk.TMPDCRSEQ_ItemSequenceNo,9) ,9);
+            tmqbkLog = tmqbkLog + padLogNumeric( unPackStrForLog(tmqbk.TMPDNUM_AccountGroupNumber,19) ,19);
+            tmqbkLog = tmqbkLog + padLogNumeric( unPackStrForLog(tmqbk.TMPDNBSQ_Sequence,9) ,9);
+            tmqbkLog = tmqbkLog + padLogString ( tmqbk.TMPDNBTP_RecordType ,2);
+            tmqbkLog = tmqbkLog + padLogString ( tmqbk.TMPDNBST_EntryStatus ,1);
+            tmqbkLog = tmqbkLog + padLogString ( tmqbk.TMPDNBTL_Teller ,10);
+            tmqbkLog = tmqbkLog + padLogNumeric( unPackStrForLog(tmqbk.TMPDNBLN_LineNumberPosted,2) ,2);
+            tmqbkLog = tmqbkLog + padLogNumeric( unPackStrForLog(tmqbk.TMPDNBD8_DatePostedInPB,8) ,8);
+            tmqbkLog = tmqbkLog + padLogNumeric( unPackStrForLog(tmqbk.TMPDEND8_DateEntered,8) ,8);
+            tmqbkLog = tmqbkLog + padLogNumeric( unPackStrForLog(tmqbk.TMPDNBAM_Amount,17) ,17);
+            tmqbkLog = tmqbkLog + padLogNumeric( unPackStrForLog(tmqbk.TMPDNBPB_PassbookBalance,17) ,17);
+            tmqbkLog = tmqbkLog + padLogNumeric( unPackStrForLog(tmqbk.TMPDNBTC_TransactionCode,3) ,3);
+            tmqbkLog = tmqbkLog + padLogString ( tmqbk.TMPDNBDC_DebitcreditCode ,1);
+            tmqbkLog = tmqbkLog + padLogString ( tmqbk.TMPDNBRS_ReasonCode ,1);
+            tmqbkLog = tmqbkLog + padLogString ( tmqbk.TMPDNCDE_Mnemonic ,3);
+            tmqbkLog = tmqbkLog + padLogString ( tmqbk.TMPDNTTC_TellerTransCode ,10);
+            tmqbkLog = tmqbkLog + padLogNumeric( unPackStrForLog(tmqbk.TMPDNBMD_MaturityDate,8) ,8);
+            tmqbkLog = tmqbkLog + padLogNumeric( unPackStrForLog(tmqbk.TMPDNBTM_Term,5) ,5);
+            tmqbkLog = tmqbkLog + padLogNumeric( unPackStrForLog(tmqbk.TMPDNBRT_InterestAmount,11) ,11); //=interest rate
+            tmqbkLog = tmqbkLog + padLogString ( tmqbk.TMPDPRS1_PrintingControl ,1);
+            tmqbkLog = tmqbkLog + padLogString ( tmqbk.TMPDPRS2_PrintingControl ,1);
+            tmqbkLog = tmqbkLog + padLogString ( tmqbk.TMPDTRCD_Term ,1);
+        }
+        responseContent = tmqbkLog;
+    }
+    else{
+        //rejected or cannot connect
+        responseContent = generateABCSRejectedLog(tcpResponse);
+    }
+    
+    //Combine socket string
+    return dspLog + abcsLog + responseContent;
+}
+
+string passbookAccountNumberFormatForTypeT(string accountNumber){
+    int length = 0;
+    if(strLength(accountNumber)<19){
+        int paddingLength = 19-strLength(accountNumber);
+        for(int i=0;i<paddingLength;i++){
+          accountNumber = strInsert(accountNumber,0,"0");
+        }
+    }
+    // #length = 12; 
+    return strSubstring(accountNumber,7,19);
+}
+]]></string>
+</exportmultiplex>
