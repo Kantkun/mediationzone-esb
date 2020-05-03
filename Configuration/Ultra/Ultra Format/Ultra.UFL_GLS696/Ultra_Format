@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Ultra_Format" ref_path="ultra_format[Internal]/storable[ultra_format]/storable[Data]">
+   <string name="Definition"><![CDATA[//UFL_GLS696
+external GLS696_RQ{
+    ascii GLS_PARAM :static_size(256),character_encoding("cp838"),padded_with(0x40);
+};
+
+external GLS696_RS{    
+    ascii GLS_PARAM :static_size(256),character_encoding("cp838"),padded_with(0x40);
+};
+
+
+// Response Decoder
+in_map GLS696_RS_InMap: external (GLS696_RS), target_internal(GLS696_RS_TI){automatic;};
+decoder GLS696_RS_Decode: in_map(GLS696_RS_InMap);
+
+//Input Encoder
+in_map GLS696_RQ_InMap: external (GLS696_RQ), target_internal(GLS696_RQ_TI){automatic;};
+out_map GLS696_RQ_OutMap: external (GLS696_RQ), internal(GLS696_RQ_TI){automatic;};
+encoder GLS696_RQ_Encode: out_map(GLS696_RQ_OutMap);
+decoder GLS696_RQ_Decode: in_map(GLS696_RQ_InMap);]]></string>
+   <boolean name="IsValid" value="true"/>
+</exportmultiplex>

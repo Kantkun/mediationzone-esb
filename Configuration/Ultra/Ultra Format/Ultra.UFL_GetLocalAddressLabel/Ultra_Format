@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Ultra_Format" ref_path="ultra_format[Internal]/storable[ultra_format]/storable[Data]">
+   <string name="Definition"><![CDATA[external LOCALADDR_LABEL_RQ{       
+    ascii REQFLG:static_size(1),character_encoding("cp838");
+};
+
+external LOCALADDR_LABEL_RS{    
+    ascii MOOLBL:static_size(5),character_encoding("utf8"),encode_value("หมู่");
+    ascii FLRLBL:static_size(8),character_encoding("utf8");
+    ascii ROMLBL:static_size(5),character_encoding("utf8");
+    ascii SOILBL:static_size(3),character_encoding("utf8");
+    ascii RODLBL:static_size(3),character_encoding("utf8");
+};
+
+
+// Response Decoder
+in_map LOCALADDR_LABEL_RS_InMap: external (LOCALADDR_LABEL_RS), target_internal(LOCALADDR_LABEL_RS_TI){automatic;};
+decoder LOCALADDR_LABEL_RS_Decode: in_map(LOCALADDR_LABEL_RS_InMap);
+
+//Input Encoder
+in_map LOCALADDR_LABEL_RQ_InMap: external (LOCALADDR_LABEL_RQ), target_internal(LOCALADDR_LABEL_RQ_TI){automatic;};
+out_map LOCALADDR_LABEL_RQ_OutMap: external (LOCALADDR_LABEL_RQ), internal(LOCALADDR_LABEL_RQ_TI){automatic;};
+encoder LOCALADDR_LABEL_RQ_Encode: out_map(LOCALADDR_LABEL_RQ_OutMap);
+decoder LOCALADDR_LABEL_RQ_Decode: in_map(LOCALADDR_LABEL_RQ_InMap);]]></string>
+   <boolean name="IsValid" value="true"/>
+</exportmultiplex>

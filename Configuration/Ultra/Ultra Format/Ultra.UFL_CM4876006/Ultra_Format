@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Ultra_Format" ref_path="ultra_format[Internal]/storable[ultra_format]/storable[Data]">
+   <string name="Definition"><![CDATA[external CM4876006{    
+    ascii GFBANK:static_size(2),padded_with(0xf0),align(right),character_encoding("cp838");
+    ascii GFCRDT:static_size(8),padded_with(0xf0),align(right),character_encoding("cp838");
+    ascii GFSEQN:static_size(5),padded_with(0xf0),align(right),character_encoding("cp838");
+    ascii GFIPAD:static_size(50),padded_with(0x40),align(left),character_encoding("cp838");
+    ascii GFFNAM:static_size(100),padded_with(0x40),align(left),character_encoding("cp838");
+    ascii GFFDNM:static_size(100),padded_with(0x40),align(left),character_encoding("cp838");
+    ascii GFHMNM:static_size(10),padded_with(0x40),align(left),character_encoding("cp838");
+    ascii WKTFNM:static_size(100),padded_with(0x40),align(left),character_encoding("cp838");
+    ascii WKFLAG:static_size(1),padded_with(0x40),align(left),character_encoding("cp838");
+    ascii WKERRDC:static_size(50),padded_with(0x40),align(left),character_encoding("cp838");
+};
+
+/*external CM4876005_RS{
+    ascii GFBANK:static_size(2),padded_with(0xf0),align(right),character_encoding("cp838");
+    ascii GFCRDT:static_size(8),padded_with(0xf0),align(right),character_encoding("cp838");
+    ascii GFSEQN:static_size(5),padded_with(0xf0),align(right),character_encoding("cp838");
+    ascii GFIPAD:static_size(50),padded_with(0x40),align(left),character_encoding("cp838");
+    ascii GFFNAM:static_size(100),padded_with(0x40),align(left),character_encoding("cp838");
+    ascii GFFDNM:static_size(100),padded_with(0x40),align(left),character_encoding("cp838");
+    ascii GFHMNM:static_size(10),padded_with(0x40),align(left),character_encoding("cp838");
+    ascii WKTFNM:static_size(100),padded_with(0x40),align(left),character_encoding("cp838");
+    ascii WKFLAG:static_size(1),padded_with(0x40),align(left),character_encoding("cp838");
+};*/
+
+//Input Encoder
+out_map CM4876006_OutMap: external (CM4876006), internal(CM4876006_TI) {automatic;};
+encoder CM4876006_Encode: out_map(CM4876006_OutMap);
+
+
+// Response Decoders
+in_map CM4876006_InMap: external(CM4876006), target_internal(CM4876006_TI) {automatic;};
+decoder CM4876006_Decode: in_map(CM4876006_InMap);
+]]></string>
+   <boolean name="IsValid" value="true"/>
+</exportmultiplex>

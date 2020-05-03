@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Ultra_Format" ref_path="ultra_format[Internal]/storable[ultra_format]/storable[Data]">
+   <string name="Definition"><![CDATA[external MBASE_CD35556_RQ {
+	ascii CDNUM_AccountGroupNumber : character_encoding("cp838"), static_size(19), align(right), padded_with(0xf0);
+	ascii ACCTNO_AccountNumber : character_encoding("cp838"), static_size(19), align(right), padded_with(0xf0);
+	ascii FILIND_FileIndicator : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+	ascii RUNBAL_LedgerBalance : character_encoding("cp838"), static_size(17), align(right), padded_with(0xf0);
+};
+external MBASE_CD35556_RS {
+	ascii CDNUM_AccountGroupNumber : character_encoding("cp838"), static_size(19), align(right), padded_with(0xf0);
+	ascii ACCTNO_AccountNumber : character_encoding("cp838"), static_size(19), align(right), padded_with(0xf0);
+	ascii CDSEQN_ItemSequence : character_encoding("cp838"), static_size(9), align(right), padded_with(0xf0);
+	ascii CBAL_LedgerBalance : character_encoding("cp838"), static_size(17), align(right), padded_with(0xf0);
+	ascii TYPE_ProductCode : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii TTDINT_TermToDateInterest : character_encoding("cp838"), static_size(15), align(right), padded_with(0xf0);
+	ascii CIFNO_CIFNumber : character_encoding("cp838"), static_size(19),padded_with(0xf0),align(right);
+	ascii CDDLT7_DateOfLastTrx : character_encoding("cp838"), static_size(8);
+	ascii CDMLDT8_LastMaintDate : character_encoding("cp838"), static_size(8);
+	ascii NEWFLD1 : character_encoding("cp838"), static_size(1);
+	ascii NEWFLD2 : character_encoding("cp838"), static_size(10);
+	ascii NEWFLD3 : character_encoding("cp838"), static_size(17), align(right), padded_with(0xf0);
+	ascii NEWFLD4 : character_encoding("cp838"), static_size(19), align(right), padded_with(0xf0);
+	ascii NEWFLD5 : character_encoding("cp838"), static_size(50);
+    ascii NEWFLD6 : character_encoding("cp838"), static_size(40); //Account Name
+    ascii ISSDT_DateIssue : character_encoding("cp838"), static_size(8);
+};
+
+//Input Encoder
+in_map MBASE_CD35556_RQ_InMap: external (MBASE_CD35556_RQ), target_internal(MBASE_CD35556_RQ_TI){automatic;};
+out_map MBASE_CD35556_RQ_OutMap: external (MBASE_CD35556_RQ), internal(MBASE_CD35556_RQ_TI) {automatic;};
+encoder MBASE_CD35556_RQ_Encode: out_map(MBASE_CD35556_RQ_OutMap);
+
+
+// Response Decoders
+in_map MBASE_CD35556_RS_InMap: external(MBASE_CD35556_RS), target_internal(MBASE_CD35556_RS_TI) {automatic;};
+decoder MBASE_CD35556_RS_Decode: in_map(MBASE_CD35556_RS_InMap);]]></string>
+   <boolean name="IsValid" value="true"/>
+</exportmultiplex>

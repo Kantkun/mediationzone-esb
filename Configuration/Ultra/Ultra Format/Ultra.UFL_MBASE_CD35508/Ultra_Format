@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Ultra_Format" ref_path="ultra_format[Internal]/storable[ultra_format]/storable[Data]">
+   <string name="Definition"><![CDATA[external MBASE_CD35508_RQ {
+	ascii CHNUM_AccountGroupNumber : character_encoding("cp838"), static_size(19), align(right), padded_with(0xf0);
+	ascii FRDAT8_StartDate : character_encoding("cp838"), static_size(8), align(right), padded_with(0xf0);
+	ascii TODAT8_EndDate : character_encoding("cp838"), static_size(8), align(right), padded_with(0xf0);
+	ascii CHPSTD_DatePostedYYYDDD : character_encoding("cp838"), static_size(8), align(right), padded_with(0xf0);
+	ascii CHPODR_PostingOrder : character_encoding("cp838"), static_size(9), align(right), padded_with(0xf0);
+	ascii RUNSEQ_RunningSequence : character_encoding("cp838"), static_size(5), align(right), padded_with(0xf0);
+	ascii FILIND_FileIndicator : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+};
+
+
+external MBASE_CD35508_RS {
+	ascii NEWFLD1_TRANSACTIONDATE : character_encoding("cp838"), static_size(8);
+	ascii NEWFLD2_EFFECTIVEDATE : character_encoding("cp838"), static_size(8);
+	ascii NEWFLD3_MNEMONICCODE : character_encoding("cp838"), static_size(3), align(left), padded_with(0x40);
+	ascii NEWFLD4_PLACEMENTNUMBER : character_encoding("cp838"), static_size(4); //, align(right), padded_with(0xf0);
+	ascii NEWFLD5_WITHDRAWALAMOUNT : character_encoding("cp838"), static_size(17); //, align(right), padded_with(0xf0);
+	ascii NEWFLD6_DEPOSITAMOUNT : character_encoding("cp838"), static_size(17); //, align(right), padded_with(0xf0);
+	ascii NEWFLD7_BALANCE : character_encoding("cp838"), static_size(17); //, align(right), padded_with(0xf0);
+	ascii NEWFLD8_TELLERID : character_encoding("cp838"), static_size(10), align(left), padded_with(0x40);
+	ascii NEWFLD9_TELLERBRANCH : character_encoding("cp838"), static_size(5); //, align(right), padded_with(0xf0);
+	ascii NEWFLD10_DEBITCREDIT : character_encoding("cp838"), static_size(1), align(left), padded_with(0x40);
+
+    ascii OverSpaceData : character_encoding("cp838"), static_size(5), align(left), padded_with(0x40);
+};
+
+//Input Encoder
+in_map MBASE_CD35508_RQ_InMap: external (MBASE_CD35508_RQ), target_internal(MBASE_CD35508_RQ_TI){automatic;};
+out_map MBASE_CD35508_RQ_OutMap: external (MBASE_CD35508_RQ), internal(MBASE_CD35508_RQ_TI) {automatic;};
+encoder MBASE_CD35508_RQ_Encode: out_map(MBASE_CD35508_RQ_OutMap);
+
+
+// Response Decoders
+in_map MBASE_CD35508_RS_InMap: external(MBASE_CD35508_RS), target_internal(MBASE_CD35508_RS_TI) {automatic;};
+decoder MBASE_CD35508_RS_Decode: in_map(MBASE_CD35508_RS_InMap);]]></string>
+   <boolean name="IsValid" value="true"/>
+</exportmultiplex>

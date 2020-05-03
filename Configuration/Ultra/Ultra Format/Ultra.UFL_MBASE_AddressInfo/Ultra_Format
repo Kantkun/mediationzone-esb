@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Ultra_Format" ref_path="ultra_format[Internal]/storable[ultra_format]/storable[Data]">
+   <string name="Definition"><![CDATA[external MBASE_AddressInfo{
+    ascii HouseNumber : character_encoding("cp838"), static_size(30), align(left), padded_with(0x40);
+	ascii MooLabel : character_encoding("cp838"), static_size(5), align(left), padded_with(0x40);
+	ascii Moo : character_encoding("cp838"), static_size(5), align(left), padded_with(0x40);
+	ascii FloorNumberLabel : character_encoding("cp838"), static_size(8), align(left), padded_with(0x40);
+	ascii FloorNumber : character_encoding("cp838"), static_size(6), align(left), padded_with(0x40);
+	ascii RoomNumberLabel : character_encoding("cp838"), static_size(5), align(left), padded_with(0x40);
+	ascii RoomNumber : character_encoding("cp838"), static_size(21), align(left), padded_with(0x40);
+	ascii Building : character_encoding("cp838"), static_size(40), align(left), padded_with(0x40);
+	ascii SoiLabel : character_encoding("cp838"), static_size(3), align(left), padded_with(0x40);
+	ascii Soi : character_encoding("cp838"), static_size(37), align(left), padded_with(0x40);
+	ascii RoadLabel : character_encoding("cp838"), static_size(3), align(left), padded_with(0x40);
+	ascii Road : character_encoding("cp838"), static_size(37), align(left), padded_with(0x40);
+	ascii SubDistrictCode : character_encoding("cp838"), static_size(20), align(left), padded_with(0x40);
+	ascii DistrictCode : character_encoding("cp838"), static_size(20), align(left), padded_with(0x40);
+	ascii ProvinceCode : character_encoding("cp838"), static_size(17), align(left), padded_with(0x40);
+	ascii PostalCode : character_encoding("cp838"), static_size(6), align(left), padded_with(0x40);
+	ascii CountryCode : character_encoding("cp838"), static_size(17), align(left), padded_with(0x40);
+};
+
+// Response Decoders
+in_map MBASE_AddressInfo_InMap: external(MBASE_AddressInfo), target_internal(MBASE_AddressInfo_TI) {automatic;};
+decoder MBASE_AddressInfo_Decode: in_map(MBASE_AddressInfo_InMap);]]></string>
+   <boolean name="IsValid" value="true"/>
+</exportmultiplex>
