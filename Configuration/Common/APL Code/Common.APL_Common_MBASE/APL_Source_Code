@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="APL_Source_Code" ref_path="apl_script[Internal]/storable[apl_script]/storable[Data]">
+   <string name="Definition"><![CDATA[import ultra.CBS.UFL_DSP_Header;
+import ultra.CBS.UFL_MBASE_Header;
+
+final int sizeOf_DSPHeader = 312;
+final int sizeOf_MBaseHeader = 381;
+
+DSP_Header_TgIn createDefaultDSPHeader() {   
+    DSP_Header_TgIn dsp = udrCreate(DSP_Header_TgIn);    
+    //dsp.SKTMLEN = sizeOf_DSPHeader + sizeOf_MBaseHeader - 9;
+    dsp.SKTHEAD = "*SCS";
+    dsp.I13HLEN = "312";
+    dsp.I13VERS = "0800";
+    dsp.I13HFMID = "*DSP";
+    //dsp.I13FMID = "MBASE";  
+    dsp.I13SID = "ESB##";    
+    //dsp.I13DID = "CIFI";
+    //dsp.I13ACQN = uuidCreateRandom();  
+    dsp.I13TMNO = "0000";     
+    
+    return dsp;
+}
+
+MBASE_Header_TI createDefaultMBASEHeader() {
+    MBASE_Header_TI mbaseH = udrCreate(MBASE_Header_TI);
+    mbaseH.HDVERS = "0810";
+    //mbaseH.HDTCOD = "CFC150010";
+    mbaseH.HDSRID = "ESB";
+    //mbaseH.HDDSID = "RBK";
+    mbaseH.HDTMLI = "ESBSYSTEM";
+    mbaseH.HDBKNO = "33";
+    mbaseH.HDBRNO = "";
+    mbaseH.HDUSID = "IMBUSR";
+    //mbaseH.HDACCD = "I";
+    mbaseH.HDTXMD = "RT";    
+    //mbaseH.HDNREC = "20";
+    mbaseH.HDMREC = "N";
+    mbaseH.HDSMTD = "F";
+    //date dt = dateCreateNow();
+    //dateToString(mbaseH.HDTIMS, dt, "yyyy-MM-dd-HH.mm.ss.SSSSSS");
+    mbaseH.HDCOUN = "TH"; 
+    
+    return mbaseH;
+}
+
+    
+    ]]></string>
+</exportmultiplex>

@@ -1,0 +1,1074 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Template" ref_path="workflow_data[Internal]/storable[workflow_data]/storable[Data]">
+   <Multiplex_Ref ref_path="exportmultiplex[Workflow_Table]/storable[InstanceTable]">
+      <int name="Field Count" value="0"/>
+   </Multiplex_Ref>
+   <storable name="Execution Config" storable-id="dr.WorkflowExecutionConfig" ver="8.0">
+      <object name="Debug Type">
+         <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+            <object name="Value">
+               <enum name="Object Internal" storable-id="dr.DebugType" value="EVENT"/>
+            </object>
+         </storable>
+      </object>
+      <boolean name="Debug Type active" value="true"/>
+      <string name="Debug Type extref key" null="true"/>
+      <enum name="Debug Type fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+      <boolean name="Debug Type mod" value="false"/>
+      <boolean name="Debug Type pres" value="true"/>
+      <object name="Execution Settings">
+         <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+            <object name="Value">
+               <storable name="Object Internal" storable-id="dr.ExecutionSettings" ver="2.0">
+                  <boolean name="enabled" value="false"/>
+               </storable>
+            </object>
+         </storable>
+      </object>
+      <boolean name="Execution Settings active" value="true"/>
+      <string name="Execution Settings extref key" null="true"/>
+      <enum name="Execution Settings fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+      <boolean name="Execution Settings mod" value="false"/>
+      <boolean name="Execution Settings pres" value="true"/>
+      <object name="Number of Files to Keep">
+         <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+            <object name="Value">
+               <int name="Object Internal" value="0"/>
+            </object>
+         </storable>
+      </object>
+      <boolean name="Number of Files to Keep active" value="true"/>
+      <string name="Number of Files to Keep extref key" null="true"/>
+      <enum name="Number of Files to Keep fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+      <boolean name="Number of Files to Keep mod" value="false"/>
+      <boolean name="Number of Files to Keep pres" value="true"/>
+      <object name="Throughput MIM">
+         <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+            <object name="Value">
+               <null name="Object Internal"/>
+            </object>
+         </storable>
+      </object>
+      <boolean name="Throughput MIM active" value="true"/>
+      <string name="Throughput MIM extref key" null="true"/>
+      <enum name="Throughput MIM fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+      <boolean name="Throughput MIM mod" value="false"/>
+      <boolean name="Throughput MIM pres" value="true"/>
+      <object name="Transaction Handler">
+         <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+            <object name="Value">
+               <null name="Object Internal"/>
+            </object>
+         </storable>
+      </object>
+      <boolean name="Transaction Handler active" value="true"/>
+      <string name="Transaction Handler extref key" null="true"/>
+      <enum name="Transaction Handler fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+      <boolean name="Transaction Handler mod" value="false"/>
+      <boolean name="Transaction Handler pres" value="true"/>
+   </storable>
+   <list classname="java.util.ArrayList" name="Field Types"/>
+   <int name="Flow Counters Interval" value="0"/>
+   <list classname="java.util.ArrayList" name="Logged error MIM"/>
+   <list classname="java.util.ArrayList" name="Nodes">
+      <storable name="0" storable-id="dr.WfNode" ver="2.0">
+         <string name="Classname" value="com.digitalroute.mz.rest.agent.RESTAgentInspRT"/>
+         <array classname="com.digitalroute.wf.WfNodeConfig" name="Configuration" size="1">
+            <storable name="0" storable-id="dr.WfNodeConfig" ver="1.0">
+               <string name="Classname" value="com.digitalroute.mz.rest.agent.RESTAgentInspRT"/>
+               <storable name="Data" storable-id="dr.RestData" ver="8.04">
+                  <object name="accessTokenURI">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <string name="Object Internal" value=""/>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="accessTokenURI active" value="true"/>
+                  <string name="accessTokenURI extref key" null="true"/>
+                  <enum name="accessTokenURI fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="accessTokenURI mod" value="false"/>
+                  <boolean name="accessTokenURI pres" value="true"/>
+                  <object name="authenticationType">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <enum name="Object Internal" storable-id="dr.RESTAgentAuthenticationTypes" value="None"/>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="authenticationType active" value="true"/>
+                  <string name="authenticationType extref key" null="true"/>
+                  <enum name="authenticationType fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="authenticationType mod" value="false"/>
+                  <boolean name="authenticationType pres" value="true"/>
+                  <object name="baseURL">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <string name="Object Internal" value="http://172.29.50.12:8072"/>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="baseURL active" value="true"/>
+                  <string name="baseURL extref key" null="true"/>
+                  <enum name="baseURL fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="baseURL mod" value="false"/>
+                  <boolean name="baseURL pres" value="true"/>
+                  <object name="clientID">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <string name="Object Internal" value=""/>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="clientID active" value="true"/>
+                  <string name="clientID extref key" null="true"/>
+                  <enum name="clientID fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="clientID mod" value="false"/>
+                  <boolean name="clientID pres" value="true"/>
+                  <object name="clientSecret">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <password name="Object Internal" value="DR_DEFAULT_KEY-017BB0B8FB061C1876D43DD75468AA40"/>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="clientSecret active" value="true"/>
+                  <string name="clientSecret extref key" null="true"/>
+                  <enum name="clientSecret fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="clientSecret mod" value="false"/>
+                  <boolean name="clientSecret pres" value="true"/>
+                  <object name="grantType">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <enum name="Object Internal" storable-id="dr.RESTAgentGrantType" value="ClientCredentials"/>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="grantType active" value="true"/>
+                  <string name="grantType extref key" null="true"/>
+                  <enum name="grantType fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="grantType mod" value="false"/>
+                  <boolean name="grantType pres" value="true"/>
+                  <object name="keystorePassword">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <password name="Object Internal" value="DR_DEFAULT_KEY-017BB0B8FB061C1876D43DD75468AA40"/>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="keystorePassword active" value="true"/>
+                  <string name="keystorePassword extref key" null="true"/>
+                  <enum name="keystorePassword fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="keystorePassword mod" value="false"/>
+                  <boolean name="keystorePassword pres" value="true"/>
+                  <object name="keystorePath">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <null name="Object Internal"/>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="keystorePath active" value="true"/>
+                  <string name="keystorePath extref key" null="true"/>
+                  <enum name="keystorePath fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="keystorePath mod" value="false"/>
+                  <boolean name="keystorePath pres" value="true"/>
+                  <object name="maxOutStandingRequests">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <int name="Object Internal" value="100"/>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="maxOutStandingRequests active" value="true"/>
+                  <string name="maxOutStandingRequests extref key" null="true"/>
+                  <enum name="maxOutStandingRequests fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="maxOutStandingRequests mod" value="false"/>
+                  <boolean name="maxOutStandingRequests pres" value="true"/>
+                  <object name="oauthParameters">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <list classname="java.util.ArrayList" name="Object Internal"/>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="oauthParameters active" value="true"/>
+                  <string name="oauthParameters extref key" null="true"/>
+                  <enum name="oauthParameters fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="oauthParameters mod" value="false"/>
+                  <boolean name="oauthParameters pres" value="true"/>
+                  <object name="oauthPassword">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <password name="Object Internal" value="DR_DEFAULT_KEY-017BB0B8FB061C1876D43DD75468AA40"/>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="oauthPassword active" value="true"/>
+                  <string name="oauthPassword extref key" null="true"/>
+                  <enum name="oauthPassword fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="oauthPassword mod" value="false"/>
+                  <boolean name="oauthPassword pres" value="true"/>
+                  <object name="oauthUsername">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <string name="Object Internal" value=""/>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="oauthUsername active" value="true"/>
+                  <string name="oauthUsername extref key" null="true"/>
+                  <enum name="oauthUsername fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="oauthUsername mod" value="false"/>
+                  <boolean name="oauthUsername pres" value="true"/>
+                  <object name="overrideBaseURL">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <string name="Object Internal" value=""/>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="overrideBaseURL active" value="true"/>
+                  <string name="overrideBaseURL extref key" null="true"/>
+                  <enum name="overrideBaseURL fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="overrideBaseURL mod" value="false"/>
+                  <boolean name="overrideBaseURL pres" value="true"/>
+                  <object name="password">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <password name="Object Internal" value="DR_DEFAULT_KEY-017BB0B8FB061C1876D43DD75468AA40"/>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="password active" value="true"/>
+                  <string name="password extref key" null="true"/>
+                  <enum name="password fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="password mod" value="false"/>
+                  <boolean name="password pres" value="true"/>
+                  <object name="timeout">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <int name="Object Internal" value="32000"/>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="timeout active" value="true"/>
+                  <string name="timeout extref key" null="true"/>
+                  <enum name="timeout fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="timeout mod" value="false"/>
+                  <boolean name="timeout pres" value="true"/>
+                  <object name="username">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <string name="Object Internal" value=""/>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="username active" value="true"/>
+                  <string name="username extref key" null="true"/>
+                  <enum name="username fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="username mod" value="false"/>
+                  <boolean name="username pres" value="true"/>
+               </storable>
+            </storable>
+         </array>
+         <string name="Name" value="REST_FileConversion"/>
+      </storable>
+      <storable name="1" storable-id="dr.WfNode" ver="2.0">
+         <string name="Classname" value="com.digitalroute.wfc.analysis.AnalysisRealtimeInsp"/>
+         <array classname="com.digitalroute.wf.WfNodeConfig" name="Configuration" size="1">
+            <storable name="0" storable-id="dr.WfNodeConfig" ver="1.0">
+               <string name="Classname" value="com.digitalroute.wfc.analysis.AnalysisRealtimeInsp"/>
+               <storable name="Data" storable-id="dr.StuffyMapperData" ver="1.0">
+                  <object name="Source code">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <string name="Object Internal"><![CDATA[consume {
+    debug(input);
+}]]></string>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="Source code active" value="true"/>
+                  <string name="Source code extref key" null="true"/>
+                  <enum name="Source code fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="Source code mod" value="false"/>
+                  <boolean name="Source code pres" value="true"/>
+                  <object name="UDR types">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <array classname="com.digitalroute.devkit.drudr.DRTypeInfo" name="Object Internal" size="1">
+                              <storable name="0" storable-id="dr.DRTypeInfo" ver="1.0">
+                                 <string name="TypeName" value="RESTClient.RESTCycleUDR"/>
+                              </storable>
+                           </array>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="UDR types active" value="true"/>
+                  <string name="UDR types extref key" null="true"/>
+                  <enum name="UDR types fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="UDR types mod" value="false"/>
+                  <boolean name="UDR types pres" value="true"/>
+               </storable>
+            </storable>
+         </array>
+         <string name="Name" value="RestError"/>
+      </storable>
+      <storable name="2" storable-id="dr.WfNode" ver="2.0">
+         <string name="Classname" value="com.digitalroute.wfc.analysis.AnalysisRealtimeInsp"/>
+         <array classname="com.digitalroute.wf.WfNodeConfig" name="Configuration" size="1">
+            <storable name="0" storable-id="dr.WfNodeConfig" ver="1.0">
+               <string name="Classname" value="com.digitalroute.wfc.analysis.AnalysisRealtimeInsp"/>
+               <storable name="Data" storable-id="dr.StuffyMapperData" ver="1.0">
+                  <object name="Source code">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <string name="Object Internal"><![CDATA[import ultra.CBS.UFL_DSP_Header;
+import ultra.CBS.UFL_MBASE_Header;
+import ultra.RESTClient;
+import ultra.Ultra.UFL_CM4876005;
+//import ultra.Ultra.UFL_CM4876006;
+import apl.CM.APL_CMSService;
+import apl.Common.APL_Common_Utilities;
+import ultra.CBS.UFL_Aggregation;
+import ultra.Ultra.UFL_GetLocalAddressLabel;
+
+consume {
+    string acqRefNo = generateAcquireReferenceNumber();
+    bytearray socketRequest = null;
+    
+    try{
+        if(instanceOf(input,RESTCycleUDR)){
+            RESTCycleUDR res = (RESTCycleUDR) input;
+            debug(res);
+            /*debug("=========================");
+            debug((((RESTCycleUDR)input)));
+            debug("=========================");
+            debug((((RESTCycleUDR)input).Response.Body));
+            debug("=========================");
+            debug(A);*/
+            if(res.Error.ErrorCode!=0){
+                udrRoute(res, "RESTCycleUDR_error");
+            }else{
+                udrRoute(res, "RESTCycleUDR_success");
+            }
+        }
+        
+        /*if(instanceOf(input, LOCALADDR_LABEL_RS_TI)){
+            debug((LOCALADDR_LABEL_RS_TI) input);
+        }*/
+        
+        if(instanceOf(input,PulseUDR)){
+            //LOCALADDR_LABEL_RQ_TI LOCAL = udrCreate(LOCALADDR_LABEL_RQ_TI);
+            //LOCAL.REQFLG = "Y";
+            
+            //udrRoute(LOCAL, "getLocalLabel");
+              
+            //debug(baToStr(test, "IBM-Thai"));
+            
+            RESTCycleUDR restUDR = udrCreate(RESTCycleUDR);
+            RESTRequest restReq = udrCreate(RESTRequest);
+            
+           
+            map<string,string> header = mapCreate(string,string);
+            mapSet(header,"Accept","*/*" );
+            
+            restReq.Header = header;
+            //Set HTTP method
+            restReq.Method = "GET";
+            //Set resource URI
+            string strURI = "/Api/ApplicationApi/GetApplicationStatus?AANO=600000211001&IDNo=&IDIssueCountry=&IDType=";
+            //debug(strURI);
+            restReq.ResourceURI = strURI;
+            //restReq.ResourceURI = "/cms/notify?value=1";
+            //restReq.ResourceURI = "/cms/notify?layout=1&bank=33&date=20171201&seq=00366";
+            
+
+            restUDR.Request = restReq;
+            udrRoute(restUDR,"RESTRequest"); 
+
+            debug("===rest===");
+            debug(restUDR);
+            debug("===end rest===");
+            
+        }
+    }
+    catch(ExceptionDetails ex){
+        debug("Exception: " + ex.message);    
+    }
+    
+}]]></string>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="Source code active" value="true"/>
+                  <string name="Source code extref key" null="true"/>
+                  <enum name="Source code fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="Source code mod" value="false"/>
+                  <boolean name="Source code pres" value="true"/>
+                  <object name="UDR types">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <array classname="com.digitalroute.devkit.drudr.DRTypeInfo" name="Object Internal" size="3">
+                              <storable name="0" storable-id="dr.UltraClientInfo" ver="1.0">
+                                 <string name="FormatName" value="Ultra.UFL_GetLocalAddressLabel"/>
+                                 <string name="TypeName"><![CDATA[Ultra.UFL_GetLocalAddressLabel.LOCALADDR_LABEL_RS_TI]]></string>
+                              </storable>
+                              <storable name="1" storable-id="dr.DRTypeInfo" ver="1.0">
+                                 <string name="TypeName" value="PulseUDR"/>
+                              </storable>
+                              <storable name="2" storable-id="dr.DRTypeInfo" ver="1.0">
+                                 <string name="TypeName" value="RESTClient.RESTCycleUDR"/>
+                              </storable>
+                           </array>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="UDR types active" value="true"/>
+                  <string name="UDR types extref key" null="true"/>
+                  <enum name="UDR types fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="UDR types mod" value="false"/>
+                  <boolean name="UDR types pres" value="true"/>
+               </storable>
+            </storable>
+         </array>
+         <string name="Name" value="Mapping"/>
+      </storable>
+      <storable name="3" storable-id="dr.WfNode" ver="2.0">
+         <string name="Classname"><![CDATA[com.digitalroute.mz.pulse.agent.PulseCollectorAgentInspRT]]></string>
+         <array classname="com.digitalroute.wf.WfNodeConfig" name="Configuration" size="1">
+            <storable name="0" storable-id="dr.WfNodeConfig" ver="1.0">
+               <string name="Classname"><![CDATA[com.digitalroute.mz.pulse.agent.PulseCollectorAgentInspRT]]></string>
+               <storable name="Data" storable-id="dr.PulseData" ver="7.0">
+                  <object name="Center Value">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <double name="Object Internal" value="1.0"/>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="Center Value active" value="false"/>
+                  <string name="Center Value extref key" null="true"/>
+                  <enum name="Center Value fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="Center Value mod" value="false"/>
+                  <boolean name="Center Value pres" value="true"/>
+                  <object name="Data">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <string name="Object Internal" value=""/>
+                        </object>
+                     </storable>
+                  </object>
+                  <object name="Data Entered">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <boolean name="Object Internal" value="true"/>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="Data Entered active" value="true"/>
+                  <string name="Data Entered extref key" null="true"/>
+                  <enum name="Data Entered fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="Data Entered mod" value="false"/>
+                  <boolean name="Data Entered pres" value="true"/>
+                  <object name="Data Size">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <int name="Object Internal" value="1"/>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="Data Size active" value="false"/>
+                  <string name="Data Size extref key" null="true"/>
+                  <enum name="Data Size fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="Data Size mod" value="false"/>
+                  <boolean name="Data Size pres" value="true"/>
+                  <object name="Data Unit">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <enum name="Object Internal" storable-id="dr.PulseDataSizeUnit" value="Bytes"/>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="Data Unit active" value="false"/>
+                  <string name="Data Unit extref key" null="true"/>
+                  <enum name="Data Unit fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="Data Unit mod" value="false"/>
+                  <boolean name="Data Unit pres" value="true"/>
+                  <boolean name="Data active" value="true"/>
+                  <string name="Data extref key" null="true"/>
+                  <enum name="Data fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="Data mod" value="false"/>
+                  <boolean name="Data pres" value="true"/>
+                  <object name="Fixed Interval">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <long name="Object Internal" value="1"/>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="Fixed Interval active" value="false"/>
+                  <string name="Fixed Interval extref key" null="true"/>
+                  <enum name="Fixed Interval fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="Fixed Interval mod" value="false"/>
+                  <boolean name="Fixed Interval pres" value="true"/>
+                  <object name="Interval Type">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <string name="Object Internal" value="Single"/>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="Interval Type active" value="true"/>
+                  <string name="Interval Type extref key" null="true"/>
+                  <enum name="Interval Type fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="Interval Type mod" value="false"/>
+                  <boolean name="Interval Type pres" value="true"/>
+                  <object name="Poisson Rate">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <double name="Object Internal" value="1.0"/>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="Poisson Rate active" value="false"/>
+                  <string name="Poisson Rate extref key" null="true"/>
+                  <enum name="Poisson Rate fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="Poisson Rate mod" value="false"/>
+                  <boolean name="Poisson Rate pres" value="true"/>
+                  <object name="Random Order">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <boolean name="Object Internal" value="false"/>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="Random Order active" value="true"/>
+                  <string name="Random Order extref key" null="true"/>
+                  <enum name="Random Order fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="Random Order mod" value="false"/>
+                  <boolean name="Random Order pres" value="true"/>
+                  <object name="Random data">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <boolean name="Object Internal" value="false"/>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="Random data active" value="true"/>
+                  <string name="Random data extref key" null="true"/>
+                  <enum name="Random data fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="Random data mod" value="false"/>
+                  <boolean name="Random data pres" value="true"/>
+                  <object name="Range End">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <int name="Object Internal" value="10"/>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="Range End active" value="false"/>
+                  <string name="Range End extref key" null="true"/>
+                  <enum name="Range End fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="Range End mod" value="false"/>
+                  <boolean name="Range End pres" value="true"/>
+                  <object name="Range Start">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <int name="Object Internal" value="0"/>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="Range Start active" value="false"/>
+                  <string name="Range Start extref key" null="true"/>
+                  <enum name="Range Start fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="Range Start mod" value="false"/>
+                  <boolean name="Range Start pres" value="true"/>
+                  <object name="Rate Value Value">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <long name="Object Internal" value="1"/>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="Rate Value Value active" value="false"/>
+                  <string name="Rate Value Value extref key" null="true"/>
+                  <enum name="Rate Value Value fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="Rate Value Value mod" value="false"/>
+                  <boolean name="Rate Value Value pres" value="true"/>
+                  <object name="Sequential Order">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <boolean name="Object Internal" value="true"/>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="Sequential Order active" value="true"/>
+                  <string name="Sequential Order extref key" null="true"/>
+                  <enum name="Sequential Order fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="Sequential Order mod" value="false"/>
+                  <boolean name="Sequential Order pres" value="true"/>
+                  <object name="Sequential Range">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <boolean name="Object Internal" value="false"/>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="Sequential Range active" value="true"/>
+                  <string name="Sequential Range extref key" null="true"/>
+                  <enum name="Sequential Range fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="Sequential Range mod" value="false"/>
+                  <boolean name="Sequential Range pres" value="true"/>
+                  <object name="Start Value">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <long name="Object Internal" value="1"/>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="Start Value active" value="false"/>
+                  <string name="Start Value extref key" null="true"/>
+                  <enum name="Start Value fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="Start Value mod" value="false"/>
+                  <boolean name="Start Value pres" value="true"/>
+                  <object name="Stop Value">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <long name="Object Internal" value="10"/>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="Stop Value active" value="false"/>
+                  <string name="Stop Value extref key" null="true"/>
+                  <enum name="Stop Value fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="Stop Value mod" value="false"/>
+                  <boolean name="Stop Value pres" value="true"/>
+                  <object name="Time Unit">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <enum name="Object Internal" storable-id="dr.PulseTimeUnit" value="SECONDS"/>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="Time Unit active" value="true"/>
+                  <string name="Time Unit extref key" null="true"/>
+                  <enum name="Time Unit fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="Time Unit mod" value="false"/>
+                  <boolean name="Time Unit pres" value="true"/>
+                  <object name="Width Value">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <double name="Object Internal" value="1.0"/>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="Width Value active" value="false"/>
+                  <string name="Width Value extref key" null="true"/>
+                  <enum name="Width Value fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="Width Value mod" value="false"/>
+                  <boolean name="Width Value pres" value="true"/>
+               </storable>
+            </storable>
+         </array>
+         <string name="Name" value="Pulse_1"/>
+      </storable>
+      <storable name="4" storable-id="dr.WfNode" ver="2.0">
+         <string name="Classname" value="com.digitalroute.wfc.analysis.AnalysisRealtimeInsp"/>
+         <array classname="com.digitalroute.wf.WfNodeConfig" name="Configuration" size="1">
+            <storable name="0" storable-id="dr.WfNodeConfig" ver="1.0">
+               <string name="Classname" value="com.digitalroute.wfc.analysis.AnalysisRealtimeInsp"/>
+               <storable name="Data" storable-id="dr.StuffyMapperData" ver="1.0">
+                  <object name="Source code">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <string name="Object Internal"><![CDATA[consume {
+    if (instanceOf(input,RESTCycleUDR)) {
+        debug(input);
+        RESTResponse resp = udrCreate(RESTResponse);
+        resp = ((RESTCycleUDR)input).Response;
+        debug("Response Code:" + resp.ResponseCode);
+        list<string> mKeys = mapKeys(resp.Header);
+        /*for(string i:mKeys) {
+            debug("Header:" + i + "=" + mapGet(resp.Header,i));
+        }*/          
+        debug(baToStr(resp.Body,"UTF-8"));
+        udrRoute(resp.Body,"stringJson");
+
+        //jsonDecodeUdr(baToStr(resp.Body,"UTF-8"),Rest);
+        
+        //debug("Decoded JSON:\n" + Rest);
+        
+    }
+}]]></string>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="Source code active" value="true"/>
+                  <string name="Source code extref key" null="true"/>
+                  <enum name="Source code fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="Source code mod" value="false"/>
+                  <boolean name="Source code pres" value="true"/>
+                  <object name="UDR types">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <array classname="com.digitalroute.devkit.drudr.DRTypeInfo" name="Object Internal" size="1">
+                              <storable name="0" storable-id="dr.DRTypeInfo" ver="1.0">
+                                 <string name="TypeName" value="RESTClient.RESTCycleUDR"/>
+                              </storable>
+                           </array>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="UDR types active" value="true"/>
+                  <string name="UDR types extref key" null="true"/>
+                  <enum name="UDR types fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="UDR types mod" value="false"/>
+                  <boolean name="UDR types pres" value="true"/>
+               </storable>
+            </storable>
+         </array>
+         <string name="Name" value="RestSuccess"/>
+      </storable>
+      <storable name="5" storable-id="dr.WfNode" ver="2.0">
+         <string name="Classname"><![CDATA[com.digitalroute.pythonagents.agent.PythonRealtimeProcessingAgentInsp]]></string>
+         <array classname="com.digitalroute.wf.WfNodeConfig" name="Configuration" size="1">
+            <storable name="0" storable-id="dr.WfNodeConfig" ver="1.0">
+               <string name="Classname"><![CDATA[com.digitalroute.pythonagents.agent.PythonRealtimeProcessingAgentInsp]]></string>
+               <storable name="Data" storable-id="dr.PythonAgentData" ver="8.1">
+                  <object name="Input Types">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <array classname="com.digitalroute.devkit.drudr.DRTypeInfo" name="Object Internal" size="1">
+                              <storable name="0" storable-id="dr.UltraClientInfo" ver="1.0">
+                                 <string name="FormatName" value="Ultra.UFL_GetLocalAddressLabel"/>
+                                 <string name="TypeName"><![CDATA[Ultra.UFL_GetLocalAddressLabel.LOCALADDR_LABEL_RQ_TI]]></string>
+                              </storable>
+                           </array>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="Input Types active" value="true"/>
+                  <string name="Input Types extref key" null="true"/>
+                  <enum name="Input Types fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="Input Types mod" value="false"/>
+                  <boolean name="Input Types pres" value="true"/>
+                  <object name="Interpreter">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <storable name="Object Internal" storable-id="dr.DRConfiguration" ver="1.0">
+                              <string name="Folder" value="CM"/>
+                              <string name="Key" value="MZ1523333536387"/>
+                              <string name="Name" value="PRF_Python"/>
+                              <string name="Type" value="Python Interpreter Profile"/>
+                           </storable>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="Interpreter active" value="true"/>
+                  <string name="Interpreter extref key" null="true"/>
+                  <enum name="Interpreter fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="Interpreter mod" value="false"/>
+                  <boolean name="Interpreter pres" value="true"/>
+                  <object name="MIMs">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <array classname="com.digitalroute.devkit.wf.DRMIMEntry" name="Object Internal" size="0"/>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="MIMs active" value="true"/>
+                  <string name="MIMs extref key" null="true"/>
+                  <enum name="MIMs fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="MIMs mod" value="false"/>
+                  <boolean name="MIMs pres" value="true"/>
+                  <object name="Output Types">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <array classname="com.digitalroute.pythonagents.OutputTypeInfo" name="Object Internal" size="1">
+                              <storable name="0" storable-id="dr.PythonOutputTypeInfo" ver="1.0">
+                                 <string name="route" null="true"/>
+                                 <storable name="udrTypeInfo" storable-id="dr.UltraClientInfo" ver="1.0">
+                                    <string name="FormatName" value="Ultra.UFL_GetLocalAddressLabel"/>
+                                    <string name="TypeName"><![CDATA[Ultra.UFL_GetLocalAddressLabel.LOCALADDR_LABEL_RS_TI]]></string>
+                                 </storable>
+                              </storable>
+                           </array>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="Output Types active" value="true"/>
+                  <string name="Output Types extref key" null="true"/>
+                  <enum name="Output Types fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="Output Types mod" value="false"/>
+                  <boolean name="Output Types pres" value="true"/>
+                  <object name="Source Code">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <string name="Object Internal"><![CDATA[from ultra.Ultra.UFL_GetLocalAddressLabel import LOCALADDR_LABEL_RS_TI
+
+def consume(input):
+    if isinstance(input, LOCALADDR_LABEL_RQ_TI):
+        outgoing = LOCALADDR_LABEL_RS_TI()
+        outgoing.MOOLBL = str('หมู่').decode('utf-8').ljust(5,' ')
+        outgoing.FLRLBL = str('ชั้นที่').decode('utf-8').ljust(8,' ')
+        outgoing.ROMLBL = str('ห้อง').decode('utf-8').ljust(5,' ')
+        outgoing.SOILBL = str('ซ.').decode('utf-8').ljust(3,' ')
+        outgoing.RODLBL = str('ถ.').decode('utf-8').ljust(3,' ')
+        
+    print outgoing
+    udrRoute(outgoing,'resLocalLabel')]]></string>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="Source Code active" value="true"/>
+                  <string name="Source Code extref key" null="true"/>
+                  <enum name="Source Code fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="Source Code mod" value="false"/>
+                  <boolean name="Source Code pres" value="true"/>
+               </storable>
+            </storable>
+         </array>
+         <string name="Name" value="Python_1"/>
+      </storable>
+      <storable name="6" storable-id="dr.WfNode" ver="2.0">
+         <string name="Classname"><![CDATA[com.digitalroute.pythonagents.agent.PythonRealtimeProcessingAgentInsp]]></string>
+         <array classname="com.digitalroute.wf.WfNodeConfig" name="Configuration" size="1">
+            <storable name="0" storable-id="dr.WfNodeConfig" ver="1.0">
+               <string name="Classname"><![CDATA[com.digitalroute.pythonagents.agent.PythonRealtimeProcessingAgentInsp]]></string>
+               <storable name="Data" storable-id="dr.PythonAgentData" ver="8.1">
+                  <object name="Input Types">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <array classname="com.digitalroute.devkit.drudr.DRTypeInfo" name="Object Internal" size="1">
+                              <storable name="0" storable-id="dr.DRTypeInfo" ver="1.0">
+                                 <string name="TypeName" value="bytearray"/>
+                              </storable>
+                           </array>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="Input Types active" value="true"/>
+                  <string name="Input Types extref key" null="true"/>
+                  <enum name="Input Types fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="Input Types mod" value="false"/>
+                  <boolean name="Input Types pres" value="true"/>
+                  <object name="Interpreter">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <storable name="Object Internal" storable-id="dr.DRConfiguration" ver="1.0">
+                              <string name="Folder" value="CM"/>
+                              <string name="Key" value="MZ1523333536387"/>
+                              <string name="Name" value="PRF_Python"/>
+                              <string name="Type" value="Python Interpreter Profile"/>
+                           </storable>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="Interpreter active" value="true"/>
+                  <string name="Interpreter extref key" null="true"/>
+                  <enum name="Interpreter fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="Interpreter mod" value="false"/>
+                  <boolean name="Interpreter pres" value="true"/>
+                  <object name="MIMs">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <array classname="com.digitalroute.devkit.wf.DRMIMEntry" name="Object Internal" size="0"/>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="MIMs active" value="true"/>
+                  <string name="MIMs extref key" null="true"/>
+                  <enum name="MIMs fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="MIMs mod" value="false"/>
+                  <boolean name="MIMs pres" value="true"/>
+                  <object name="Output Types">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <array classname="com.digitalroute.pythonagents.OutputTypeInfo" name="Object Internal" size="0"/>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="Output Types active" value="true"/>
+                  <string name="Output Types extref key" null="true"/>
+                  <enum name="Output Types fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="Output Types mod" value="false"/>
+                  <boolean name="Output Types pres" value="true"/>
+                  <object name="Source Code">
+                     <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+                        <object name="Value">
+                           <string name="Object Internal"><![CDATA[#from ultra.Ultra.UFL_GetLocalAddressLabel import LOCALADDR_LABEL_RS_TI
+import json
+
+def consume(input):
+    jsonString = str(input)
+    #print jsonString
+    jsonDecode = json.loads(jsonString)
+    print jsonDecode[0].get('Status')
+    print jsonDecode[0].get('Value2')]]></string>
+                        </object>
+                     </storable>
+                  </object>
+                  <boolean name="Source Code active" value="true"/>
+                  <string name="Source Code extref key" null="true"/>
+                  <enum name="Source Code fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+                  <boolean name="Source Code mod" value="false"/>
+                  <boolean name="Source Code pres" value="true"/>
+               </storable>
+            </storable>
+         </array>
+         <string name="Name" value="Python_2"/>
+      </storable>
+   </list>
+   <storable name="Persistent" storable-id="dr.WorkflowPersistentConfig" ver="6.0">
+      <object name="Persistent Inspector">
+         <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+            <object name="Value">
+               <null name="Object Internal"/>
+            </object>
+         </storable>
+      </object>
+      <boolean name="Persistent Inspector active" value="true"/>
+      <string name="Persistent Inspector extref key" null="true"/>
+      <enum name="Persistent Inspector fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+      <boolean name="Persistent Inspector mod" value="false"/>
+      <boolean name="Persistent Inspector pres" value="true"/>
+      <object name="Persistent Storage Config">
+         <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+            <object name="Value">
+               <null name="Object Internal"/>
+            </object>
+         </storable>
+      </object>
+      <boolean name="Persistent Storage Config active" value="true"/>
+      <string name="Persistent Storage Config extref key" null="true"/>
+      <enum name="Persistent Storage Config fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+      <boolean name="Persistent Storage Config mod" value="false"/>
+      <boolean name="Persistent Storage Config pres" value="true"/>
+      <object name="Persistent Timeout Handler">
+         <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+            <object name="Value">
+               <null name="Object Internal"/>
+            </object>
+         </storable>
+      </object>
+      <boolean name="Persistent Timeout Handler active" value="true"/>
+      <string name="Persistent Timeout Handler extref key" null="true"/>
+      <enum name="Persistent Timeout Handler fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+      <boolean name="Persistent Timeout Handler mod" value="false"/>
+      <boolean name="Persistent Timeout Handler pres" value="true"/>
+   </storable>
+   <list classname="java.util.ArrayList" name="Routes">
+      <storable name="0" storable-id="dr.WfRoute" ver="2.0">
+         <string name="Name" value="RESTCycleUDR_error"/>
+         <int name="Realtime mode" value="0"/>
+      </storable>
+      <storable name="1" storable-id="dr.WfRoute" ver="2.0">
+         <string name="Name" value="RESTRequest"/>
+         <int name="Realtime mode" value="0"/>
+      </storable>
+      <storable name="2" storable-id="dr.WfRoute" ver="2.0">
+         <string name="Name" value="RESTResponse"/>
+         <int name="Realtime mode" value="0"/>
+      </storable>
+      <storable name="3" storable-id="dr.WfRoute" ver="2.0">
+         <string name="Name" value="r_9"/>
+         <int name="Realtime mode" value="0"/>
+      </storable>
+      <storable name="4" storable-id="dr.WfRoute" ver="2.0">
+         <string name="Name" value="RESTCycleUDR_success"/>
+         <int name="Realtime mode" value="0"/>
+      </storable>
+      <storable name="5" storable-id="dr.WfRoute" ver="2.0">
+         <string name="Name" value="getLocalLabel"/>
+         <int name="Realtime mode" value="0"/>
+      </storable>
+      <storable name="6" storable-id="dr.WfRoute" ver="2.0">
+         <string name="Name" value="resLocalLabel"/>
+         <int name="Realtime mode" value="0"/>
+      </storable>
+      <storable name="7" storable-id="dr.WfRoute" ver="2.0">
+         <string name="Name" value="stringJson"/>
+         <int name="Realtime mode" value="0"/>
+      </storable>
+   </list>
+   <list classname="java.util.ArrayList" name="Service"/>
+   <boolean name="Template Valid" value="true"/>
+   <storable name="Thread data" storable-id="dr.WorkflowExecutionRealtimeConfig" ver="8.0">
+      <object name="Processed UDRs count interval">
+         <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+            <object name="Value">
+               <int name="Object Internal" value="1"/>
+            </object>
+         </storable>
+      </object>
+      <boolean name="Processed UDRs count interval active" value="true"/>
+      <string name="Processed UDRs count interval extref key" null="true"/>
+      <enum name="Processed UDRs count interval fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+      <boolean name="Processed UDRs count interval mod" value="false"/>
+      <boolean name="Processed UDRs count interval pres" value="true"/>
+      <object name="Queue Size">
+         <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+            <object name="Value">
+               <int name="Object Internal" value="1000"/>
+            </object>
+         </storable>
+      </object>
+      <boolean name="Queue Size active" value="true"/>
+      <string name="Queue Size extref key" null="true"/>
+      <enum name="Queue Size fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+      <boolean name="Queue Size mod" value="false"/>
+      <boolean name="Queue Size pres" value="true"/>
+      <object name="Queue strategies">
+         <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+            <object name="Value">
+               <null name="Object Internal"/>
+            </object>
+         </storable>
+      </object>
+      <boolean name="Queue strategies active" value="true"/>
+      <string name="Queue strategies extref key" null="true"/>
+      <enum name="Queue strategies fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+      <boolean name="Queue strategies mod" value="false"/>
+      <boolean name="Queue strategies pres" value="true"/>
+      <object name="Queue worker strategies">
+         <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+            <object name="Value">
+               <null name="Object Internal"/>
+            </object>
+         </storable>
+      </object>
+      <boolean name="Queue worker strategies active" value="true"/>
+      <string name="Queue worker strategies extref key" null="true"/>
+      <enum name="Queue worker strategies fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+      <boolean name="Queue worker strategies mod" value="false"/>
+      <boolean name="Queue worker strategies pres" value="true"/>
+      <object name="Stand-alone">
+         <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+            <object name="Value">
+               <boolean name="Object Internal" value="false"/>
+            </object>
+         </storable>
+      </object>
+      <boolean name="Stand-alone active" value="true"/>
+      <string name="Stand-alone extref key" null="true"/>
+      <enum name="Stand-alone fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+      <boolean name="Stand-alone mod" value="false"/>
+      <boolean name="Stand-alone pres" value="true"/>
+      <object name="Threads">
+         <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+            <object name="Value">
+               <int name="Object Internal" value="8"/>
+            </object>
+         </storable>
+      </object>
+      <boolean name="Threads active" value="true"/>
+      <string name="Threads extref key" null="true"/>
+      <enum name="Threads fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+      <boolean name="Threads mod" value="false"/>
+      <boolean name="Threads pres" value="true"/>
+   </storable>
+   <storable name="Timer Trigger" null="true"/>
+</exportmultiplex>

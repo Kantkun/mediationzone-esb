@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Ultra_Format" ref_path="ultra_format[Internal]/storable[ultra_format]/storable[Data]">
+   <string name="Definition"><![CDATA[import CBS.UFL_DSP_Header;
+
+internal EmailMatcher {
+    DSP_Header_TgIn tcpRequest;
+    string EMLFROM_FROM;
+    string EMLTO_TO;
+    string EMLCC_CC;
+    string EMLBCC_BCC;
+    string EMLMSG_CONTENT;
+    string SUBJECT_SUBJECT;
+    string EMLSTATUS_STATUS;
+};]]></string>
+   <boolean name="IsValid" value="true"/>
+</exportmultiplex>

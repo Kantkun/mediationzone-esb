@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="APL_Source_Code" ref_path="apl_script[Internal]/storable[apl_script]/storable[Data]">
+   <string name="Definition"><![CDATA[list<string> getServiceNameList(string xmlString){
+    //make tag list
+    list<string> tagList = listCreate(string);
+    int xmlStringLength = strLength(xmlString);    
+    string aTag = "";
+    for(int i = 0; i < xmlStringLength; i++){
+        string currentChar = strSubstring(xmlString, i, i+1);
+        aTag = aTag + currentChar;
+        if(strEqualsIgnoreCase(currentChar, ">")){
+            listAdd(tagList, aTag);
+            aTag = "";
+        }
+    }
+    
+    //find service name
+    int tagLevel = 0;    
+    boolean tagOpened = false;
+    boolean tagselfOpenCloseBefore = false;
+    list<string> serviceNameList = listCreate(string);
+    int tagListSize = listSize(tagList);
+    for(int i = 0; i < tagListSize; i++){ 
+        
+        string tagString = strTrim(listGet(tagList,i));
+        
+            if(strStartsWith(tagString,"<xsd:element") && !strEndsWith(tagString, "/>")){
+                //debug((string)i + " " + "case 1 < >" + "tagLevel: " + tagLevel);
+                if(!tagselfOpenCloseBefore){            
+                    tagLevel = tagLevel + 1;    
+                }                            
+                tagOpened = true;            
+                tagselfOpenCloseBefore = false;                
+                if(tagLevel == 1){
+                    //debug(tagString);      
+                    string thisServiceName = findServiceName(tagString);
+                    if(!strEndsWith(thisServiceName, "Response")){
+                        listAdd(serviceNameList, thisServiceName);
+                    }
+                }
+                //debug("case 1 tagLevel: " + tagLevel + " " + tagString);
+            }
+            else if(strStartsWith(tagString,"<xsd:element")&& strEndsWith(tagString, "/>")){ 
+                //debug((string)i + " " + "case 2 < />" + "tagLevel: " + tagLevel);   
+                
+                if(tagOpened){
+                    tagLevel = tagLevel +1;
+                }
+tagOpened = false;
+                tagselfOpenCloseBefore = true;                
+                //debug("case 2 tagLevel: " + tagLevel + " " + tagString);
+            }
+            else if(strStartsWith(tagString, "</xsd:element") && tagOpened){            
+                //debug((string)i + " " + "case 3 < ></ >" + "tagLevel: " + tagLevel);
+if(tagOpened == false){
+    tagLevel = tagLevel-1;
+}
+                tagOpened = false;
+                tagselfOpenCloseBefore = true;
+                if(tagLevel == 1){
+                    string thisServiceName = findServiceName(tagString);
+                    listAdd(serviceNameList, thisServiceName);
+                }
+                //debug("case 3 tagLevel: " + tagLevel + " " + tagString);
+            }
+            else if(strStartsWith(tagString, "</xsd:element") && !tagOpened){
+                //debug((string)i + " " + "case 4 </ >" + "tagLevel: " + tagLevel);
+                tagLevel = tagLevel - 1;               
+                tagOpened = false;
+                //debug("case 4 tagLevel: " + tagLevel + " " + tagString);
+            }else {
+                //debug(tagString);
+            }
+    }    
+    return serviceNameList;
+}
+
+list<string> generateServiceView(string xmlString, string serviceName){
+//debug(serviceName);
+//debug(xmlString);
+    list<string> serviceList = listCreate(string);
+    string xmlView = "";
+    
+    list<string> tagList = listCreate(string);
+    int xmlStringLength = strLength(xmlString);
+//debug(xmlStringLength);
+    
+    string aTag = "";
+    for(int i = 0; i < xmlStringLength; i++){
+        string currentChar = strSubstring(xmlString, i, i+1);
+//debug(currentChar);
+        aTag = aTag + currentChar;
+        if(strEqualsIgnoreCase(currentChar, ">")){
+            listAdd(tagList, aTag);
+            aTag = "";
+        }
+    }
+//debug(tagList);
+    int tagLevel = 0;    
+    boolean tagOpened = false;
+    boolean tagselfOpenCloseBefore = false;
+    boolean foundServiceName = false;    
+    list<string> tagOpenList = listCreate(string);
+    int tagListSize = listSize(tagList);
+//debug("list size: " + tagListSize);
+    for(int i = 0; i < tagListSize; i++){ 
+//debug("tag level: " + tagLevel);
+//debug("row idx: " + i);  
+             
+        
+        string tagString = strTrim(listGet(tagList,i));
+//debug(tagString);              
+        
+            if(strStartsWith(tagString,"<xsd:element") && !strEndsWith(tagString, "/>")){
+//debug("case 1 < >");   
+                ////debug("oc: "  + tagselfOpenCloseBefore);
+                
+                listAdd(tagOpenList, findServiceName(tagString));
+                if(!tagselfOpenCloseBefore){            
+                    tagLevel = tagLevel + 1;    
+                }
+                
+//debug(tagString + " " + tagLevel + " " + tagOpened);
+                tagOpened = true;            
+                tagselfOpenCloseBefore = false;
+                
+                if(tagLevel == 1){
+                    string thisServiceName = findServiceName(tagString);
+                    if(thisServiceName == serviceName || thisServiceName == serviceName + "Response"){
+                        foundServiceName = true;
+                    }
+                    //if(thisServiceName == serviceName){foundServiceName = true;}
+                }
+                
+                if(foundServiceName){                    
+                    string xmlRowView = createXMLRowView(findServiceName(tagString),tagLevel,"open");
+                    //debug(xmlRowView);
+                    xmlView = xmlView + xmlRowView + "<br>";
+                }
+            }
+            else if(strStartsWith(tagString,"<xsd:element")&& strEndsWith(tagString, "/>")){ 
+//debug("case 2 < />");   
+                if(tagOpened){
+                    tagLevel = tagLevel +1;
+                }
+tagOpened = false;
+                tagselfOpenCloseBefore = true;
+//debug(tagString + " " + tagLevel + " " + tagOpened);              
+    
+                if(foundServiceName){
+                    string xmlRowView = createXMLRowView(findServiceName(tagString),tagLevel,"open");
+                    ////debug(xmlRowView);
+                    xmlView = xmlView + xmlRowView + "<br>";
+                }
+            }
+            else if(strStartsWith(tagString, "</xsd:element") && tagOpened){            
+//debug("case 3 < ></ >");
+if(tagOpened == false){
+    tagLevel = tagLevel-1;
+}
+//debug(tagString + " " + tagLevel + " " + tagOpened);    
+                tagOpened = false;
+                tagselfOpenCloseBefore = true;
+                
+                if(foundServiceName){
+                    string xmlRowView = createXMLRowView(tagString,tagLevel,"close");
+                    ////debug(xmlRowView);
+                    ////xmlView = xmlView + xmlRowView;
+                    
+                    ////remove service name from tagOpenList at last index                                   
+                    listRemove(tagOpenList, listSize(tagOpenList)-1);                    
+                }
+                
+                if(tagLevel == 1){
+                    if(foundServiceName){
+                        ////add to serviceList
+                        listAdd(serviceList,xmlView);
+                    }
+                    foundServiceName = false;
+                    //xmlView = xmlView + "<br><br>";
+                    ////return xmlView;
+                    xmlView = "";
+                }
+                
+            }
+            else if(strStartsWith(tagString, "</xsd:element") && !tagOpened){
+//debug("case 4 </ >");
+                tagLevel = tagLevel - 1;
+//debug(tagString + " " + tagLevel + " " + tagOpened);                 
+                tagOpened = false;       
+                
+                if(foundServiceName){
+                    string xmlRowView = createXMLRowView(listGet(tagOpenList,listSize(tagOpenList)-1),tagLevel,"close");                    
+                    
+                    ////remove service name from tagOpenList at last index                
+                    listRemove(tagOpenList, listSize(tagOpenList)-1);
+                    
+                    xmlView = xmlView + xmlRowView + "<br>";
+                }
+                
+                if(tagLevel == 1){
+                    if(foundServiceName){
+                        ////add to serviceList
+                        listAdd(serviceList,xmlView);
+                    }                    
+                    foundServiceName = false;
+                    //xmlView = xmlView + "<br><br>";
+                    ////return xmlView;
+                    xmlView = "";
+                }
+            }
+        
+
+        
+        
+    }    
+    //debug(listSize(serviceList));
+    //debug(serviceList);
+    return serviceList;
+}
+
+string createXMLRowView(string xmlString, int tagLevel, string tagType){
+    string xmlView = "";
+    
+    string spaceStr = "";
+    for(int i=0; i<tagLevel; i++){
+        spaceStr = spaceStr + "&nbsp;&nbsp;&nbsp;&nbsp;";
+    }
+    if(strStartsWith(tagType, "open")){
+        xmlView = spaceStr + "&lt;" + xmlView + xmlString + "&gt;";
+    }else{
+        xmlView = spaceStr + "&lt;/" + xmlView + xmlString + "&gt;";
+    }
+    
+    return xmlView;
+}
+
+string findServiceName(string tagString){
+    int startIndex = strIndexOf(tagString,"name=",0);
+    int endIndex = strIndexOf(tagString,"\"",startIndex+6);    
+    string thisServiceName = strSubstring(tagString,startIndex+6,endIndex);
+    
+    return thisServiceName;
+}]]></string>
+</exportmultiplex>

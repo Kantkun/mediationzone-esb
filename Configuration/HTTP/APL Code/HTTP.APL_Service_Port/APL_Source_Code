@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="APL_Source_Code" ref_path="apl_script[Internal]/storable[apl_script]/storable[Data]">
+   <string name="Definition"><![CDATA[string getServicePortNumber(string serviceName){
+    
+    string servicePortNumber = "";
+    
+    if(strEqualsIgnoreCase(serviceName, "CBSCustomerService")){
+        servicePortNumber = "8070";
+    }    
+    if(strEqualsIgnoreCase(serviceName, "CBSAccountService")){
+        servicePortNumber = "8071";
+    }
+    if(strEqualsIgnoreCase(serviceName, "CBSLoanService")){
+        servicePortNumber = "8072";
+    }
+    if(strEqualsIgnoreCase(serviceName, "CBSAccountOpenningService")){
+        servicePortNumber = "8073";
+    }
+    if(strEqualsIgnoreCase(serviceName, "CBSFundTransferService")){
+        servicePortNumber = "8074";
+    }
+    if(strEqualsIgnoreCase(serviceName, "PPSCustomerService")){
+        servicePortNumber = "8076";
+    }    
+    if(strEqualsIgnoreCase(serviceName, "LRMPaymentService")){
+        servicePortNumber = "8077";
+    }
+    //if(strEqualsIgnoreCase(serviceName, "ONCBService")){
+    //    servicePortNumber = "8078";
+    //}
+    if(strEqualsIgnoreCase(serviceName, "SCLService")){
+        servicePortNumber = "8078";
+    }
+    if(strEqualsIgnoreCase(serviceName, "CBSLegalService")){
+        servicePortNumber = "8079";
+    }
+    if(strEqualsIgnoreCase(serviceName, "CBSUtilityService")){
+        servicePortNumber = "8081";
+    }
+    if(strEqualsIgnoreCase(serviceName, "CBSPassbookService")){
+        servicePortNumber = "8082";
+    }
+    if(strEqualsIgnoreCase(serviceName, "IMBCustomerService")){
+        servicePortNumber = "8083";
+    }
+    if(strEqualsIgnoreCase(serviceName, "IMBAccountService")){
+        servicePortNumber = "8084";
+    }
+    if(strEqualsIgnoreCase(serviceName, "IMBAddressService")){
+        servicePortNumber = "8085";
+    }
+    if(strEqualsIgnoreCase(serviceName, "CBSPromptPayService")){
+        servicePortNumber = "8086";
+    }
+    if(strEqualsIgnoreCase(serviceName, "IMBLoanService")){
+        servicePortNumber = "8087";
+    }
+    if(strEqualsIgnoreCase(serviceName, "CBSRegistrationService")){
+        servicePortNumber = "8088";
+    }
+    if(strEqualsIgnoreCase(serviceName, "IMBStatementService")){
+        servicePortNumber = "8089";
+    }
+    
+    return servicePortNumber;
+}]]></string>
+</exportmultiplex>

@@ -1,0 +1,1485 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="APL_Source_Code" ref_path="apl_script[Internal]/storable[apl_script]/storable[Data]">
+   <string name="Definition"><![CDATA[import ultra.CBS.UFL_DSP_Header;
+import ultra.CBS.UFL_MBASE_Header;
+import ultra.Ultra.UFL_SYSLOG;
+final string DECIMAL_SPLITER = ".";
+final string ZERO = "0";
+
+/*
+string ramdomNumnerStr() {        
+    int randomNo = randomInt(9999);
+    string randomNoStr = "";
+    if(randomNo < 1000)
+        randomNoStr = randomNoStr + "0";
+    if(randomNo < 100)
+        randomNoStr = randomNoStr + "0";
+    if(randomNo < 10)
+        randomNoStr = randomNoStr + "0";
+    randomNoStr = randomNoStr + (string)randomNo;
+    
+    return randomNoStr;
+}
+*/
+
+//random number for generateAcquireReferenceNumber()
+string randomNumberStr(int digit){
+    string randomNoStr = "";
+    
+    string randomDigitStr = "";
+    for(int i = 0; i < digit; i++){
+        randomDigitStr = randomDigitStr + "9";
+    }    
+    int randomDigit = 0;
+    strToInt(randomDigit, randomDigitStr);
+    
+    //debug(randomDigit);
+    
+    int random = randomInt(randomDigit);
+    randomNoStr = randomNoStr + (string)random;
+    while(strLength(randomNoStr) < digit){
+        randomNoStr = "0" + randomNoStr;
+    }
+    
+    //debug(randomNoStr);
+    
+    return randomNoStr;
+}
+
+//generate ref no. length 16
+string generateAcquireReferenceNumberV2(){
+    
+    //gen time string
+    string acquireReferenceNumber = "";
+    date currentDate = dateCreateNow();   
+    dateToString(acquireReferenceNumber,currentDate,"mmssSSS"); 
+    
+    //random char and num
+    int length = 5;
+    string randomStr = "";
+    string randomList = "0AaBbCc1DdEeFf2GgHhIi3JjKkLl4MmNnOo5PpQqRr6SsTtUu7VvWwXx8YyZz9"; //62 length
+    int randomListLength = strLength(randomList);
+    list<string> charList = strSplit(randomList, "");
+    for(int i = 0 ; i < length; i++){
+        randomStr = randomStr + listGet(charList, randomInt(randomListLength));
+    }
+    
+    //randam num only
+    int numLength = 4;
+    string randomNumStr = "";
+    int randomRange = 1;
+    for(int i = 0; i < numLength; i++){
+        randomRange = randomRange * 10;
+    }
+    randomRange = randomRange - 1;
+    randomNumStr = (string)randomInt(randomRange);
+    while(strLength(randomNumStr) < numLength){
+        randomNumStr = "0" + randomNumStr;
+    }
+    
+    acquireReferenceNumber = acquireReferenceNumber + randomStr + randomNumStr;
+    return acquireReferenceNumber;
+}
+
+//Generate unique number for DSP Header
+string generateAcquireReferenceNumber(){
+    string acquireReferenceNumber = "";
+    date currentDate = dateCreateNow();    
+    //dateToString(acquireReferenceNumber,currentDate,"HHmmss");        
+    //acquireReferenceNumber = acquireReferenceNumber + "00" + ramdomNumnerStr();
+    dateToString(acquireReferenceNumber,currentDate,"HHmmssSSS");
+    acquireReferenceNumber = acquireReferenceNumber + randomNumberStr(3); //12 digit
+    
+    return acquireReferenceNumber;
+}
+
+//Pack decimal
+string toPackStr (int input) {
+    return (string)input + "F";    
+}
+
+//Unpack decimal
+string unPackStr(string pack){
+    string removeF = strSubstring(pack, 0, strLength(pack)-1);       
+    bigint out;
+    strToBigInt(out, removeF);   
+    return (string)out;
+}
+
+//Unpack decimal with decimal point
+string unPackCurrency(string pack,int decimalCount){
+    string removeF = strSubstring(pack, 0, strLength(pack)-1);;    
+    //debug("remove F for currency : " + removeF);
+    if(decimalCount <= 0){return removeF;}
+    int strCount = strLength(removeF);
+    int decimalPointPosition = strCount - decimalCount;
+    string unpackCurrency = removeF;    
+    unpackCurrency = strInsert(unpackCurrency, decimalPointPosition ,".");        
+    //debug("unpackCurrency : " + unpackCurrency);
+    return unpackCurrency;
+}
+
+//Upack to percentage by length 11,9
+string unPackPercentage(string pack){
+    string removeF = strSubstring(pack, 0, strLength(pack)-1);;    
+    //debug("remove F for percentage : " + removeF);
+    string unpackPercentage = removeF;
+    int strCount = strLength(unpackPercentage);
+    for(int i=strCount; i<11; i++){ //add "0" to count to 11
+        unpackPercentage = unpackPercentage + "0";
+    }    
+    unpackPercentage = strInsert(unpackPercentage, 4 ,"."); //4 = (11-9) +2 โดย +2 = x100
+    //debug("unpackPercentage : " + unpackPercentage);
+    return unpackPercentage;
+}
+
+//convert to binary type data
+string toBinaryString(int input) {
+    return intToHexString(input);
+}
+
+/************************************************************************ 
+ * Name                  : intToHexString
+ * Description           : converts an input integer to hex representation
+ * Notes                 : only works for positive input numbers! 
+ * Parameters            : int - input number
+ * Returned Value        : string
+ ************************************************************************/ 
+string intToHexString(int num) {
+    if (num < 0) {
+        ExceptionDetails exp  = udrCreate(ExceptionDetails);
+        exp.message = "Error converting int to hex - negative numbers not supported!";
+        throw exp;
+    }
+    bytearray ba = baCreate(4);
+    int pow = 16777216;
+    for (int i=0; i<4; i++) {
+        if (num >= pow) {
+            baSet(ba, i, num/pow);
+            num=num-pow;
+        } else {
+            baSet(ba, i, 0);
+        }
+        pow=pow/256;
+    }
+    return strToUpper(baToHexString(ba));
+}
+
+bytearray refillTrimedColumn(bytearray dataArray,int oneDataSetLength){
+    //debug("datasetLength : "+oneDataSetLength);
+    int size = baSize(dataArray);
+    //debug("Xsize : " + size);
+    int sizeCon = 0;
+    //debug("sizeCon : " + sizeCon);
+    while(sizeCon < size){
+        sizeCon = sizeCon + oneDataSetLength;        
+        //debug("sizeCon : " + sizeCon);        
+    }
+    
+    int toRefill = sizeCon - size;
+    //debug("toRefill : " + toRefill);    
+    bytearray toAppend;
+    for(int i=0; i < toRefill; i++){
+        bytearray x = baCreateFromHexString("40"); //40 = space
+        toAppend = baAppend(toAppend,x);
+        //debug(toAppend);          
+    }
+    dataArray = baAppend(dataArray,toAppend);
+    //debug("XXsize : " + baSize(dataArray));
+    return dataArray;
+}
+
+string getMessageString(string value,int length){
+    //debug("input value: "+value);
+    int lengthValue = strLength(value);
+    int toRefill = length - lengthValue;
+    string space;
+    
+    for(int i=0; i< toRefill; i++){
+        string tmpSpace = " ";
+        space = space + tmpSpace;
+    }
+    string strRefill = value + space;
+    //debug("strRefill: "+strRefill);
+    return strRefill;
+}
+
+string getStringValue(string value){
+    if(value == null){
+        return "";
+    }
+    
+    string strValue = "";
+    strValue = strREReplaceAll(strTrim(value),"\\p{Cc}","");
+    return strValue;   
+}
+
+/*double getDecimalValue(string value,int length,int precision){
+    
+}*/
+
+string convertToNumberic(string value,int length,int precision){
+    if(value == null){
+        return "0";
+    }
+    if(strTrim(value) == ""){
+        return "0";
+    }
+    
+    string strReturn = "0";
+    string strValue = strREReplaceAll(strTrim(value),"\\p{Cc}","");
+    
+    if (strValue != ""){
+        value = strTrim(value);
+    }else{
+        value = "0";
+    }
+    
+    if(precision>0){
+        //100000
+        int valueLenghtWithoutPrecision = strLength(value) - precision;
+        strReturn = strSubstring(value, 0, valueLenghtWithoutPrecision) + DECIMAL_SPLITER + strSubstring(value,valueLenghtWithoutPrecision, strLength(value));
+    }
+    
+    return strReturn;
+}
+
+string getMessageNumber(double number){
+    string strReturn = "0";
+    string strValue = strREReplaceAll(strTrim((string) number),DECIMAL_SPLITER,"");
+    return strValue;
+}
+
+string getMappingRules(string apiName,string fieldName,string value){
+    //debug(apiName + ',' + fieldName + ',' + value);
+    string strValue = "";
+    if (apiName == "GetAccountInfo"){
+        if (fieldName == "AccountRelationshipCode"){
+            if(value == "P"){
+                strValue = "M";   
+            }else if(strStartsWith(value,"J")){
+                strValue = "J";   
+            }else{
+                strValue = "";   
+            }
+        }
+    }else if (apiName == "InquiryAddressList"){
+        if (fieldName == "AddressType"){
+            if(value == "R"){
+                strValue = "Home";
+            }else if (value == "O"){
+                strValue = "Work";
+            }else if (value == "M"){
+                strValue = "Mailing";
+            }else{
+                strValue = "";   
+            }
+        }
+    }else{
+        strValue = "";   
+    }
+    
+    return strValue;
+}
+
+string URLEncodeValue(string value){
+    value = strTrim(value);
+    debug(value);
+    debug("in URLEncode function");
+    value = strREReplaceAll(value, " ", "%20");
+    value = strREReplaceAll(value, "\\$", "%24");
+    value = strREReplaceAll(value, "\\&", "%26");
+    value = strREReplaceAll(value, "\\''", "%60");
+    value = strREReplaceAll(value, "\\:", "%3A");
+    value = strREReplaceAll(value, "\\<", "%3C");
+    value = strREReplaceAll(value, "\\>", "%3E");
+    value = strREReplaceAll(value, "\\[", "%5B");
+    value = strREReplaceAll(value, "\\]", "%5D");
+    value = strREReplaceAll(value, "\\!", "%21");
+    value = strREReplaceAll(value, "\\*", "%2A");
+    value = strREReplaceAll(value, "\\;", "%3B");
+    value = strREReplaceAll(value, "\\(", "%28");
+    value = strREReplaceAll(value, "\\)", "%29");
+    value = strREReplaceAll(value, "\\@", "%40");
+    value = strREReplaceAll(value, "\\+", "%2B");
+    value = strREReplaceAll(value, "\\/", "%2F");
+    return value;   
+}
+
+string URLDecodeValue(string value){
+    value = strREReplaceAll(value, "%20", " ");
+    value = strREReplaceAll(value, "%24", "$");
+    value = strREReplaceAll(value, "%26", "&");
+    value = strREReplaceAll(value, "%60", "'");
+    value = strREReplaceAll(value, "%3A", ":");
+    value = strREReplaceAll(value, "%3C", "<");
+    value = strREReplaceAll(value, "%3E", ">");
+    value = strREReplaceAll(value, "%5B", "[");
+    value = strREReplaceAll(value, "%5D", "]");
+    value = strREReplaceAll(value, "%21", "!");
+    value = strREReplaceAll(value, "%2A", "*");
+    value = strREReplaceAll(value, "%3B", ";");
+    value = strREReplaceAll(value, "%28", "(");
+    value = strREReplaceAll(value, "%29", ")");
+    value = strREReplaceAll(value, "%40", "@");
+    value = strREReplaceAll(value, "%2B", "+");
+    value = strREReplaceAll(value, "%2F", "/");
+    return value;
+}
+
+string getABCSErrorDesc(string ErrorCode){
+    ErrorCode = strREReplaceAll(ErrorCode, "\\.", "");
+    while(strLength(ErrorCode) < 3){
+        ErrorCode = "0" + ErrorCode;
+    }
+    string responseCodeString ="Unknow error code.";    
+    if(ErrorCode == "001" ){ responseCodeString = "Account number not found"; }			
+    if(ErrorCode == "002" ) { responseCodeString = "Stops or holds found"; }
+    if(ErrorCode == "003" ) { responseCodeString = "Alerts or special instructions"; }
+    if(ErrorCode == "004" ) { responseCodeString = "NSF items today"; }
+    if(ErrorCode == "005" ) { responseCodeString = "Insufficient Fund"; }
+    if(ErrorCode == "006" ) { responseCodeString = "Account New Today"; }
+    if(ErrorCode == "007" ) { responseCodeString = "Closed Account"; }
+    if(ErrorCode == "008" ) { responseCodeString = "Dormant Account"; }
+    if(ErrorCode == "009" ) { responseCodeString = "Restricted Account"; }
+    if(ErrorCode == "010" ) { responseCodeString = "Frozen Account"; }
+    if(ErrorCode == "011" ) { responseCodeString = "Update book first"; }
+    if(ErrorCode == "012" ) { responseCodeString = "Insider Account"; }
+    if(ErrorCode == "013" ) { responseCodeString = "Matured Account"; }
+    if(ErrorCode == "014" ) { responseCodeString = "Bal will breach min balance"; }
+    if(ErrorCode == "015" ) { responseCodeString = "Trans. > payoff"; }
+    if(ErrorCode == "016" ) { responseCodeString = "Trans. > ledger balance"; }
+    if(ErrorCode == "017" ) { responseCodeString = "Frozen or zero accrual account"; }
+    if(ErrorCode == "018" ) { responseCodeString = "Trans. > accrued interest"; }
+    if(ErrorCode == "019" ) { responseCodeString = "Payment Stopped"; }
+    if(ErrorCode == "020" ) { responseCodeString = "Trans. > principal balance"; }
+    if(ErrorCode == "021" ) { responseCodeString = "Discounted note"; }
+    if(ErrorCode == "022" ) { responseCodeString = "Trans. > overdue interest bal"; }
+    if(ErrorCode == "023" ) { responseCodeString = "Trans. > other charges balance"; }
+    if(ErrorCode == "024" ) { responseCodeString = "Trans. is not a standard pmt"; }
+    if(ErrorCode == "025" ) { responseCodeString = "Trans. not allow for Acc Curr"; }
+    if(ErrorCode == "026" ) { responseCodeString = "Trans > accrued interest"; }
+    if(ErrorCode == "027" ) { responseCodeString = "Eff date before 1st draw down"; }
+    if(ErrorCode == "028" ) { responseCodeString = "Currency discrepancy"; }
+    if(ErrorCode == "029" ) { responseCodeString = "Post-Dated Transactions exist"; }
+    if(ErrorCode == "030" ) { responseCodeString = "Invalid group for account"; }
+    if(ErrorCode == "031" ) { responseCodeString = "Date of Birth Error"; }
+    if(ErrorCode == "032" ) { responseCodeString = "Display status messages"; }
+    if(ErrorCode == "033" ) { responseCodeString = "Deceased/Dissolved Customer"; }
+    if(ErrorCode == "034" ) { responseCodeString = "Original jrnl seqN not found"; }
+    if(ErrorCode == "035" ) { responseCodeString = "Trans in incorrect currency"; }
+    if(ErrorCode == "036" ) { responseCodeString = "Account already exists"; }
+    if(ErrorCode == "037" ) { responseCodeString = "Product not found"; }
+    if(ErrorCode == "038" ) { responseCodeString = "CIF number not found"; }
+    if(ErrorCode == "039" ) { responseCodeString = "Checkbook error"; }
+    if(ErrorCode == "040" ) { responseCodeString = "Stop suspect"; }
+    if(ErrorCode == "041" ) { responseCodeString = "Insufficient Collection Funds"; }
+    if(ErrorCode == "042" ) { responseCodeString = "FD Account not found"; }
+    if(ErrorCode == "043" ) { responseCodeString = "FD Account already exists"; }
+    if(ErrorCode == "044" ) { responseCodeString = "No OD/OC facility"; }
+    if(ErrorCode == "045" ) { responseCodeString = "Had activity today"; }
+    if(ErrorCode == "046" ) { responseCodeString = "Cheque Pending Clearance"; }
+    if(ErrorCode == "047" ) { responseCodeString = "ODP not 0 for closeout"; }
+    if(ErrorCode == "048" ) { responseCodeString = "Account closed today"; }
+    if(ErrorCode == "049" ) { responseCodeString = "Trans. must = W/D interest"; }
+    if(ErrorCode == "050" ) { responseCodeString = "Incor Closeout"; }
+    if(ErrorCode == "051" ) { responseCodeString = "Check number is zeros"; }
+    if(ErrorCode == "052" ) { responseCodeString = "Invalid effective date"; }
+    if(ErrorCode == "053" ) { responseCodeString = "Floats Non Business Day"; }
+    if(ErrorCode == "054" ) { responseCodeString = "Trans does not match original"; }
+    if(ErrorCode == "055" ) { responseCodeString = "Passbook header not found"; }
+    if(ErrorCode == "056" ) { responseCodeString = "No OCP facility exists"; }
+    if(ErrorCode == "057" ) { responseCodeString = "Exceeds authorized limit"; }
+    if(ErrorCode == "058" ) { responseCodeString = "Must use OD/OC facility"; }
+    if(ErrorCode == "059" ) { responseCodeString = "Insufficient Float"; }
+    if(ErrorCode == "060" ) { responseCodeString = "hold amt/check num mismatch"; }
+    if(ErrorCode == "061" ) { responseCodeString = "Not a passbook account"; }
+    if(ErrorCode == "062" ) { responseCodeString = "Exceeds drawing limit"; }
+    if(ErrorCode == "063" ) { responseCodeString = "Loan Expired"; }
+    if(ErrorCode == "064" ) { responseCodeString = "Original loan trans not found"; }
+    if(ErrorCode == "065" ) { responseCodeString = "No loan released yet"; }
+    if(ErrorCode == "066" ) { responseCodeString = "Not yearly rest/HP/BD"; }
+    if(ErrorCode == "067" ) { responseCodeString = "Trans. > int-in-advance bal"; }
+    if(ErrorCode == "068" ) { responseCodeString = "Revolv trans not even  1000"; }
+    if(ErrorCode == "069" ) { responseCodeString = "Availability date expired"; }
+    if(ErrorCode == "070" ) { responseCodeString = "Trans. > misc costs balance"; }
+    if(ErrorCode == "071" ) { responseCodeString = "Trans. > Max Installment Allow"; }
+    if(ErrorCode == "072" ) { responseCodeString = "Loan not fully released yet"; }
+    if(ErrorCode == "073" ) { responseCodeString = "Had previous payment today"; }
+    if(ErrorCode == "074" ) { responseCodeString = "Payoff not within limits"; }
+    if(ErrorCode == "075" ) { responseCodeString = "Write off Loan/Acct."; }
+    if(ErrorCode == "076" ) { responseCodeString = "Sold participation"; }
+    if(ErrorCode == "077" ) { responseCodeString = "Wrong passbook serial number"; }
+    if(ErrorCode == "078" ) { responseCodeString = "Account has standing instr"; }
+    if(ErrorCode == "079" ) { responseCodeString = "FD mat date not = process date"; }
+    if(ErrorCode == "080" ) { responseCodeString = "FD mat date not > process date"; }
+    if(ErrorCode == "081" ) { responseCodeString = "Disburse amt <> S&P schedule"; }
+    if(ErrorCode == "082" ) { responseCodeString = "Placement amt > product limit"; }
+    if(ErrorCode == "083" ) { responseCodeString = "Conv int to Islamic not allow"; }
+    if(ErrorCode == "084" ) { responseCodeString = "Amount disbursement exceed"; }
+    if(ErrorCode == "085" ) { responseCodeString = "Drawdown amt <> avail balance"; }
+    if(ErrorCode == "086" ) { responseCodeString = "Trans amount greater than"; }
+    if(ErrorCode == "087" ) { responseCodeString = "Trans amt > retention sum"; }
+    if(ErrorCode == "088" ) { responseCodeString = "Not within age limits"; }
+    if(ErrorCode == "089" ) { responseCodeString = "Loan disbursement not allow"; }
+    if(ErrorCode == "090" ) { responseCodeString = "Have arrear outstanding amt"; }
+    if(ErrorCode == "091" ) { responseCodeString = "Ovr Counter Trx Not Allowed"; }
+    if(ErrorCode == "092" ) { responseCodeString = "Non Business day"; }
+    if(ErrorCode == "093" ) { responseCodeString = "Only 1st cash/HC dep allow"; }
+    if(ErrorCode == "094" ) { responseCodeString = "******Unused *****************"; }
+    if(ErrorCode == "095" ) { responseCodeString = "******Unused *****************"; }
+    if(ErrorCode == "096" ) { responseCodeString = "******Unused *****************"; }
+    if(ErrorCode == "097" ) { responseCodeString = "Trans. > Today's IBT Limit"; }
+    if(ErrorCode == "098" ) { responseCodeString = "This is an Operating Account"; }
+    if(ErrorCode == "099" ) { responseCodeString = "Earmark Ref# not found"; }
+    if(ErrorCode == "100" ) { responseCodeString = "New A/C open less than 30 days"; }
+    if(ErrorCode == "101" ) { responseCodeString = "No Billing for Principal"; }
+    if(ErrorCode == "102" ) { responseCodeString = "No Billing for Interest"; }
+    if(ErrorCode == "103" ) { responseCodeString = "No Billing for Late Chrg"; }
+    if(ErrorCode == "104" ) { responseCodeString = "No Billing for Othr Chrg"; }
+    if(ErrorCode == "105" ) { responseCodeString = "No Billing for Misc Chrg"; }
+    if(ErrorCode == "106" ) { responseCodeString = "Neg. Bal Not Allowed-Excess"; }
+    if(ErrorCode == "107" ) { responseCodeString = "Redemption not allowed"; }
+    if(ErrorCode == "108" ) { responseCodeString = "Trx Not Allowed for this Acct"; }
+    if(ErrorCode == "109" ) { responseCodeString = "Trx Amt > Adv Payment"; }
+    if(ErrorCode == "110" ) { responseCodeString = "IBT Settlement-Rfr to Home Brh"; }
+    if(ErrorCode == "111" ) { responseCodeString = "*****Not Used ***************"; }
+    if(ErrorCode == "112" ) { responseCodeString = "Staff Product not allowed"; }
+    if(ErrorCode == "113" ) { responseCodeString = "Trans Amt < Install Amt"; }
+    if(ErrorCode == "114" ) { responseCodeString = "Rate Var not allow-Staff A/C"; }
+    if(ErrorCode == "115" ) { responseCodeString = "*****Not Used ***************"; }
+    if(ErrorCode == "116" ) { responseCodeString = "Invalid Developer Code"; }
+    if(ErrorCode == "117" ) { responseCodeString = "A/C not 5th schedule"; }
+    if(ErrorCode == "118" ) { responseCodeString = "Invalid Purpose Code"; }
+    if(ErrorCode == "119" ) { responseCodeString = "Customer Limit not found"; }
+    if(ErrorCode == "120" ) { responseCodeString = "First deposit < initial amt"; }
+    if(ErrorCode == "121" ) { responseCodeString = "Status chg demand deposit only"; }
+    if(ErrorCode == "122" ) { responseCodeString = "To close, balances must = 0"; }
+    if(ErrorCode == "123" ) { responseCodeString = "Account is already closed"; }
+    if(ErrorCode == "124" ) { responseCodeString = "Status has changed previously"; }
+    if(ErrorCode == "125" ) { responseCodeString = "Status is not dormant"; }
+    if(ErrorCode == "126" ) { responseCodeString = "Status is \"do not close\""; }
+    if(ErrorCode == "127" ) { responseCodeString = "Account status is invalid"; }
+    if(ErrorCode == "128" ) { responseCodeString = "Has active ODP...cannot close"; }
+    if(ErrorCode == "129" ) { responseCodeString = "Receipt has been printed"; }
+    if(ErrorCode == "130" ) { responseCodeString = "Add dep invalid on active FD"; }
+    if(ErrorCode == "131" ) { responseCodeString = "BOP code is missing or invalid"; }
+    if(ErrorCode == "132" ) { responseCodeString = "Interbranch transaction"; }
+    if(ErrorCode == "133" ) { responseCodeString = "Account has hold mail"; }
+    if(ErrorCode == "134" ) { responseCodeString = "FDR/PB Serial Number Incorrect"; }
+    if(ErrorCode == "135" ) { responseCodeString = "Non Performing status"; }
+    if(ErrorCode == "136" ) { responseCodeString = "Not non-performing status"; }
+    if(ErrorCode == "137" ) { responseCodeString = "Trans < FD minimum balance"; }
+    if(ErrorCode == "138" ) { responseCodeString = "Overdrawn not allowed"; }
+    if(ErrorCode == "139" ) { responseCodeString = "Account branch is offline"; }
+    if(ErrorCode == "140" ) { responseCodeString = "First Deposit > Max Init Amt"; }
+    if(ErrorCode == "141" ) { responseCodeString = "Exceeds IBT W/D limit"; }
+    if(ErrorCode == "142" ) { responseCodeString = "Trans not even multiple  1000"; }
+    if(ErrorCode == "143" ) { responseCodeString = "FD mat date > process date"; }
+    if(ErrorCode == "144" ) { responseCodeString = "Invalid charge code"; }
+    if(ErrorCode == "145" ) { responseCodeString = "Float record not found"; }
+    if(ErrorCode == "146" ) { responseCodeString = "Invalid float status"; }
+    if(ErrorCode == "147" ) { responseCodeString = "Trans > Misc Charge"; }
+    if(ErrorCode == "148" ) { responseCodeString = "Trans > Oths chrg by chrg code"; }
+    if(ErrorCode == "149" ) { responseCodeString = "Counter name not found"; }
+    if(ErrorCode == "150" ) { responseCodeString = "Class ID not found"; }
+    if(ErrorCode == "151" ) { responseCodeString = "Trx Disallowed/Staff Own Acct"; }
+    if(ErrorCode == "152" ) { responseCodeString = "Exceed max share value allowed"; }
+    if(ErrorCode == "153" ) { responseCodeString = "Exceed avail share units"; }
+    if(ErrorCode == "154" ) { responseCodeString = "Collateral ID not found"; }
+    if(ErrorCode == "155" ) { responseCodeString = "Float doesn't belong to branch"; }
+    if(ErrorCode == "156" ) { responseCodeString = "Share record not found"; }
+    if(ErrorCode == "157" ) { responseCodeString = "Exceed capital paid up"; }
+    if(ErrorCode == "158" ) { responseCodeString = "No share facility exists"; }
+    if(ErrorCode == "159" ) { responseCodeString = "Add dep invalid - receipt prtd"; }
+    if(ErrorCode == "160" ) { responseCodeString = "Relationship already exists"; }
+    if(ErrorCode == "161" ) { responseCodeString = "Relationship code is invalid"; }
+    if(ErrorCode == "162" ) { responseCodeString = "Exceeds ext acct trans limit"; }
+    if(ErrorCode == "163" ) { responseCodeString = "BOP code not required"; }
+    if(ErrorCode == "164" ) { responseCodeString = "Acct type not valid for prod"; }
+    if(ErrorCode == "165" ) { responseCodeString = "Host txcd not same"; }
+    if(ErrorCode == "166" ) { responseCodeString = "Holds not zero for closeout"; }
+    if(ErrorCode == "167" ) { responseCodeString = "Invalid Maturity Date"; }
+    if(ErrorCode == "168" ) { responseCodeString = "Placement Amt <> Opening Amt"; }
+    if(ErrorCode == "169" ) { responseCodeString = "Amount release < zero"; }
+    if(ErrorCode == "170" ) { responseCodeString = "Next payment due date = zero"; }
+    if(ErrorCode == "171" ) { responseCodeString = "Subsidised by 3rd party"; }
+    if(ErrorCode == "172" ) { responseCodeString = "Not subsidised by 3rd party"; }
+    if(ErrorCode == "173" ) { responseCodeString = "Outstanding balance < zero"; }
+    if(ErrorCode == "174" ) { responseCodeString = "Orig for loan pay rev invalid"; }
+    if(ErrorCode == "175" ) { responseCodeString = "Cannot change relationship"; }
+    if(ErrorCode == "176" ) { responseCodeString = "Amount > accrued penalty int"; }
+    if(ErrorCode == "177" ) { responseCodeString = "Amount > interest payable"; }
+    if(ErrorCode == "178" ) { responseCodeString = "Duplicate journal seq number"; }
+    if(ErrorCode == "179" ) { responseCodeString = "Incorrect FD group number"; }
+    if(ErrorCode == "180" ) { responseCodeString = "Amount > Late Charge"; }
+    if(ErrorCode == "181" ) { responseCodeString = "Must use OCP facility"; }
+    if(ErrorCode == "182" ) { responseCodeString = "Trans amt > Principal"; }
+    if(ErrorCode == "183" ) { responseCodeString = "Original nobook item not found"; }
+    if(ErrorCode == "184" ) { responseCodeString = "ODP authorized limit not 0"; }
+    if(ErrorCode == "185" ) { responseCodeString = "Amount > Interest rebate"; }
+    if(ErrorCode == "186" ) { responseCodeString = "Amount > Accrued commt fee"; }
+    if(ErrorCode == "187" ) { responseCodeString = "Full write off"; }
+    if(ErrorCode == "188" ) { responseCodeString = "Bank number is invalid"; }
+    if(ErrorCode == "189" ) { responseCodeString = "Withdrawable int <> 0"; }
+    if(ErrorCode == "190" ) { responseCodeString = "Invalid transaction amount"; }
+    if(ErrorCode == "191" ) { responseCodeString = "Invalid CPF Trans Amount"; }
+    if(ErrorCode == "192" ) { responseCodeString = "Invalid CPF Date"; }
+    if(ErrorCode == "193" ) { responseCodeString = "Total bill amt <> 0"; }
+    if(ErrorCode == "194" ) { responseCodeString = "Effective > 1st drawn down"; }
+    if(ErrorCode == "195" ) { responseCodeString = "Eff date is not business day"; }
+    if(ErrorCode == "196" ) { responseCodeString = "Trn amt > allowable refund amt"; }
+    if(ErrorCode == "197" ) { responseCodeString = "Refund amount > pricipal bal"; }
+    if(ErrorCode == "198" ) { responseCodeString = "Main account can't process"; }
+    if(ErrorCode == "199" ) { responseCodeString = "Rejected items in Pension mst"; }
+    if(ErrorCode == "200" ) { responseCodeString = "Amount/currency link invalid"; }
+    if(ErrorCode == "201" ) { responseCodeString = "Teller ID is invalid"; }
+    if(ErrorCode == "202" ) { responseCodeString = "Transaction is not supported"; }
+    if(ErrorCode == "203" ) { responseCodeString = "Not authorized to transaction"; }
+    if(ErrorCode == "204" ) { responseCodeString = "System error..contact DP Staff"; }
+    if(ErrorCode == "205" ) { responseCodeString = "Account is redeemed"; }
+    if(ErrorCode == "206" ) { responseCodeString = "General ledger number invalid"; }
+    if(ErrorCode == "207" ) { responseCodeString = "Invalid Passbook Balance"; }
+    if(ErrorCode == "208" ) { responseCodeString = "Not a passbook account"; }
+    if(ErrorCode == "209" ) { responseCodeString = "Must update passbook now"; }
+    if(ErrorCode == "210" ) { responseCodeString = "Account has no unposted items"; }
+    if(ErrorCode == "211" ) { responseCodeString = "No one found with given name"; }
+    if(ErrorCode == "212" ) { responseCodeString = "Loan is paid off"; }
+    if(ErrorCode == "213" ) { responseCodeString = "Invalid CIF Address"; }
+    if(ErrorCode == "214" ) { responseCodeString = "Currency discrepancy"; }
+    if(ErrorCode == "215" ) { responseCodeString = "Correction not allowed"; }
+    if(ErrorCode == "216" ) { responseCodeString = "Float not zero on closeout"; }
+    if(ErrorCode == "217" ) { responseCodeString = "Holds not zero on closeout"; }
+    if(ErrorCode == "218" ) { responseCodeString = "Account was closed today"; }
+    if(ErrorCode == "219" ) { responseCodeString = "Account in use by other teller"; }
+    if(ErrorCode == "220" ) { responseCodeString = "Renewal invalid on auto-renew"; }
+    if(ErrorCode == "221" ) { responseCodeString = "Account is in use"; }
+    if(ErrorCode == "222" ) { responseCodeString = "Zero amount not allowed"; }
+    if(ErrorCode == "223" ) { responseCodeString = "Teller record in use"; }
+    if(ErrorCode == "224" ) { responseCodeString = "More than 50 errors found"; }
+    if(ErrorCode == "225" ) { responseCodeString = "Interest dist code is invalid"; }
+    if(ErrorCode == "226" ) { responseCodeString = "Renewal code is invalid"; }
+    if(ErrorCode == "227" ) { responseCodeString = "Transfer account invalid"; }
+    if(ErrorCode == "228" ) { responseCodeString = "Transaction code is invalid"; }
+    if(ErrorCode == "229" ) { responseCodeString = "Transaction timed out"; }
+    if(ErrorCode == "230" ) { responseCodeString = "Handler not started"; }
+    if(ErrorCode == "231" ) { responseCodeString = "Handler is invalid"; }
+    if(ErrorCode == "232" ) { responseCodeString = "Controller invalid"; }
+    if(ErrorCode == "233" ) { responseCodeString = "Account has no history records"; }
+    if(ErrorCode == "234" ) { responseCodeString = "No record found for this acct"; }
+    if(ErrorCode == "235" ) { responseCodeString = "Teller has no completed trans"; }
+    if(ErrorCode == "236" ) { responseCodeString = "Date verification error"; }
+    if(ErrorCode == "237" ) { responseCodeString = "Passbook serialN doesn't match"; }
+    if(ErrorCode == "238" ) { responseCodeString = "Teller has no totals"; }
+    if(ErrorCode == "239" ) { responseCodeString = "Branch has no totals"; }
+    if(ErrorCode == "240" ) { responseCodeString = "Invalid next business date"; }
+    if(ErrorCode == "241" ) { responseCodeString = "1st Due Date is not in future"; }
+    if(ErrorCode == "242" ) { responseCodeString = "Check range exist"; }
+    if(ErrorCode == "243" ) { responseCodeString = "Invalid check range number"; }
+    if(ErrorCode == "244" ) { responseCodeString = "Router type invalid"; }
+    if(ErrorCode == "245" ) { responseCodeString = "Router not active"; }
+    if(ErrorCode == "246" ) { responseCodeString = "Postdated Debits not allowed"; }
+    if(ErrorCode == "247" ) { responseCodeString = "Mininum withdrawal"; }
+    if(ErrorCode == "248" ) { responseCodeString = "Invalid partial withdrawal amt"; }
+    if(ErrorCode == "249" ) { responseCodeString = "Invalid Super Group Number"; }
+    if(ErrorCode == "250" ) { responseCodeString = "System is shutting down"; }
+    if(ErrorCode == "251" ) { responseCodeString = "Invalid data-contact IT Staff"; }
+    if(ErrorCode == "252" ) { responseCodeString = "Amount > FD maximum allowed"; }
+    if(ErrorCode == "253" ) { responseCodeString = "Eff date < issue date"; }
+    if(ErrorCode == "254" ) { responseCodeString = "Eff date < last renewal date"; }
+    if(ErrorCode == "255" ) { responseCodeString = "Incomplete release document"; }
+    if(ErrorCode == "256" ) { responseCodeString = "*****Not Used ***************"; }
+    if(ErrorCode == "257" ) { responseCodeString = "Non Add On Account"; }
+    if(ErrorCode == "258" ) { responseCodeString = "Eff date before org loan date"; }
+    if(ErrorCode == "259" ) { responseCodeString = "Orig share txn does not exist"; }
+    if(ErrorCode == "260" ) { responseCodeString = "Share units will be negative"; }
+    if(ErrorCode == "261" ) { responseCodeString = "A/C bal not in excess"; }
+    if(ErrorCode == "262" ) { responseCodeString = "A/C excess bal is"; }
+    if(ErrorCode == "263" ) { responseCodeString = "ID Number not found"; }
+    if(ErrorCode == "264" ) { responseCodeString = "******Not Used****************"; }
+    if(ErrorCode == "265" ) { responseCodeString = "Account opening error"; }
+    if(ErrorCode == "266" ) { responseCodeString = "Insufficient Info for reversal"; }
+    if(ErrorCode == "267" ) { responseCodeString = "Invalid OSN Number"; }
+    if(ErrorCode == "268" ) { responseCodeString = "Chq Clr Rgn error"; }
+    if(ErrorCode == "269" ) { responseCodeString = "Rentas tranx already posted"; }
+    if(ErrorCode == "270" ) { responseCodeString = "Rentas trans status <> posted"; }
+    if(ErrorCode == "271" ) { responseCodeString = "AFT/SI Already Posted"; }
+    if(ErrorCode == "272" ) { responseCodeString = "AFT/SI Rec Not Found"; }
+    if(ErrorCode == "273" ) { responseCodeString = "AFT/SI Rec Prv not Posted"; }
+    if(ErrorCode == "274" ) { responseCodeString = "FCY Chq In Progress not found"; }
+    if(ErrorCode == "275" ) { responseCodeString = "Org FCY Chq not found"; }
+    if(ErrorCode == "276" ) { responseCodeString = "Claim expired (pension B)"; }
+    if(ErrorCode == "277" ) { responseCodeString = "Claim not allowed b4 pymt due"; }
+    if(ErrorCode == "278" ) { responseCodeString = "Pension Fund has been claimed"; }
+    if(ErrorCode == "279" ) { responseCodeString = "Pension Fund has been stopped"; }
+    if(ErrorCode == "280" ) { responseCodeString = "Pension amount not matched"; }
+    if(ErrorCode == "281" ) { responseCodeString = "Pension account not found"; }
+    if(ErrorCode == "282" ) { responseCodeString = "Principal amt cannot be zeros"; }
+    if(ErrorCode == "283" ) { responseCodeString = "Invalid insured party"; }
+    if(ErrorCode == "284" ) { responseCodeString = "Invalid proposal number"; }
+    if(ErrorCode == "285" ) { responseCodeString = "Cust/acct re'shp not found"; }
+    if(ErrorCode == "286" ) { responseCodeString = "Amt release must = loan amt"; }
+    if(ErrorCode == "287" ) { responseCodeString = "Invalid loan suspense a/c"; }
+    if(ErrorCode == "288" ) { responseCodeString = "Printed PBook Header Found"; }
+    if(ErrorCode == "289" ) { responseCodeString = "******Not Used***************"; }
+    if(ErrorCode == "290" ) { responseCodeString = "******Not Used***************"; }
+    if(ErrorCode == "291" ) { responseCodeString = "Transaction > Retention Sum"; }
+    if(ErrorCode == "292" ) { responseCodeString = "Post Dtd Cheq Request Invalid"; }
+    if(ErrorCode == "293" ) { responseCodeString = "Invalid rel for corp a/c"; }
+    if(ErrorCode == "294" ) { responseCodeString = "3rd Party Account Found"; }
+    if(ErrorCode == "295" ) { responseCodeString = "Customer had claimed already"; }
+    if(ErrorCode == "296" ) { responseCodeString = "Dealer's status = Suspended"; }
+    if(ErrorCode == "297" ) { responseCodeString = "Dealer's status = Terminated"; }
+    if(ErrorCode == "298" ) { responseCodeString = "Has more than one account"; }
+    if(ErrorCode == "299" ) { responseCodeString = "1st Chq disallow after release"; }
+    if(ErrorCode == "300" ) { responseCodeString = "Unclaimed money was collected"; }
+    if(ErrorCode == "301" ) { responseCodeString = "Stop foreign check"; }
+    if(ErrorCode == "302" ) { responseCodeString = "Remittance is stopped"; }
+    if(ErrorCode == "303" ) { responseCodeString = "Unclaim Rec Deleted"; }
+    if(ErrorCode == "304" ) { responseCodeString = "Unclaim Rec not Found"; }
+    if(ErrorCode == "305" ) { responseCodeString = "Unclaim Type not supported"; }
+    if(ErrorCode == "306" ) { responseCodeString = "IBT Claim not allowed"; }
+    if(ErrorCode == "307" ) { responseCodeString = "Exceed Customer Limit"; }
+    if(ErrorCode == "308" ) { responseCodeString = "Exceed No of Deposit per month"; }
+    if(ErrorCode == "309" ) { responseCodeString = "Partial Wdr not allowed"; }
+    if(ErrorCode == "310" ) { responseCodeString = "Invalid Main Account"; }
+    if(ErrorCode == "311" ) { responseCodeString = "Not a partial written off acc"; }
+    if(ErrorCode == "312" ) { responseCodeString = "Sub Account not found"; }
+    if(ErrorCode == "313" ) { responseCodeString = "Sub Agreement Account"; }
+    if(ErrorCode == "314" ) { responseCodeString = "Amount > Dealer Rebate"; }
+    if(ErrorCode == "315" ) { responseCodeString = "Not allowed on company acct"; }
+    if(ErrorCode == "316" ) { responseCodeString = "Special Character - A/c Number"; }
+    if(ErrorCode == "317" ) { responseCodeString = "DD & FD Acct CIF Difference"; }
+    if(ErrorCode == "318" ) { responseCodeString = "Special Character - Cust Name"; }
+    if(ErrorCode == "319" ) { responseCodeString = "Invalid Penalty Code"; }
+    if(ErrorCode == "320" ) { responseCodeString = "Account has been settled"; }
+    if(ErrorCode == "321" ) { responseCodeString = "Exceed Bank's Allocated Limit"; }
+    if(ErrorCode == "322" ) { responseCodeString = "Amount Inclusive PrepaidRental"; }
+    if(ErrorCode == "323" ) { responseCodeString = "D/Down/Solas classifies as NPL"; }
+    if(ErrorCode == "324" ) { responseCodeString = "No corresponding collection"; }
+    if(ErrorCode == "325" ) { responseCodeString = "Only allwed on Part Wrt Acc"; }
+    if(ErrorCode == "326" ) { responseCodeString = "Only allwed on Full WrtOff Acc"; }
+    if(ErrorCode == "327" ) { responseCodeString = "BD-Agreements not generated"; }
+    if(ErrorCode == "328" ) { responseCodeString = "Acct is fully writen off"; }
+    if(ErrorCode == "329" ) { responseCodeString = "Partial Write off account"; }
+    if(ErrorCode == "330" ) { responseCodeString = "Source type mis-match"; }
+    if(ErrorCode == "331" ) { responseCodeString = "Prt W/d Not For Matured act"; }
+    if(ErrorCode == "332" ) { responseCodeString = "Block Disc-Main Acct not allow"; }
+    if(ErrorCode == "333" ) { responseCodeString = "Transaction is STALE"; }
+    if(ErrorCode == "334" ) { responseCodeString = "System err.. on SWEEP pri line"; }
+    if(ErrorCode == "335" ) { responseCodeString = "Invalid Routing No"; }
+    if(ErrorCode == "336" ) { responseCodeString = "Restruct. limit not >2 in 5yr"; }
+    if(ErrorCode == "337" ) { responseCodeString = "Special Exch Rate Required"; }
+    if(ErrorCode == "338" ) { responseCodeString = "Tranx Amount > Rest. Interest"; }
+    if(ErrorCode == "339" ) { responseCodeString = "Disburse.Amt > Cust.Limit"; }
+    if(ErrorCode == "340" ) { responseCodeString = "Disburse.Amt > Cus.daily Limit"; }
+    if(ErrorCode == "341" ) { responseCodeString = "Non Ar-Rahnu product"; }
+    if(ErrorCode == "342" ) { responseCodeString = "Recall Account"; }
+    if(ErrorCode == "343" ) { responseCodeString = "Drawdown Schedule Required"; }
+    if(ErrorCode == "344" ) { responseCodeString = "O/S Security Deposit"; }
+    if(ErrorCode == "345" ) { responseCodeString = "Staff Loan"; }
+    if(ErrorCode == "346" ) { responseCodeString = "Revolving loan"; }
+    if(ErrorCode == "347" ) { responseCodeString = "Not Allow memo late chrg pymt"; }
+    if(ErrorCode == "348" ) { responseCodeString = "Repymt Amt > 30% of O/S Bal"; }
+    if(ErrorCode == "349" ) { responseCodeString = "Tranx Amount > Rest. Late Chg"; }
+    if(ErrorCode == "350" ) { responseCodeString = "FCY Chq Not Assigned Doc Ref"; }
+    if(ErrorCode == "351" ) { responseCodeString = "No rentas trx. found"; }
+    if(ErrorCode == "352" ) { responseCodeString = "Rentas trx not routed to br"; }
+    if(ErrorCode == "353" ) { responseCodeString = "FCY Chq - Cust Ref Exist"; }
+    if(ErrorCode == "354" ) { responseCodeString = "FCY chq No Not present"; }
+    if(ErrorCode == "355" ) { responseCodeString = "System Err..Map DS not found"; }
+    if(ErrorCode == "356" ) { responseCodeString = "FCY Chq No/Amt error"; }
+    if(ErrorCode == "357" ) { responseCodeString = "FCY Chq Suspect double input"; }
+    if(ErrorCode == "358" ) { responseCodeString = "FCY Chq Cr Acct Not Found"; }
+    if(ErrorCode == "359" ) { responseCodeString = "FCY Chq Cust ref not found"; }
+    if(ErrorCode == "360" ) { responseCodeString = "FCY Chq has tagged status"; }
+    if(ErrorCode == "361" ) { responseCodeString = "FCY Chq - Invalid Status"; }
+    if(ErrorCode == "362" ) { responseCodeString = "FCY Chq - chq sts conflict"; }
+    if(ErrorCode == "363" ) { responseCodeString = "FCY Chq - Chq sts <> Inprocess"; }
+    if(ErrorCode == "364" ) { responseCodeString = "FCY Chq - Interface Error"; }
+    if(ErrorCode == "365" ) { responseCodeString = "FCY Chq - Chq type required"; }
+    if(ErrorCode == "366" ) { responseCodeString = "FCY Chq - Chq curr required"; }
+    if(ErrorCode == "367" ) { responseCodeString = "FCY Chq - Maturity date error"; }
+    if(ErrorCode == "368" ) { responseCodeString = "Pending Rls FOC Chq"; }
+    if(ErrorCode == "369" ) { responseCodeString = "Cheque number not found"; }
+    if(ErrorCode == "370" ) { responseCodeString = "Transaction Already Posted"; }
+    if(ErrorCode == "371" ) { responseCodeString = "Invalid Discounted Release Amt"; }
+    if(ErrorCode == "372" ) { responseCodeString = "Storage Fee pymt disallow"; }
+    if(ErrorCode == "373" ) { responseCodeString = "Negotiated Account"; }
+    if(ErrorCode == "374" ) { responseCodeString = "Non Negotiated Account"; }
+    if(ErrorCode == "375" ) { responseCodeString = "Ar-Rahnu product"; }
+    if(ErrorCode == "376" ) { responseCodeString = "FCY CHQ - Cust Limit not found"; }
+    if(ErrorCode == "377" ) { responseCodeString = "FCY CHQ - Exceed Cust Limit"; }
+    if(ErrorCode == "378" ) { responseCodeString = "*****Not Used ***************"; }
+    if(ErrorCode == "379" ) { responseCodeString = "Staff Rate Already Exist"; }
+    if(ErrorCode == "380" ) { responseCodeString = "Acc is linked to Collateral"; }
+    if(ErrorCode == "381" ) { responseCodeString = "Primary CIF must be non-Res"; }
+    if(ErrorCode == "382" ) { responseCodeString = "Invalid Box No"; }
+    if(ErrorCode == "383" ) { responseCodeString = "> 3 yrs Advance not allowed"; }
+    if(ErrorCode == "384" ) { responseCodeString = "Box not available"; }
+    if(ErrorCode == "385" ) { responseCodeString = "Trx Reverse more than once"; }
+    if(ErrorCode == "386" ) { responseCodeString = "Force Payoff not allowed"; }
+    if(ErrorCode == "387" ) { responseCodeString = "*****Not Used ***************"; }
+    if(ErrorCode == "388" ) { responseCodeString = "Exceed Super Grp Aggr Sum"; }
+    if(ErrorCode == "389" ) { responseCodeString = "FD Group not link to Super Grp"; }
+    if(ErrorCode == "390" ) { responseCodeString = "No Immediate Credit Facility"; }
+    if(ErrorCode == "391" ) { responseCodeString = "Only Prim.CIF Allow Spec. Rate"; }
+    if(ErrorCode == "392" ) { responseCodeString = "*****Not Used ***************"; }
+    if(ErrorCode == "393" ) { responseCodeString = "Not write off Loan/Acct."; }
+    if(ErrorCode == "394" ) { responseCodeString = "Not allow to use LN Susp. Acct"; }
+    if(ErrorCode == "395" ) { responseCodeString = "Transfer dif curr not allow"; }
+    if(ErrorCode == "396" ) { responseCodeString = "Disp Pri CIF not same as FD's"; }
+    if(ErrorCode == "397" ) { responseCodeString = "*****Not Used ***************"; }
+    if(ErrorCode == "398" ) { responseCodeString = "Exceed Partial Wdr Lmt per day"; }
+    if(ErrorCode == "399" ) { responseCodeString = "Invalid Placement Mode"; }
+    if(ErrorCode == "400" ) { responseCodeString = "Exceed Tier 1 Balance Limit"; }
+    if(ErrorCode == "401" ) { responseCodeString = "Murex Interface error"; }
+    if(ErrorCode == "402" ) { responseCodeString = "FX deal record not exist"; }
+    if(ErrorCode == "403" ) { responseCodeString = "Callable FX not allow"; }
+    if(ErrorCode == "404" ) { responseCodeString = "Not Activate Deal"; }
+    if(ErrorCode == "405" ) { responseCodeString = "FX Curr/Rate/Dr Cr Not Match"; }
+    if(ErrorCode == "406" ) { responseCodeString = "FX Deal Insufficent Bal"; }
+    if(ErrorCode == "407" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "408" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "409" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "410" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "411" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "412" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "413" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "414" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "415" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "416" ) { responseCodeString = "Your account is not available"; }
+    if(ErrorCode == "417" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "418" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "419" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "420" ) { responseCodeString = "PB Line Difference from Host"; }
+    if(ErrorCode == "421" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "422" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "423" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "424" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "425" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "426" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "427" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "428" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "429" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "430" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "431" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "432" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "433" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "434" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "435" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "436" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "437" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "438" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "439" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "440" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "441" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "442" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "443" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "444" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "445" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "446" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "447" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "448" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "449" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "450" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "451" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "452" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "453" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "454" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "455" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "456" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "457" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "458" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "459" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "460" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "461" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "462" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "463" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "464" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "465" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "466" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "467" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "468" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "469" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "470" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "471" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "472" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "473" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "474" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "475" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "476" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "477" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "478" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "479" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "480" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "481" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "482" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "483" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "484" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "485" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "486" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "487" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "488" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "489" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "490" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "491" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "492" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "493" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "494" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "495" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "496" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "497" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "498" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "499" ) { responseCodeString = "******Not Used*********"; }
+    if(ErrorCode == "500" ) { responseCodeString = "Exceed Avl Bal/Floats Pending"; }
+    if(ErrorCode == "501" ) { responseCodeString = "System Write Fail..Retry Tran"; }
+    if(ErrorCode == "502" ) { responseCodeString = "Post Dated Entry/Inv Status"; }
+    if(ErrorCode == "503" ) { responseCodeString = "Post Dated Chq payment"; }
+    if(ErrorCode == "504" ) { responseCodeString = "Invalid payment mode"; }
+    if(ErrorCode == "505" ) { responseCodeString = "One or more ref# are invalid"; }
+    if(ErrorCode == "506" ) { responseCodeString = "Currency code is invalid"; }
+    if(ErrorCode == "507" ) { responseCodeString = "Invalid Trx Code/Type"; }
+    if(ErrorCode == "508" ) { responseCodeString = "Agent code is invalid"; }
+    if(ErrorCode == "509" ) { responseCodeString = "Currency is invalid for agent"; }
+    if(ErrorCode == "510" ) { responseCodeString = "Exchange rate is required"; }
+    if(ErrorCode == "511" ) { responseCodeString = "IBT transaction"; }
+    if(ErrorCode == "512" ) { responseCodeString = "Remit group already exists"; }
+    if(ErrorCode == "513" ) { responseCodeString = "Remit group does not exist"; }
+    if(ErrorCode == "514" ) { responseCodeString = "Check# already exists"; }
+    if(ErrorCode == "515" ) { responseCodeString = "Invalid check#"; }
+    if(ErrorCode == "516" ) { responseCodeString = "Some checks already paid"; }
+    if(ErrorCode == "517" ) { responseCodeString = "Invalid BOP code"; }
+    if(ErrorCode == "518" ) { responseCodeString = "Check already paid"; }
+    if(ErrorCode == "519" ) { responseCodeString = "Orig trans does not exist"; }
+    if(ErrorCode == "520" ) { responseCodeString = "BlackList TC - Suspect"; }
+    if(ErrorCode == "521" ) { responseCodeString = "Transaction not allowed"; }
+    if(ErrorCode == "522" ) { responseCodeString = "Sanctioned/High Risk Dest Cnty"; }
+    if(ErrorCode == "523" ) { responseCodeString = "Total quantity must not > 999"; }
+    if(ErrorCode == "524" ) { responseCodeString = "RTGS/SWIFT Message ATTACHED"; }
+    if(ErrorCode == "525" ) { responseCodeString = "Msg status not equal to OPEN"; }
+    if(ErrorCode == "526" ) { responseCodeString = "Transaction master is in use"; }
+    if(ErrorCode == "527" ) { responseCodeString = "REM Amt Exceeded - CALLBACK"; }
+    if(ErrorCode == "528" ) { responseCodeString = "Invalid Message Format"; }
+    if(ErrorCode == "529" ) { responseCodeString = "Rate master is in use"; }
+    if(ErrorCode == "530" ) { responseCodeString = "Product Code Not Setup"; }
+    if(ErrorCode == "531" ) { responseCodeString = "Orig trans is in use"; }
+    if(ErrorCode == "532" ) { responseCodeString = "Remittance not active"; }
+    if(ErrorCode == "533" ) { responseCodeString = "Group is unclaimed"; }
+    if(ErrorCode == "534" ) { responseCodeString = "Group is stale"; }
+    if(ErrorCode == "535" ) { responseCodeString = "Agent currency record missing"; }
+    if(ErrorCode == "536" ) { responseCodeString = "Possible Duplicate Issuance"; }
+    if(ErrorCode == "537" ) { responseCodeString = "Correction doesn't match orig"; }
+    if(ErrorCode == "538" ) { responseCodeString = "Invalid product code"; }
+    if(ErrorCode == "539" ) { responseCodeString = "Invalid user code #1"; }
+    if(ErrorCode == "540" ) { responseCodeString = "Invalid user code #2"; }
+    if(ErrorCode == "541" ) { responseCodeString = "Invalid user code #3"; }
+    if(ErrorCode == "542" ) { responseCodeString = "Invalid red band code"; }
+    if(ErrorCode == "543" ) { responseCodeString = "Invalid reason code"; }
+    if(ErrorCode == "544" ) { responseCodeString = "Original source was not cash"; }
+    if(ErrorCode == "545" ) { responseCodeString = "Remittance is new today"; }
+    if(ErrorCode == "546" ) { responseCodeString = "Refer to officer"; }
+    if(ErrorCode == "547" ) { responseCodeString = "CIF# not found"; }
+    if(ErrorCode == "548" ) { responseCodeString = "Paying branch not as requested"; }
+    if(ErrorCode == "549" ) { responseCodeString = "Unclaim item pay at Iss Brn"; }
+    if(ErrorCode == "550" ) { responseCodeString = "No completed transaction exist"; }
+    if(ErrorCode == "551" ) { responseCodeString = "Amount does not match"; }
+    if(ErrorCode == "552" ) { responseCodeString = "Chk does not belongs to Rem"; }
+    if(ErrorCode == "553" ) { responseCodeString = "Correction not allowed"; }
+    if(ErrorCode == "554" ) { responseCodeString = "Record is in use"; }
+    if(ErrorCode == "555" ) { responseCodeString = "Agent is not active"; }
+    if(ErrorCode == "556" ) { responseCodeString = "Check already stop"; }
+    if(ErrorCode == "557" ) { responseCodeString = "Check status is open"; }
+    if(ErrorCode == "558" ) { responseCodeString = "Exceeds Transaction Limit"; }
+    if(ErrorCode == "559" ) { responseCodeString = "Agent type is not local"; }
+    if(ErrorCode == "560" ) { responseCodeString = "Agent type is not foreign"; }
+    if(ErrorCode == "561" ) { responseCodeString = "Agent type is not branch"; }
+    if(ErrorCode == "562" ) { responseCodeString = "Check is not KLACH item"; }
+    if(ErrorCode == "563" ) { responseCodeString = "Request not authenticated"; }
+    if(ErrorCode == "564" ) { responseCodeString = "Remittance already paid"; }
+    if(ErrorCode == "565" ) { responseCodeString = "Not Inward Remittance"; }
+    if(ErrorCode == "566" ) { responseCodeString = "Remittance is not paid"; }
+    if(ErrorCode == "567" ) { responseCodeString = "Remittance is not settled"; }
+    if(ErrorCode == "568" ) { responseCodeString = "Fund transferred to HQ"; }
+    if(ErrorCode == "569" ) { responseCodeString = "Fund transferred to CTF"; }
+    if(ErrorCode == "570" ) { responseCodeString = "Product not supported by agent"; }
+    if(ErrorCode == "571" ) { responseCodeString = "Exceed Exch Rate Tolerance Lim"; }
+    if(ErrorCode == "572" ) { responseCodeString = "Exchange Rate Not Yet Updated"; }
+    if(ErrorCode == "573" ) { responseCodeString = "Agent Code/Branch Not Match"; }
+    if(ErrorCode == "574" ) { responseCodeString = "Currency Code Not Match"; }
+    if(ErrorCode == "575" ) { responseCodeString = "Compared Exch Rate = zero(571)"; }
+    if(ErrorCode == "576" ) { responseCodeString = "RM# or check # is blank"; }
+    if(ErrorCode == "577" ) { responseCodeString = "System is shutting down"; }
+    if(ErrorCode == "578" ) { responseCodeString = "Has perform EN with 7 days"; }
+    if(ErrorCode == "579" ) { responseCodeString = "Share draft exceed pur. limit"; }
+    if(ErrorCode == "580" ) { responseCodeString = "Next day reissuance not allow"; }
+    if(ErrorCode == "581" ) { responseCodeString = "Interface error"; }
+    if(ErrorCode == "582" ) { responseCodeString = "Some check already Reiss/Repur"; }
+    if(ErrorCode == "583" ) { responseCodeString = "Paying branch is not active"; }
+    if(ErrorCode == "584" ) { responseCodeString = "Invalid paying branch"; }
+    if(ErrorCode == "585" ) { responseCodeString = "Duplicate cheque number found"; }
+    if(ErrorCode == "586" ) { responseCodeString = "AFT record not found"; }
+    if(ErrorCode == "587" ) { responseCodeString = "Exceed Staff Rate use limit"; }
+    if(ErrorCode == "588" ) { responseCodeString = "MT110 message not found"; }
+    if(ErrorCode == "589" ) { responseCodeString = "MT111 message found"; }
+    if(ErrorCode == "590" ) { responseCodeString = "TC status not blank"; }
+    if(ErrorCode == "591" ) { responseCodeString = "TC number not found"; }
+    if(ErrorCode == "592" ) { responseCodeString = "FCN not found in inventory"; }
+    if(ErrorCode == "593" ) { responseCodeString = "Insufficient FCN stock"; }
+    if(ErrorCode == "594" ) { responseCodeString = "FCN status not valid"; }
+    if(ErrorCode == "595" ) { responseCodeString = "Not Eligible for Chrg waiver"; }
+    if(ErrorCode == "596" ) { responseCodeString = "RENTAS Amt Below Trx Limit"; }
+    if(ErrorCode == "597" ) { responseCodeString = "MT100 Transmitted"; }
+    if(ErrorCode == "598" ) { responseCodeString = "Record not found"; }
+    if(ErrorCode == "599" ) { responseCodeString = "Inventory NOT Avail For Use"; }
+    if(ErrorCode == "600" ) { responseCodeString = "Inventory Item NOT Found"; }
+    if(ErrorCode == "601" ) { responseCodeString = "Inventory NOT belongs to user"; }
+    if(ErrorCode == "602" ) { responseCodeString = "No distribution to teller"; }
+    if(ErrorCode == "603" ) { responseCodeString = "Remittance Already REFUNDED"; }
+    if(ErrorCode == "604" ) { responseCodeString = "Remittance Already CANCELLED"; }
+    if(ErrorCode == "605" ) { responseCodeString = "Approval Denied/Invalid Status"; }
+    if(ErrorCode == "606" ) { responseCodeString = "IBG Transaction Sent to MEPS"; }
+    if(ErrorCode == "607" ) { responseCodeString = "Status Not Unclaim or Dormant"; }
+    if(ErrorCode == "608" ) { responseCodeString = "Hi Check no < Low Check no"; }
+    if(ErrorCode == "609" ) { responseCodeString = "Unclm/Dorm Refund Not Allow"; }
+    if(ErrorCode == "610" ) { responseCodeString = "Invalid Product Mnemonic"; }
+    if(ErrorCode == "611" ) { responseCodeString = "Special Exch Rate Required"; }
+    if(ErrorCode == "612" ) { responseCodeString = "Exceed AML Cash Transaction"; }
+    if(ErrorCode == "613" ) { responseCodeString = "Stop Payment Grace Period Exp"; }
+    if(ErrorCode == "614" ) { responseCodeString = "Exceed High Value amount"; }
+    if(ErrorCode == "615" ) { responseCodeString = "Exceed FX Transaction limit"; }
+    if(ErrorCode == "616" ) { responseCodeString = "KYC Trx Amount/KYC Grade Risk"; }
+    if(ErrorCode == "617" ) { responseCodeString = "KYC Trx Amount Hit"; }
+    if(ErrorCode == "618" ) { responseCodeString = "Applicant Name Under WatchList"; }
+    if(ErrorCode == "619" ) { responseCodeString = "Bene Name Under WatchList"; }
+    if(ErrorCode == "620" ) { responseCodeString = "Original Susp Entry Not Found"; }
+    if(ErrorCode == "621" ) { responseCodeString = "Clearing Zone Mismatch"; }
+    if(ErrorCode == "622" ) { responseCodeString = "Future Eff. Date not reached"; }
+    if(ErrorCode == "623" ) { responseCodeString = "Instrument Type Mismatch"; }
+    if(ErrorCode == "624" ) { responseCodeString = "ICAS Branch.Trx Not allow"; }
+    if(ErrorCode == "625" ) { responseCodeString = "Unclm/Dorm Payment Not Allow"; }
+    if(ErrorCode == "626" ) { responseCodeString = "Collc. Agent Float Expired"; }
+    if(ErrorCode == "627" ) { responseCodeString = "Staff Rate Not Allow"; }
+    if(ErrorCode == "628" ) { responseCodeString = "Cheque already cancel"; }
+    if(ErrorCode == "629" ) { responseCodeString = "NotAllow BDS CancelBefore EffD"; }
+    if(ErrorCode == "630" ) { responseCodeString = "Allow to do B4 effective Date"; }
+    if(ErrorCode == "631" ) { responseCodeString = "Invalid Passbook Serial"; }
+    if(ErrorCode == "632" ) { responseCodeString = "Invalid Passbook Balance"; }
+    if(ErrorCode == "633" ) { responseCodeString = "Chq issued same day not allow"; }
+    if(ErrorCode == "634" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "635" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "636" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "637" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "638" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "639" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "640" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "641" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "642" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "643" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "644" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "645" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "646" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "647" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "648" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "649" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "650" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "651" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "652" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "653" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "654" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "655" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "656" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "657" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "658" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "659" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "660" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "661" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "662" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "663" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "664" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "665" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "666" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "667" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "668" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "669" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "670" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "671" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "672" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "673" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "674" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "675" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "676" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "677" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "678" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "679" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "680" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "681" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "682" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "683" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "684" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "685" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "686" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "687" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "688" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "689" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "690" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "691" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "692" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "693" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "694" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "695" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "696" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "697" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "698" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "699" ) { responseCodeString = "REM edit code only!!!"; }
+    if(ErrorCode == "700" ) { responseCodeString = "Trans Amt < Minimum Dep Lmt"; }
+    if(ErrorCode == "701" ) { responseCodeString = "Invalid Class Code"; }
+    if(ErrorCode == "702" ) { responseCodeString = "Exceed Daily deposit limit"; }
+    if(ErrorCode == "703" ) { responseCodeString = "Commodity Trade not completed"; }
+    if(ErrorCode == "704" ) { responseCodeString = "Not Allow Redraw"; }
+    if(ErrorCode == "705" ) { responseCodeString = "Exceed Redraw Limit"; }
+    if(ErrorCode == "706" ) { responseCodeString = "Ins.Save-Invalid Mat Date"; }
+    if(ErrorCode == "707" ) { responseCodeString = "Group Limit Exceeded"; }
+    if(ErrorCode == "708" ) { responseCodeString = "Not Registered Biro Angkasa"; }
+    if(ErrorCode == "709" ) { responseCodeString = "Aqad Execution not completed"; }
+    if(ErrorCode == "710" ) { responseCodeString = "Ins.Save-Invalid Nxt Sch Date"; }
+    if(ErrorCode == "711" ) { responseCodeString = "Ins.Save-Invalid Final Inst Dt"; }
+    if(ErrorCode == "712" ) { responseCodeString = "Ins.Save-Data Error"; }
+    if(ErrorCode == "713" ) { responseCodeString = "Acct Restricted From IBT Trx"; }
+    if(ErrorCode == "714" ) { responseCodeString = "Account Has Message"; }
+    if(ErrorCode == "715" ) { responseCodeString = "Renew date beyond grace period"; }
+    if(ErrorCode == "716" ) { responseCodeString = "Interest Rate < Min Rate"; }
+    if(ErrorCode == "717" ) { responseCodeString = "Interest Rate > Max Rate"; }
+    if(ErrorCode == "718" ) { responseCodeString = "Product must be passbook based"; }
+    if(ErrorCode == "719" ) { responseCodeString = "Variance Amt > MaxVariance Amt"; }
+    if(ErrorCode == "720" ) { responseCodeString = "Trans Amt < Minimum Wdr Lmt"; }
+    if(ErrorCode == "721" ) { responseCodeString = "Invalid Type of Deposit"; }
+    if(ErrorCode == "722" ) { responseCodeString = "Invalid Tranche"; }
+    if(ErrorCode == "723" ) { responseCodeString = "Manual Renewal not allowed"; }
+    if(ErrorCode == "724" ) { responseCodeString = "Transaction Amt is mandatory"; }
+    if(ErrorCode == "725" ) { responseCodeString = "Invalid Cheque Clearing Centre"; }
+    if(ErrorCode == "726" ) { responseCodeString = "Trx Amt > Secondary Accrue Bal"; }
+    if(ErrorCode == "727" ) { responseCodeString = "Product for Resident only"; }
+    if(ErrorCode == "728" ) { responseCodeString = "Current Date <> Prd Eff Period"; }
+    if(ErrorCode == "729" ) { responseCodeString = "Exceed No of days to Backdated"; }
+    if(ErrorCode == "730" ) { responseCodeString = "Ins.Save-Invalid Inst. Amount"; }
+    if(ErrorCode == "731" ) { responseCodeString = "Ins.Save-Invalid Pledge Amount"; }
+    if(ErrorCode == "732" ) { responseCodeString = "Product not allow Backdated"; }
+    if(ErrorCode == "733" ) { responseCodeString = "Invalid Company,Service Code"; }
+    if(ErrorCode == "734" ) { responseCodeString = "Invalid Fee Code"; }
+    if(ErrorCode == "735" ) { responseCodeString = "Fee Calculation Error"; }
+    if(ErrorCode == "736" ) { responseCodeString = "FD Placement can't > Org Amt"; }
+    if(ErrorCode == "737" ) { responseCodeString = "FD Placement Amt < Org Amt"; }
+    if(ErrorCode == "738" ) { responseCodeString = "Staff Account"; }
+    if(ErrorCode == "739" ) { responseCodeString = "No of Mths Installment not pay"; }
+    if(ErrorCode == "740" ) { responseCodeString = "Exceed Spec.Provision(MainAct)"; }
+    if(ErrorCode == "741" ) { responseCodeString = "Exceed Spec.Provision"; }
+    if(ErrorCode == "742" ) { responseCodeString = "SP Adj not allow(Chrg Off Acc)"; }
+    if(ErrorCode == "743" ) { responseCodeString = "*******Not Used***************"; }
+    if(ErrorCode == "744" ) { responseCodeString = "*******Not Used***************"; }
+    if(ErrorCode == "745" ) { responseCodeString = "Exceed Memo late chrg amount"; }
+    if(ErrorCode == "746" ) { responseCodeString = "Check campaign&inform customer"; }
+    if(ErrorCode == "747" ) { responseCodeString = "Trans AMT > Curr Pro & Ovrdue"; }
+    if(ErrorCode == "748" ) { responseCodeString = "Trans AMT > Billed Profit"; }
+    if(ErrorCode == "749" ) { responseCodeString = "Trx Amt >999999999999.00"; }
+    if(ErrorCode == "750" ) { responseCodeString = "Multiples of Min/Ints Amt Req"; }
+    if(ErrorCode == "751" ) { responseCodeString = "Possible Duplication Cheque"; }
+    if(ErrorCode == "752" ) { responseCodeString = "Incomplete info,inquiry failed"; }
+    if(ErrorCode == "753" ) { responseCodeString = "FD Cert Not Printed"; }
+    if(ErrorCode == "754" ) { responseCodeString = "SDB Rental Advance Payment"; }
+    if(ErrorCode == "755" ) { responseCodeString = "SDB Key Number not assign"; }
+    if(ErrorCode == "756" ) { responseCodeString = "SDB Reversal not allow"; }
+    if(ErrorCode == "757" ) { responseCodeString = "SDB Incor Error Correction Amt"; }
+    if(ErrorCode == "758" ) { responseCodeString = "Tran. Not Allow For Night Mode"; }
+    if(ErrorCode == "759" ) { responseCodeString = "Service Date/Time not allowed"; }
+    if(ErrorCode == "760" ) { responseCodeString = ""; }
+    if(ErrorCode == "761" ) { responseCodeString = ""; }
+    if(ErrorCode == "762" ) { responseCodeString = "Amount>commission or rebate"; }
+    if(ErrorCode == "763" ) { responseCodeString = "Trx Amount > Comm Payable"; }
+    if(ErrorCode == "764" ) { responseCodeString = "Cashline Related Acct"; }
+    if(ErrorCode == "765" ) { responseCodeString = "Rec Not Found - Dep Relshp."; }
+    if(ErrorCode == "766" ) { responseCodeString = "Dep Rel. Exist - CashLine"; }
+    if(ErrorCode == "767" ) { responseCodeString = "Salesman Not Found for A/C"; }
+    if(ErrorCode == "768" ) { responseCodeString = "Max No of Acct Holder per Acct"; }
+    if(ErrorCode == "769" ) { responseCodeString = "Not Within Trx BOP Code Limit"; }
+    if(ErrorCode == "770" ) { responseCodeString = "InterRegion TRX Map Not Found"; }
+    if(ErrorCode == "771" ) { responseCodeString = "InterRegion TRX Code Not Found"; }
+    if(ErrorCode == "772" ) { responseCodeString = "InterRegion Original Not Found"; }
+    if(ErrorCode == "773" ) { responseCodeString = "Exceeds Inter-Region Wdr Limit"; }
+    if(ErrorCode == "774" ) { responseCodeString = "PBook/Certificate Inv Error"; }
+    if(ErrorCode == "775" ) { responseCodeString = "Exceed Daily Withdrawal Limit"; }
+    if(ErrorCode == "776" ) { responseCodeString = "Partial Wdr not Allowed"; }
+    if(ErrorCode == "777" ) { responseCodeString = "Eff Date not allowed Cross Mth"; }
+    if(ErrorCode == "778" ) { responseCodeString = "Exceed Channel Limit"; }
+    if(ErrorCode == "779" ) { responseCodeString = "Maturity Instruction required"; }
+    if(ErrorCode == "780" ) { responseCodeString = "Backdate < Last Stmt Date"; }
+    if(ErrorCode == "781" ) { responseCodeString = "Reference not found"; }
+    if(ErrorCode == "782" ) { responseCodeString = "Float day not match"; }
+    if(ErrorCode == "783" ) { responseCodeString = "Exceed AML Trn Limit-Cash"; }
+    if(ErrorCode == "784" ) { responseCodeString = "Exceed AML Trn Limit-Transfer"; }
+    if(ErrorCode == "785" ) { responseCodeString = "Exceed Daily IBT deposit limit"; }
+    if(ErrorCode == "786" ) { responseCodeString = "FD Under Order Taking-No Dep"; }
+    if(ErrorCode == "787" ) { responseCodeString = "Ordered FD Wthdwl Not Allowed"; }
+    if(ErrorCode == "788" ) { responseCodeString = "Invalid Cheque Type Deposit"; }
+    if(ErrorCode == "789" ) { responseCodeString = "IBT Closeout not allowed"; }
+    if(ErrorCode == "790" ) { responseCodeString = "Chq Print Request Cancelled"; }
+    if(ErrorCode == "791" ) { responseCodeString = "Payroll Acct Inq Not Allowed"; }
+    if(ErrorCode == "792" ) { responseCodeString = "Non Indv Acct-IBT DisAllowed"; }
+    if(ErrorCode == "793" ) { responseCodeString = "Exceed Money Gram Trx Limit"; }
+    if(ErrorCode == "794" ) { responseCodeString = "Amt < Cash to Oversea limit"; }
+    if(ErrorCode == "795" ) { responseCodeString = "Currency Cutoff Time Breached"; }
+    if(ErrorCode == "796" ) { responseCodeString = "IBT Partial Wdw not allowed"; }
+    if(ErrorCode == "797" ) { responseCodeString = "Not passbook account"; }
+    if(ErrorCode == "798" ) { responseCodeString = "Unclaimed Account"; }
+    if(ErrorCode == "799" ) { responseCodeString = "Invalid Clearing Branch"; }
+    if(ErrorCode == "800" ) { responseCodeString = ""; }
+    if(ErrorCode == "801" ) { responseCodeString = "Not Allow for BE Discount"; }
+    if(ErrorCode == "802" ) { responseCodeString = ""; }
+    if(ErrorCode == "803" ) { responseCodeString = "Trans Amt > Maximum Dep Lmt"; }
+    if(ErrorCode == "804" ) { responseCodeString = "Trans Amt > Maximum Wdr Lmt"; }
+    if(ErrorCode == "805" ) { responseCodeString = "Available balance > Max Limit"; }
+    if(ErrorCode == "806" ) { responseCodeString = "Product exceed maximum quota"; }
+    if(ErrorCode == "807" ) { responseCodeString = "Loan will be paid off"; }
+    if(ErrorCode == "808" ) { responseCodeString = "Account had deliquent"; }
+    if(ErrorCode == "809" ) { responseCodeString = ""; }
+    if(ErrorCode == "810" ) { responseCodeString = ""; }
+    if(ErrorCode == "811" ) { responseCodeString = ""; }
+    if(ErrorCode == "812" ) { responseCodeString = ""; }
+    if(ErrorCode == "813" ) { responseCodeString = ""; }
+    if(ErrorCode == "814" ) { responseCodeString = ""; }
+    if(ErrorCode == "815" ) { responseCodeString = ""; }
+    if(ErrorCode == "816" ) { responseCodeString = ""; }
+    if(ErrorCode == "817" ) { responseCodeString = ""; }
+    if(ErrorCode == "818" ) { responseCodeString = ""; }
+    if(ErrorCode == "819" ) { responseCodeString = ""; }
+    if(ErrorCode == "820" ) { responseCodeString = ""; }
+    if(ErrorCode == "821" ) { responseCodeString = ""; }
+    if(ErrorCode == "822" ) { responseCodeString = ""; }
+    if(ErrorCode == "823" ) { responseCodeString = ""; }
+    if(ErrorCode == "824" ) { responseCodeString = ""; }
+    if(ErrorCode == "825" ) { responseCodeString = ""; }
+    if(ErrorCode == "826" ) { responseCodeString = ""; }
+    if(ErrorCode == "827" ) { responseCodeString = ""; }
+    if(ErrorCode == "828" ) { responseCodeString = ""; }
+    if(ErrorCode == "829" ) { responseCodeString = ""; }
+    if(ErrorCode == "830" ) { responseCodeString = ""; }
+    if(ErrorCode == "831" ) { responseCodeString = ""; }
+    if(ErrorCode == "832" ) { responseCodeString = ""; }
+    if(ErrorCode == "833" ) { responseCodeString = ""; }
+    if(ErrorCode == "834" ) { responseCodeString = ""; }
+    if(ErrorCode == "835" ) { responseCodeString = ""; }
+    if(ErrorCode == "836" ) { responseCodeString = ""; }
+    if(ErrorCode == "837" ) { responseCodeString = ""; }
+    if(ErrorCode == "838" ) { responseCodeString = ""; }
+    if(ErrorCode == "839" ) { responseCodeString = ""; }
+    if(ErrorCode == "840" ) { responseCodeString = ""; }
+    if(ErrorCode == "841" ) { responseCodeString = ""; }
+    if(ErrorCode == "842" ) { responseCodeString = ""; }
+    if(ErrorCode == "843" ) { responseCodeString = ""; }
+    if(ErrorCode == "844" ) { responseCodeString = ""; }
+    if(ErrorCode == "845" ) { responseCodeString = ""; }
+    if(ErrorCode == "846" ) { responseCodeString = ""; }
+    if(ErrorCode == "847" ) { responseCodeString = ""; }
+    if(ErrorCode == "848" ) { responseCodeString = ""; }
+    if(ErrorCode == "849" ) { responseCodeString = ""; }
+    if(ErrorCode == "850" ) { responseCodeString = ""; }
+    if(ErrorCode == "851" ) { responseCodeString = ""; }
+    if(ErrorCode == "852" ) { responseCodeString = ""; }
+    if(ErrorCode == "853" ) { responseCodeString = ""; }
+    if(ErrorCode == "854" ) { responseCodeString = ""; }
+    if(ErrorCode == "855" ) { responseCodeString = ""; }
+    if(ErrorCode == "856" ) { responseCodeString = ""; }
+    if(ErrorCode == "857" ) { responseCodeString = ""; }
+    if(ErrorCode == "858" ) { responseCodeString = ""; }
+    if(ErrorCode == "859" ) { responseCodeString = ""; }
+    if(ErrorCode == "860" ) { responseCodeString = ""; }
+    if(ErrorCode == "861" ) { responseCodeString = ""; }
+    if(ErrorCode == "862" ) { responseCodeString = ""; }
+    if(ErrorCode == "863" ) { responseCodeString = ""; }
+    if(ErrorCode == "864" ) { responseCodeString = ""; }
+    if(ErrorCode == "865" ) { responseCodeString = ""; }
+    if(ErrorCode == "866" ) { responseCodeString = ""; }
+    if(ErrorCode == "867" ) { responseCodeString = ""; }
+    if(ErrorCode == "868" ) { responseCodeString = ""; }
+    if(ErrorCode == "869" ) { responseCodeString = ""; }
+    if(ErrorCode == "870" ) { responseCodeString = ""; }
+    if(ErrorCode == "871" ) { responseCodeString = ""; }
+    if(ErrorCode == "872" ) { responseCodeString = ""; }
+    if(ErrorCode == "873" ) { responseCodeString = ""; }
+    if(ErrorCode == "874" ) { responseCodeString = ""; }
+    if(ErrorCode == "875" ) { responseCodeString = "Variable Err Code - Payment"; }
+    if(ErrorCode == "876" ) { responseCodeString = "Use Variable Err Code - OTH"; }
+    if(ErrorCode == "877" ) { responseCodeString = "Variable Err Code - OTH CHNL"; }
+    if(ErrorCode == "878" ) { responseCodeString = "Use Variable Err Code - SD"; }
+    if(ErrorCode == "879" ) { responseCodeString = "Use Variable Err Code - SD"; }
+    if(ErrorCode == "880" ) { responseCodeString = "Use Variable Err Code - SD"; }
+    if(ErrorCode == "881" ) { responseCodeString = "Use Variable Err Code - DD"; }
+    if(ErrorCode == "882" ) { responseCodeString = "Variable Err Code - STATUS DD"; }
+    if(ErrorCode == "883" ) { responseCodeString = "Use Variable Err Code - DD"; }
+    if(ErrorCode == "884" ) { responseCodeString = "Use Variable Err Code - DD"; }
+    if(ErrorCode == "885" ) { responseCodeString = "Use Variable Err Code - DD"; }
+    if(ErrorCode == "886" ) { responseCodeString = "Variable Err Code - STATUS CD"; }
+    if(ErrorCode == "887" ) { responseCodeString = "Use Variable Err Code - CD"; }
+    if(ErrorCode == "888" ) { responseCodeString = "Use Variable Err Code - CD"; }
+    if(ErrorCode == "889" ) { responseCodeString = "Use Variable Err Code - CD"; }
+    if(ErrorCode == "890" ) { responseCodeString = "Use Variable Err Code - CD"; }
+    if(ErrorCode == "891" ) { responseCodeString = "Use Variable Err Code - LN"; }
+    if(ErrorCode == "892" ) { responseCodeString = "Variable Err Code - STATUS LN"; }
+    if(ErrorCode == "893" ) { responseCodeString = "Use Variable Err Code - LN"; }
+    if(ErrorCode == "894" ) { responseCodeString = "Use Variable Err Code - LN"; }
+    if(ErrorCode == "895" ) { responseCodeString = "Use Variable Err Code - LN"; }
+    if(ErrorCode == "896" ) { responseCodeString = "Use Variable Err Code - RM"; }
+    if(ErrorCode == "897" ) { responseCodeString = "Use Variable Err Code - RM"; }
+    if(ErrorCode == "898" ) { responseCodeString = "Use Variable Err Code - RM"; }
+    if(ErrorCode == "899" ) { responseCodeString = "Use Variable Err Code - RM"; }
+    if(ErrorCode == "900" ) { responseCodeString = "Use Variable Err Code - RM"; }
+    if(ErrorCode == "901" ) { responseCodeString = "Variable Err Code & Status-CF"; }
+    if(ErrorCode == "902" ) { responseCodeString = "Use Variable Err Code - CF"; }
+    if(ErrorCode == "903" ) { responseCodeString = "Use Variable Err Code - CF"; }
+    if(ErrorCode == "904" ) { responseCodeString = "Use Variable Err Code - CMS"; }
+    if(ErrorCode == "905" ) { responseCodeString = "Use Variable Err Code - CMS"; }
+    if(ErrorCode == "906" ) { responseCodeString = "System Error Codes 6"; }
+    if(ErrorCode == "907" ) { responseCodeString = "System Error Codes 7"; }
+    if(ErrorCode == "908" ) { responseCodeString = "System Error Codes 8"; }
+    if(ErrorCode == "909" ) { responseCodeString = "System Error Codes 9"; }
+    if(ErrorCode == "910" ) { responseCodeString = "System Error Codes 10"; }
+    if(ErrorCode == "911" ) { responseCodeString = "System Error Codes 11"; }
+    if(ErrorCode == "912" ) { responseCodeString = "System Error Codes 12"; }
+    if(ErrorCode == "913" ) { responseCodeString = "System Error Codes 13"; }
+    if(ErrorCode == "914" ) { responseCodeString = "System Error Codes 14"; }
+    if(ErrorCode == "915" ) { responseCodeString = "System Error Codes 15"; }
+    if(ErrorCode == "916" ) { responseCodeString = "System Error Codes 16"; }
+    if(ErrorCode == "917" ) { responseCodeString = "System Error Codes 17"; }
+    if(ErrorCode == "918" ) { responseCodeString = "System Error Codes 18"; }
+    if(ErrorCode == "919" ) { responseCodeString = "System Error Codes 19"; }
+    if(ErrorCode == "920" ) { responseCodeString = "System Error Codes 20"; }
+    if(ErrorCode == "921" ) { responseCodeString = "System Error Codes 21"; }
+    if(ErrorCode == "922" ) { responseCodeString = "System Error Codes 22"; }
+    if(ErrorCode == "923" ) { responseCodeString = "System Error Codes 23"; }
+    if(ErrorCode == "924" ) { responseCodeString = "System Error Codes 24"; }
+    if(ErrorCode == "925" ) { responseCodeString = "System Error Codes 25"; }
+    if(ErrorCode == "926" ) { responseCodeString = "System Error Codes 26"; }
+    if(ErrorCode == "927" ) { responseCodeString = "System Error Codes 27"; }
+    if(ErrorCode == "928" ) { responseCodeString = "System Error Codes 28"; }
+    if(ErrorCode == "929" ) { responseCodeString = "System Error Codes 29"; }
+    if(ErrorCode == "930" ) { responseCodeString = "Mandatory Tran. Override"; }
+    return responseCodeString;
+}
+
+string getDSPErrorDesc(string ErrorCode){    
+    ErrorCode = strREReplaceAll(ErrorCode, "\\.", "");
+    string dspCodeDesc = "Unknow DSP error code.";
+    if(ErrorCode == "DSP0001") { dspCodeDesc = "System error."; }
+	if(ErrorCode == "DSP0002") { dspCodeDesc = "Route name not found."; }
+	if(ErrorCode == "DSP0003") { dspCodeDesc = "Transaction timeout."; }
+	if(ErrorCode == "DSP0004") { dspCodeDesc = "Program exception error."; }
+	if(ErrorCode == "DSP0005") { dspCodeDesc = "Auto reversal was rejected."; }
+	if(ErrorCode == "DSP0006") { dspCodeDesc = "System is not ready to process."; }
+	if(ErrorCode == "DSP0007") { dspCodeDesc = "Duplicate application key."; }
+	if(ErrorCode == "DSP0008") { dspCodeDesc = "Unknow data format."; }
+	if(ErrorCode == "DSP0009") { dspCodeDesc = "Conversion format not found."; }
+	if(ErrorCode == "DSP0010") { dspCodeDesc = "Host not logged on."; }
+	if(ErrorCode == "DSP0011") { dspCodeDesc = "System WatchDog failed to start job."; }
+	if(ErrorCode == "DSP0012") { dspCodeDesc = "Invalid source id."; }
+	if(ErrorCode == "ATM0001") { dspCodeDesc = "Invalid transaction."; }
+    return dspCodeDesc;
+}
+
+boolean checkRequestParameter(string value, string type){
+    if(value == ""){
+        return false;
+    }
+    if(value == null){
+        return false;
+    }
+    
+    if(type != "string"){
+        //number
+        try{
+            double numval;
+            strToDouble(numval, value);
+        }catch(ExceptionDetails ex){
+            return false;
+        }
+    }
+    
+    
+    return true;
+}
+
+string accountNumberFormat(string accountNumber,string type){
+    int length = 0;
+    if(strLength(accountNumber)<19){
+        int paddingLength = 19-strLength(accountNumber);
+        for(int i=0;i<paddingLength;i++){
+          accountNumber = strInsert(accountNumber,0,"0");
+        }
+    }
+    
+    string stringReturn = accountNumber;
+    if(type=="D"||type=="S"||type=="L"){ //current //saving //loan
+        // #length = 12; 
+        stringReturn = strSubstring(accountNumber,7,19);
+    }else if(type=="T"){ //fixed
+        // #length = 16;
+        stringReturn = strSubstring(accountNumber,3,19);
+    }else{
+    }
+    return stringReturn;
+}
+
+string customerNumberFormat(string customerNumber){
+    debug("CIFNo original from SL is : "+customerNumber);
+    string stringReturn = "";
+    int customerNumberLength = strLength(customerNumber);
+    if(customerNumberLength<9){ // padding to 9 digit
+        int paddingLength = 9-customerNumberLength;
+        for(int i=0;i<paddingLength;i++){
+          customerNumber = strInsert(customerNumber,0,"0");
+        }
+        stringReturn = customerNumber;  
+    }else{ // return
+        stringReturn = customerNumber;
+    }
+    debug("CIFNo changed format to : "+stringReturn);
+    return stringReturn;
+}
+
+string padCustomerNumber(string customerNumber, int length){
+	return padding(customerNumber, length, "right", "0");
+}
+
+string padBranchNumber(string branchNumber, int length){
+    return padding(branchNumber, length, "right", "0");
+}
+
+string branchNumberFormat(string branchNumber){
+    string stringReturn = "";
+    int branchNumberLength = strLength(branchNumber);
+    if(branchNumberLength<5){ // padding to 5 digit
+        int paddingLength = 5-branchNumberLength;
+        for(int i=0;i<paddingLength;i++){
+          branchNumber = strInsert(branchNumber,0,"0");
+        }
+        stringReturn = branchNumber;  
+    }else{ // return
+        stringReturn = branchNumber;
+    }
+    return stringReturn;
+}
+
+//************************** Common Used ******************************//
+string padding(string str, int length, string padDirection, string padWith){
+    if(padWith == "" || padWith == null) { padWith = " "; }
+    if(str==null){ str = ""; }
+    if(strLength(str) >= length){ return str; }
+    
+    string result = str;
+    for(int i = strLength(str); i < length; i++){
+        if(padDirection == "left"){
+            result = result + padWith;
+        }
+        if(padDirection == "right"){
+            result = padWith + result;
+        }    
+    }
+    return result;
+}
+
+
+Ultra.UFL_SYSLOG.Logger CreateLoggerRequest(bytearray socketRequest,string uuid,string channelName,string serviceName,string xmlString,string exContext){
+    Logger log = udrCreate(Logger);
+    log.uuid = uuid;
+    log.socketString = baToStr(socketRequest,"IBM-Thai");
+    log.channelName = channelName;
+    log.serviceName = serviceName;
+    log.xmlString = xmlString;
+    log.logType = "request";
+    log.exContext = exContext;
+    //log.exContext = (string) mimGet("Workflow", "Execution Context");
+    return log;
+}
+
+Ultra.UFL_SYSLOG.Logger CreateLoggerRequestABCS(string socketString,string uuid,string channelName,string serviceName,string xmlString,string exContext){
+    Logger log = udrCreate(Logger);
+    log.uuid = uuid;
+    log.socketString = socketString;
+    log.channelName = channelName;
+    log.serviceName = serviceName;
+    log.xmlString = xmlString;
+    log.logType = "request";
+    log.exContext = exContext;
+    //log.exContext = (string) mimGet("Workflow", "Execution Context");
+    return log;
+}
+
+Ultra.UFL_SYSLOG.Logger CreateLoggerResponse(CBS.UFL_Aggregation.Matcher input,string channelName,string serviceName,string xmlString,string exContext){
+    Logger log = udrCreate(Logger);
+    log.logType = "response";
+    if(input.errorUDR==true){
+        log.uuid = "";
+        log.responseStatus = "AB";
+        log.socketString = "Error to connect CBS";
+    }else{
+        DSP_Header_TgIn dsp = (DSP_Header_TgIn) input.tcpResponse;
+        log.uuid = dsp.I13ACQN + dsp.I13TMNO;
+        log.responseStatus = dsp.I13MSTA;
+        log.socketString = baToStr(udrEncode("DSP_Header_Encoder",input.tcpResponse),"IBM-Thai");
+    }
+    log.channelName = channelName;
+    log.serviceName = serviceName;
+    log.xmlString = xmlString;
+    log.exContext = exContext;
+    //log.exContext = (string) mimGet("Workflow", "Execution Context");
+    return log;
+}
+
+Ultra.UFL_SYSLOG.Logger CreateLoggerResponseABCS(CBS.UFL_Aggregation.Matcher input,string socketString,string channelName,string serviceName,string xmlString,string exContext){
+    Logger log = udrCreate(Logger);
+    log.logType = "response";
+    if(input.errorUDR==true){
+        log.uuid = "";
+        log.responseStatus = "AB";
+        log.socketString = "Error to connect CBS";
+    }else{
+        DSP_Header_TgIn dsp = (DSP_Header_TgIn) input.tcpResponse;
+        log.uuid = dsp.I13ACQN + dsp.I13TMNO;
+        log.responseStatus = dsp.I13MSTA;
+        log.socketString = socketString;
+    }
+    log.channelName = channelName;
+    log.serviceName = serviceName;
+    log.xmlString = xmlString;
+    log.exContext = exContext;
+    //log.exContext = (string) mimGet("Workflow", "Execution Context");
+    return log;
+}
+
+MBASE_Header_With_Payload_TI GetMbaseByTCP(CBS.UFL_Aggregation.Matcher input,DSP_Header_TgIn dsp){
+    MBASE_Header_With_Payload_TI mbase = null;
+    if(dsp!=null){
+        list<MBASE_Header_With_Payload_TI> aList = listCreate(MBASE_Header_With_Payload_TI);
+        udrDecode("MBASE_Header_With_Payload_Decode", aList, dsp.data);
+        mbase = listGet(aList,0);
+    }else{
+        if(input.tcpResponse!=null){
+            list<MBASE_Header_With_Payload_TI> aList = listCreate(MBASE_Header_With_Payload_TI);
+            DSP_Header_TgIn newdsp = (DSP_Header_TgIn) input.tcpResponse;
+            udrDecode("MBASE_Header_With_Payload_Decode", aList, newdsp.data);
+            mbase = listGet(aList,0);
+        }
+    }
+    return mbase;
+}
+
+DSP_Header_TgIn GetDSPByTCP(CBS.UFL_Aggregation.Matcher input){
+    DSP_Header_TgIn dsp = null;
+    if(input.tcpResponse!=null){
+        list<MBASE_Header_With_Payload_TI> aList = listCreate(MBASE_Header_With_Payload_TI);
+        dsp = (DSP_Header_TgIn) input.tcpResponse;
+    }
+    return dsp;
+}
+]]></string>
+</exportmultiplex>

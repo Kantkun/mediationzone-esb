@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="APL_Source_Code" ref_path="apl_script[Internal]/storable[apl_script]/storable[Data]">
+   <string name="Definition"><![CDATA[//DSP
+final int sizeOf_DSPHeader = 312;
+
+//ABCS
+final int sizeOf_ABCS_Header = 106;
+final int sizeOf_TLLOG = 2969;
+final int sizeOf_ABCS_TLLOG_RequestSocket = sizeOf_DSPHeader + sizeOf_ABCS_Header + sizeOf_TLLOG - 9;  //3378;
+final int sizeOf_ABCS_Header_with_TLLOG = sizeOf_ABCS_Header + sizeOf_TLLOG - 4;
+final int sizeOf_ABCS_Rejected_Header = 52;
+final int sizeOf_ABCS_Rejected_Detail = 114;
+final int sizeOf_TMQBK = 112; //110 + 2;
+final int sizeOf_TMQHB = 5; //3 + 2;]]></string>
+</exportmultiplex>

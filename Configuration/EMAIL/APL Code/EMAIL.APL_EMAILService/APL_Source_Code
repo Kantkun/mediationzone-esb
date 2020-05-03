@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="APL_Source_Code" ref_path="apl_script[Internal]/storable[apl_script]/storable[Data]">
+   <string name="Definition"><![CDATA[import ultra.CBS.UFL_DSP_Header;
+import ultra.CBS.UFL_MBASE_Header;
+import apl.Common.APL_Common_MBASE;
+import ultra.EMAIL.UFL_EmailMatcher;
+import ultra.Ultra.UFL_AXC805000;
+import ultra.HTTP.UFL_Httpd_ServiceList;
+import apl.Common.APL_Common_Utilities;
+import ultra.Ultra.UFL_MBASE_Reject;
+import ultra.CBS.UFL_MBERROR;
+
+final int sizeOf_AXC805000 = 2500;
+
+
+EmailMatcher createEmailStructor(string uniqKey,DSP_Header_TgIn tcpRequest){
+    EmailMatcher UFLMail = udrCreate(EmailMatcher);
+    UFLMail.tcpRequest = tcpRequest;
+    
+    list<MBASE_Header_With_Payload_TI> aList = listCreate(MBASE_Header_With_Payload_TI);
+    udrDecode("MBASE_Header_With_Payload_Decode", aList, tcpRequest.data);
+    MBASE_Header_With_Payload_TI mbase = listGet(aList,0);
+    
+    bytearray refilled = refillTrimedColumn(mbase.data,2500);   
+    
+    //debug(refilled,"IBM-Thai");
+    
+    list<AXC805000_RQ_TI> EmailInfo = listCreate(AXC805000_RQ_TI);
+    udrDecode("AXC805000_RQ_Decode", EmailInfo, refilled);
+    AXC805000_RQ_TI email = listGet(EmailInfo,0);
+    
+    
+    UFLMail.EMLFROM_FROM = email.EMLFROM_FROM;
+    UFLMail.EMLTO_TO = email.EMLTO_TO;
+    UFLMail.EMLCC_CC = email.EMLCC_CC;
+    UFLMail.EMLBCC_BCC = email.EMLBCC_BCC;
+    UFLMail.EMLMSG_CONTENT = email.EMLMSG_CONTENT;
+    UFLMail.SUBJECT_SUBJECT = email.EMLSBJT_SUBJECT;
+    UFLMail.EMLSTATUS_STATUS =  (string) '0';
+  
+    return UFLMail;
+}
+/*
+EmailMatcher createEmailStructor(string uniqKey){
+    EmailMatcher UFLMail = udrCreate(EmailMatcher);
+   
+    UFLMail.EMLFROM_FROM = "ghbsystemtest@ghb.co.th";
+    UFLMail.EMLTO_TO = "ghbsystemtest@ghb.co.th";
+    UFLMail.EMLCC_CC = "";
+    UFLMail.EMLBCC_BCC = "";
+    UFLMail.EMLMSG_CONTENT = "Test MSG";
+    UFLMail.SUBJECT_SUBJECT = "Test Subject";
+    UFLMail.EMLSTATUS_STATUS =  (string) '0';
+    return UFLMail;
+}
+*/
+bytearray createSocketMessageEmail(string uniqKey,DSP_Header_TgIn tcpRequest){
+    //DSP Header
+    DSP_Header_TgIn dspHeader = createDefaultDSPHeader();
+    dspHeader.SKTMLEN = sizeOf_DSPHeader + sizeOf_MBaseHeader + sizeOf_AXC805000 - 9;
+    dspHeader.SKTHEAD = tcpRequest.SKTHEAD;
+    dspHeader.I13HLEN = tcpRequest.I13HLEN;
+    dspHeader.I13MLEN = tcpRequest.I13MLEN;
+    dspHeader.I13VERS = tcpRequest.I13VERS;
+    dspHeader.I13SID = tcpRequest.I13SID;
+    dspHeader.I13DID = tcpRequest.I13DID;
+    dspHeader.I13RTGN = tcpRequest.I13RTGN;
+    dspHeader.I13XID = tcpRequest.I13XID;
+    dspHeader.I13RRNO = tcpRequest.I13RRNO;
+    dspHeader.I13USER = tcpRequest.I13USER;
+    dspHeader.I13HFMID = tcpRequest.I13HFMID;  
+    dspHeader.I13CUTO = tcpRequest.I13CUTO;
+    dspHeader.I13UDTA = tcpRequest.I13UDTA;
+    dspHeader.I13SDTA = tcpRequest.I13SDTA;
+    dspHeader.I13TTYP = tcpRequest.I13TTYP;
+    dspHeader.I13RCNF = tcpRequest.I13RCNF;
+    dspHeader.I13MSTA = "/AA";
+         
+    //MBASE Header
+    list<MBASE_Header_With_Payload_TI> mbaseList = listCreate(MBASE_Header_With_Payload_TI);
+    udrDecode("MBASE_Header_With_Payload_Decode",mbaseList,tcpRequest.data);
+    MBASE_Header_With_Payload_TI mbase = listGet(mbaseList,0);
+    
+    MBASE_Header_TI mbaseHeader = udrCreate(MBASE_Header_TI);
+    
+    mbaseHeader.HDVERS = mbase.mbaseHeader.HDVERS;
+    mbaseHeader.HDTCOD = mbase.mbaseHeader.HDTCOD;
+    mbaseHeader.HDTXTP = mbase.mbaseHeader.HDTXTP;
+    mbaseHeader.HDRIND = "AA";
+    mbaseHeader.HDNERR = mbase.mbaseHeader.HDNERR;
+    mbaseHeader.HDSRID = mbase.mbaseHeader.HDSRID;
+    mbaseHeader.HDDSID = mbase.mbaseHeader.HDDSID;
+    mbaseHeader.HDRTDQ = mbase.mbaseHeader.HDRTDQ;
+    mbaseHeader.HDDTQL = mbase.mbaseHeader.HDDTQL;
+    mbaseHeader.HDTMLI = mbase.mbaseHeader.HDTMLI;
+    mbaseHeader.HDBKNO = mbase.mbaseHeader.HDBKNO;
+    mbaseHeader.HDLGID = mbase.mbaseHeader.HDLGID;
+    mbaseHeader.HDCLDR = mbase.mbaseHeader.HDCLDR; 
+    mbaseHeader.HDBRNO = mbase.mbaseHeader.HDBRNO; 
+    mbaseHeader.HDUSID = mbase.mbaseHeader.HDUSID;
+    mbaseHeader.HDSUP1 = mbase.mbaseHeader.HDSUP1;
+    mbaseHeader.HDSUP2 = mbase.mbaseHeader.HDSUP2;
+    mbaseHeader.HDSUP3 = mbase.mbaseHeader.HDSUP3;
+    mbaseHeader.HDACCD = mbase.mbaseHeader.HDACCD;
+    mbaseHeader.HDNXTA = mbase.mbaseHeader.HDNXTA;
+    mbaseHeader.HDTXMD = mbase.mbaseHeader.HDTXMD;
+    mbaseHeader.HDSLKY = mbase.mbaseHeader.HDSLKY;
+    mbaseHeader.HDRREF = mbase.mbaseHeader.HDRREF;
+    mbaseHeader.HDSREF = mbase.mbaseHeader.HDSREF;
+    mbaseHeader.HDRCKY = mbase.mbaseHeader.HDRCKY;
+    mbaseHeader.HDNREC = mbase.mbaseHeader.HDNREC;
+    mbaseHeader.HDMREC = mbase.mbaseHeader.HDMREC;
+    mbaseHeader.HDSMTD = mbase.mbaseHeader.HDSMTD;
+    mbaseHeader.HDTIMS = mbase.mbaseHeader.HDTIMS;
+    mbaseHeader.HDVFMT = mbase.mbaseHeader.HDVFMT;
+    mbaseHeader.HDDAPV = mbase.mbaseHeader.HDDAPV;
+    mbaseHeader.HDCOUN = mbase.mbaseHeader.HDCOUN;
+    mbaseHeader.HDFCID = mbase.mbaseHeader.HDFCID;
+    mbaseHeader.HDFCSQ = mbase.mbaseHeader.HDFCSQ;
+    mbaseHeader.HDFILR = mbase.mbaseHeader.HDFILR;
+   
+    //Request Data
+
+    bytearray outgoing = udrEncode("DSP_Header_Encoder", dspHeader);
+    outgoing = baAppend(outgoing, udrEncode("MBASE_Header_Encode", mbaseHeader));
+    bytearray refilled = refillTrimedColumn(mbase.data,2500);
+    outgoing = baAppend(outgoing, refilled);
+    //outgoing = baAppend(outgoing, udrEncode("DD20001_RS_Encode", mbaseResponse));
+    return outgoing;
+}
+bytearray createSocketMessageEmailRejected(string uniqKey,DSP_Header_TgIn tcpRequest,string errDes){
+    //DSP Header
+    DSP_Header_TgIn dspHeader = createDefaultDSPHeader();
+    dspHeader.SKTMLEN = 940;
+    dspHeader.SKTHEAD = tcpRequest.SKTHEAD;
+    dspHeader.I13HLEN = tcpRequest.I13HLEN;
+    dspHeader.I13MLEN = tcpRequest.I13MLEN;
+    dspHeader.I13VERS = tcpRequest.I13VERS;
+    dspHeader.I13SID = tcpRequest.I13SID;
+    dspHeader.I13DID = tcpRequest.I13DID;
+    dspHeader.I13RTGN = tcpRequest.I13RTGN;
+    dspHeader.I13XID = tcpRequest.I13XID;
+    dspHeader.I13RRNO = tcpRequest.I13RRNO;
+    dspHeader.I13USER = tcpRequest.I13USER;
+    dspHeader.I13HFMID = tcpRequest.I13HFMID;  
+    dspHeader.I13CUTO = tcpRequest.I13CUTO;
+    dspHeader.I13UDTA = tcpRequest.I13UDTA;
+    dspHeader.I13SDTA = tcpRequest.I13SDTA;
+    dspHeader.I13TTYP = tcpRequest.I13TTYP;
+    dspHeader.I13RCNF = tcpRequest.I13RCNF;
+    dspHeader.I13MSTA = "/AB";
+         
+    //MBASE Header
+    list<MBASE_Header_With_Payload_TI> mbaseList = listCreate(MBASE_Header_With_Payload_TI);
+    udrDecode("MBASE_Header_With_Payload_Decode",mbaseList,tcpRequest.data);
+    MBASE_Header_With_Payload_TI mbase = listGet(mbaseList,0);
+    
+    MBASE_Header_TI mbaseHeader = udrCreate(MBASE_Header_TI);
+    
+    mbaseHeader.HDVERS = mbase.mbaseHeader.HDVERS;
+    mbaseHeader.HDTCOD = mbase.mbaseHeader.HDTCOD;
+    mbaseHeader.HDTXTP = mbase.mbaseHeader.HDTXTP;
+    mbaseHeader.HDRIND = "AB";
+    mbaseHeader.HDNERR = mbase.mbaseHeader.HDNERR;
+    mbaseHeader.HDSRID = mbase.mbaseHeader.HDSRID;
+    mbaseHeader.HDDSID = mbase.mbaseHeader.HDDSID;
+    mbaseHeader.HDRTDQ = mbase.mbaseHeader.HDRTDQ;
+    mbaseHeader.HDDTQL = mbase.mbaseHeader.HDDTQL;
+    mbaseHeader.HDTMLI = mbase.mbaseHeader.HDTMLI;
+    mbaseHeader.HDBKNO = mbase.mbaseHeader.HDBKNO;
+    mbaseHeader.HDLGID = mbase.mbaseHeader.HDLGID;
+    mbaseHeader.HDCLDR = mbase.mbaseHeader.HDCLDR; 
+    mbaseHeader.HDBRNO = mbase.mbaseHeader.HDBRNO; 
+    mbaseHeader.HDUSID = mbase.mbaseHeader.HDUSID;
+    mbaseHeader.HDSUP1 = mbase.mbaseHeader.HDSUP1;
+    mbaseHeader.HDSUP2 = mbase.mbaseHeader.HDSUP2;
+    mbaseHeader.HDSUP3 = mbase.mbaseHeader.HDSUP3;
+    mbaseHeader.HDACCD = mbase.mbaseHeader.HDACCD;
+    mbaseHeader.HDNXTA = mbase.mbaseHeader.HDNXTA;
+    mbaseHeader.HDTXMD = mbase.mbaseHeader.HDTXMD;
+    mbaseHeader.HDSLKY = mbase.mbaseHeader.HDSLKY;
+    mbaseHeader.HDRREF = mbase.mbaseHeader.HDRREF;
+    mbaseHeader.HDSREF = mbase.mbaseHeader.HDSREF;
+    mbaseHeader.HDRCKY = mbase.mbaseHeader.HDRCKY;
+    mbaseHeader.HDNREC = mbase.mbaseHeader.HDNREC;
+    mbaseHeader.HDMREC = mbase.mbaseHeader.HDMREC;
+    mbaseHeader.HDSMTD = mbase.mbaseHeader.HDSMTD;
+    mbaseHeader.HDTIMS = mbase.mbaseHeader.HDTIMS;
+    mbaseHeader.HDVFMT = mbase.mbaseHeader.HDVFMT;
+    mbaseHeader.HDDAPV = mbase.mbaseHeader.HDDAPV;
+    mbaseHeader.HDCOUN = mbase.mbaseHeader.HDCOUN;
+    mbaseHeader.HDFCID = mbase.mbaseHeader.HDFCID;
+    mbaseHeader.HDFCSQ = mbase.mbaseHeader.HDFCSQ;
+    mbaseHeader.HDFILR = mbase.mbaseHeader.HDFILR;
+    
+    //MBError
+    MBASE_MBERROR_RQ_TI mbError = udrCreate(MBASE_MBERROR_RQ_TI);
+    mbError.ERCODE_ErrorCode = "DSP9999";
+    mbError.ERTYPE_ErrorIndicator = "E";
+    mbError.ERSEVE_ErrorSeverity = "";
+    mbError.ERFLDN_ErrorField = "";
+    mbError.EROVRB_OverideBitPosition = "";
+    mbError.ERDESC_ErrorDescription = errDes;
+    mbError.EREXTN_ExtendedData = ".";
+    
+    bytearray outgoing = udrEncode("DSP_Header_Encoder", dspHeader);
+    outgoing = baAppend(outgoing, udrEncode("MBASE_Header_Encode", mbaseHeader));
+    outgoing = baAppend(outgoing, udrEncode("MBASE_MBERROR_RQ_Encode", mbError));
+    return outgoing; 
+}]]></string>
+</exportmultiplex>

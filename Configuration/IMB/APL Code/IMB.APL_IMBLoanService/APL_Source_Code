@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="APL_Source_Code" ref_path="apl_script[Internal]/storable[apl_script]/storable[Data]">
+   <string name="Definition"><![CDATA[//ultra
+import ultra.ws.IMB.PRF_WS_IMBLoanService.cycles;
+import ultra.ws.IMB.PRF_WS_IMBLoanService.tns;
+import ultra.Ultra.UFL_Rest;
+
+//apl
+import apl.Common.APL_Common_Utilities;
+
+//Section: Create content message
+string createContentMessageApplication_GetLoanApplicationStatus(WSCycle_getLoanApplicationStatus request){
+    //Request Data
+    string outgoing = "/Api/ApplicationApi/GetApplicationStatus?AANO=&ApplNO=" + request.param_Data.ApplicationNumber + "&IDNo=" + request.param_Data.CitizenID + "&IDIssueCountry=&IDType=";
+    return outgoing;
+}
+//End Section
+
+
+//Section: Create response message
+WSCycle_getLoanApplicationStatus responseMessage_GetLoanApplicationStatus(RestLOS_RS RESTResponse){
+    debug(RESTResponse);
+    //Response Header
+    WSCycle_getLoanApplicationStatus responseMessage = (WSCycle_getLoanApplicationStatus) RESTResponse.soapRequest;
+    long requestMillisec = RESTResponse.requestMillisec;
+    responseMessage.param_Header_01 = udrCreate(GetLoanApplicationStatusResponse$Header);
+    date responseTransactinDatetime = dateCreateCopy(responseMessage.param_Header.TransactionDateTime);
+    dateSetTimeZone(responseTransactinDatetime, "GMT+7");       
+    responseMessage.param_Header_01.ReferenceNo = responseMessage.param_Header.ReferenceNo;
+    responseMessage.param_Header_01.TransactionDateTime = responseTransactinDatetime;
+    responseMessage.param_Header_01.ChannelID = responseMessage.param_Header.ChannelID;
+    
+    //Response StatusInfo
+    responseMessage.param_Header_01.StatusInfo = udrCreate(GetLoanApplicationStatusResponse$Header$StatusInfo);
+    responseMessage.param_Header_01.StatusInfo.Status = udrCreate(GetLoanApplicationStatusResponse$Header$StatusInfo$Status);
+    responseMessage.param_Header_01.StatusInfo.Status.UsageTime = dateCreateNowMilliseconds()-requestMillisec;
+    
+    //Request Data AccountList 
+    if(RESTResponse.Status == "Succ"){
+        //Success
+        //debug("AA");
+        
+        responseMessage.param_Header_01.ApplicationInfo = udrCreate(GetLoanApplicationStatusResponse$Header$ApplicationInfo);
+        responseMessage.param_Header_01.ApplicationInfo.Application = udrCreate(GetLoanApplicationStatusResponse$Header$ApplicationInfo$Application);
+        responseMessage.param_Header_01.ApplicationInfo.Application.ApplicationNumber = RESTResponse.ApplicationNumber;
+        responseMessage.param_Header_01.ApplicationInfo.Application.ApplicationStatus = RESTResponse.GHBApplicationStatus;
+        //debug(convertToNumberic(strREReplaceAll(RESTResponse.Value3,",",""),17,2));
+        //strToDouble(responseMessage.param_Header_01.ApplicationInfo.Application.ApprovedLimit,strREReplaceAll(RESTResponse.Value3,",",""));
+        strToDouble(responseMessage.param_Header_01.ApplicationInfo.Application.ApprovedLimit,RESTResponse.ApprovedLimit);
+        
+        strToDouble(responseMessage.param_Header_01.ApplicationInfo.Application.BranchCode,RESTResponse.BranchCode);
+        responseMessage.param_Header_01.ApplicationInfo.Application.BranchName = RESTResponse.BranchName;
+        responseMessage.param_Header_01.ApplicationInfo.Application.BranchNameEN = RESTResponse.BranchNameEN;
+        responseMessage.param_Header_01.ApplicationInfo.Application.Objective = RESTResponse.Objective;
+        responseMessage.param_Header_01.ApplicationInfo.Application.ObjectiveEN = RESTResponse.ObjectiveEN;
+        responseMessage.param_Header_01.ApplicationInfo.Application.OfficerName = RESTResponse.OfficerName;
+        responseMessage.param_Header_01.ApplicationInfo.Application.ApplicationStatusDesc = RESTResponse.GHBApplicationStatusDesc;
+        responseMessage.param_Header_01.ApplicationInfo.Application.ApplicationStatusDescEN = RESTResponse.GHBApplicationStatusDescEN;
+ 
+        //Response Status Info
+        responseMessage.param_Header_01.StatusInfo.Status.Success = true;
+        responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = "AA";
+        responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Success";
+    }else{
+        //Rejected
+        //debug("AB");
+        
+        responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+        responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = "AB";
+        responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = RESTResponse.ErrMessage;
+    }
+    
+    return responseMessage;
+}
+//End Section]]></string>
+</exportmultiplex>

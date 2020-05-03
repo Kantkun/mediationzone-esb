@@ -1,0 +1,565 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="APL_Source_Code" ref_path="apl_script[Internal]/storable[apl_script]/storable[Data]">
+   <string name="Definition"><![CDATA[import ultra.CBS.UFL_DSP_Header;
+import ultra.CBS.UFL_ABCS_Header;
+import ultra.CBS.UFL_TLLOG;
+import ultra.CBS.UFL_ABCS_Rejected;
+
+import apl.Common.APL_Common_Utilities;
+import apl.Common.APL_Common_Constant;
+import apl.Common.APL_Common_ABCS;
+
+string padLogString(string str, int length){
+    return padding(str,length,"left","");
+}
+string padLogNumeric(string str, int length){
+    return padding(str,length,"right","0");
+}
+string padding(string str, int length, string padDirection, string padWith){
+    if(padWith == "" || padWith == null) { padWith = " "; }
+    if(str==null){ str = ""; }
+    if(strLength(str) >= length){ return str; }
+    
+    string result = str;
+    for(int i = strLength(str); i < length; i++){
+        if(padDirection == "left"){
+            result = result + padWith;
+        }
+        if(padDirection == "right"){
+            result = padWith + result;
+        }    
+    }
+    return result;
+}
+
+string unPackStrForLog(string value, int unpackedLength){
+    string strValue = strREReplaceAll(strTrim(value),"\\p{Cc}","");
+    string unpacked = unPackStr(strValue);
+    int currentLength = strLength(unpacked);
+    //string appendStr = (unPackStr(strValue)==" ")?" ":"0";
+   
+    for(int i = currentLength; i < unpackedLength; i++){
+       unpacked = "0" + unpacked;
+    }
+    
+    return unpacked;
+}
+
+string generateDSPHeaderLog(DSP_Header_TgIn dspHeader){
+    string dspLog = "";
+    dspLog = dspLog + padLogNumeric((string)dspHeader.SKTMLEN,9);
+    dspLog = dspLog + padLogString(dspHeader.SKTHEAD,5);
+    dspLog = dspLog + padLogString(dspHeader.SKTDEVN,15);
+    dspLog = dspLog + padLogNumeric(dspHeader.SKTSKNB,9);
+    dspLog = dspLog + padLogNumeric(dspHeader.SKTPORT,5);
+    dspLog = dspLog + padLogString(dspHeader.SKTFILL,1);
+    dspLog = dspLog + padLogNumeric(dspHeader.I13HLEN,4);
+    dspLog = dspLog + padLogNumeric(dspHeader.I13MLEN,6);
+    dspLog = dspLog + padLogNumeric(dspHeader.I13VERS,4);
+    dspLog = dspLog + padLogString(dspHeader.I13HFMID,4);
+    dspLog = dspLog + padLogString(dspHeader.I13FMID,10);
+    dspLog = dspLog + padLogString(dspHeader.I13SID,10);
+    dspLog = dspLog + padLogString(dspHeader.I13DID,10);
+    dspLog = dspLog + padLogString(dspHeader.I13RTGN,6);
+    dspLog = dspLog + padLogString(dspHeader.I13MSTA,8);
+    dspLog = dspLog + padLogNumeric(dspHeader.I13BIN,11);
+    dspLog = dspLog + padLogNumeric(dspHeader.I13NODE,2);
+    dspLog = dspLog + padLogString(dspHeader.I13XID,20);
+    dspLog = dspLog + padLogString(dspHeader.I13SSNO,16);
+    dspLog = dspLog + padLogString(dspHeader.I13TRCD,4);
+    dspLog = dspLog + padLogString(dspHeader.I13RRNO,22);
+    dspLog = dspLog + padLogString(dspHeader.I13ACQN,12);
+    dspLog = dspLog + padLogNumeric(dspHeader.I13TMNO,4);
+    dspLog = dspLog + padLogNumeric(dspHeader.I13NREC,4);
+    dspLog = dspLog + padLogNumeric(dspHeader.I13NERR,4);
+    dspLog = dspLog + padLogString(dspHeader.I13USER,10);
+    dspLog = dspLog + padLogString(dspHeader.I13TMID,10);
+    dspLog = dspLog + padLogString(dspHeader.I13SUPV,10);
+    dspLog = dspLog + padLogString(dspHeader.I13MORE,1);
+    dspLog = dspLog + padLogString(dspHeader.I13CUTO,1);
+    dspLog = dspLog + padLogString(dspHeader.I13UDTA,20);
+    dspLog = dspLog + padLogString(dspHeader.I13SDTA,36);
+    dspLog = dspLog + padLogString(dspHeader.I13TTYP,2);
+    dspLog = dspLog + padLogString(dspHeader.I13RCNF,1);
+    dspLog = dspLog + padLogString(dspHeader.I13RCNM,16);
+debug("DSP Log");
+debug(dspLog);
+    return dspLog;
+}
+
+string generateABCSHeaderLog(ABCS_Header_TgIn abcsHeader){
+    string abcsLog = "";
+    int abcsMessageLength = 0;
+    strToInt(abcsMessageLength, abcsHeader.ICLEN, hex);
+    abcsLog = abcsLog + padLogNumeric((string)abcsMessageLength,9);
+    abcsLog = abcsLog + padLogString(abcsHeader.ICHEAD,5);
+    abcsLog = abcsLog + padLogString(abcsHeader.ICCOMQ,10);
+    abcsLog = abcsLog + padLogString(abcsHeader.ICCMLIB,10);
+    abcsLog = abcsLog + padLogNumeric(abcsHeader.TMTIMIN,6);
+    abcsLog = abcsLog + padLogString(abcsHeader.TMTXTYP,5);
+    abcsLog = abcsLog + padLogString(abcsHeader.ICDSPK,22);
+    abcsLog = abcsLog + padLogString(abcsHeader.ICDSND,2);
+    abcsLog = abcsLog + padLogString(abcsHeader.ICIBKRF,19);
+    abcsLog = abcsLog + padLogString(abcsHeader.ICTXREG,6);
+    abcsLog = abcsLog + padLogString(abcsHeader.ICFMT,4);
+    abcsLog = abcsLog + padLogString(abcsHeader.ICRSV1,4);
+    abcsLog = abcsLog + padLogString(abcsHeader.ICRSV2,5);
+    abcsLog = abcsLog + padLogString(abcsHeader.ICEOM,4);
+debug("ABCS Header Log");
+debug(abcsLog);    
+    return abcsLog;
+}
+
+string generateTLLOGLog(TLLOG_TgIn tllogRequest){
+    
+    string tllogLog = "";
+    //tllog
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBID ,10);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBSEQ,9) ,9);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBCOR ,1);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBOSQ,9) ,9);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBTCD ,10);
+    tllogLog = tllogLog + padLogNumeric ( tllogRequest.TLBTDT ,8);
+    tllogLog = tllogLog + padLogNumeric ( tllogRequest.TLBEDT ,8);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBCUD ,7);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBWS ,10);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBSOV ,10);
+    tllogLog = tllogLog + padLogNumeric ( tllogRequest.TLBBRC ,5);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBBNK,2) ,2);
+    tllogLog = tllogLog + padLogNumeric ( tllogRequest.TLBPST ,2);
+    tllogLog = tllogLog + padLogNumeric ( tllogRequest.TLBAPM ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBFRD ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBTRN ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBRBD ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBTLO ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBSVO ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBFEO ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBREL ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBLCSUP ,10);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBTXREF ,22);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBGLREF ,20);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBSRCSYS ,4);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBGLFNO ,10);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBRVREF ,22);
+    //TLBF
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBF01,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBF02,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBF03,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBF04,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBF05,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBF06,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBF07,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBF08,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBF09,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBF10,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBF11,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBF12,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBF13,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBF14,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBF15,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBF16,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBF17,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBF18,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBF19,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBF20,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBF21,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBF22,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBF23,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBF24,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBF25,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBF26,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBF27,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBF28,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBF29,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBF30,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBF31,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBF32,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBF33,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBF34,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBF35,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBF36,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBF37,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBF38,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBF39,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBF40,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBF41,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBF42,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBF43,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBF44,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBF45,19) ,19);
+    //TLBC
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBC01 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBC02 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBC03 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBC04 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBC05 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBC06 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBC07 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBC08 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBC09 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBC10 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBC11 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBC12 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBC13 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBC14 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBC15 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBC16 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBC17 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBC18 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBC19 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBC20 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBC21 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBC22 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBC23 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBC24 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBC25 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBC26 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBC27 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBC28 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBC29 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBC30 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBC31 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBC32 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBC33 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBC34 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBC35 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBC36 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBC37 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBC38 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBC39 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBC40 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBC41 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBC42 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBC43 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBC44 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBC45 ,1);
+    //TLBL
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBL01 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBL02 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBL03 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBL04 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBL05 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBL06 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBL07 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBL08 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBL09 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBL10 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBL11 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBL12 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBL13 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBL14 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBL15 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBL16 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBL17 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBL18 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBL19 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBL20 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBL21 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBL22 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBL23 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBL24 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBL25 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBL26 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBL27 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBL28 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBL29 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBL30 ,1);
+    
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBCUR ,4);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLCUR1 ,4);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLCUR2 ,4);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLCUR3 ,4);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLCUR4 ,4);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLCUR5 ,4);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLCUR6 ,4);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLCUR7 ,4);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLCUR8 ,4);
+    
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBCVT01,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBCVT02,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBCVT03,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBCVT04,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBCVT05,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBCVT06,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBCVT07,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBCVT08,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBCVT09,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBCVT10,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBCVT11,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBCVT12,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBCVT13,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBCVT14,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBCVT15,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBCVT16,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBCVT17,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBCVT18,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBCVT19,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBCVT20,19) ,19);
+    
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBCCR01 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBCCR02 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBCCR03 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBCCR04 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBCCR05 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBCCR06 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBCCR07 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBCCR08 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBCCR09 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBCCR10 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBCCR11 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBCCR12 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBCCR13 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBCCR14 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBCCR15 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBCCR16 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBCCR17 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBCCR18 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBCCR19 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBCCR20 ,1);
+    
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBAM1,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBAM2,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBAM3,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBAM4,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBAM5,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBAM6,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBAM7,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBAM8,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBAM9,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBAM10,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBAM11,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBAM12,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBAM13,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBAM14,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBAM15,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBAM16,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBAM17,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBAM18,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBAM19,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBAM20,19) ,19);
+    
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLFXRTE1,15) ,15);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLFXRTE2,15) ,15);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLFXRTE3,15) ,15);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLFXRTE4,15) ,15);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLFXRTE5,15) ,15);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLFXRTE6,15) ,15);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLFXRTE7,15) ,15);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLFXRTE8,15) ,15);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLFXRTE9,15) ,15);
+    
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBATN,5) ,5);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBCIF,19) ,19);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBACF,19) ,19);
+    
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBPRD ,10);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBSRC ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBREN ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBIDC ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBMDC ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBXAT ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBXMT ,1);
+    
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLXWHC,1) ,1);
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBCDT,5) ,5);
+    
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBCDC ,1);
+    
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLBINT,3) ,3);
+    
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBINC ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLCPCD ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLOVRB ,1);
+    
+    tllogLog = tllogLog + padLogNumeric ( unPackStrForLog(tllogRequest.TLOVRR,5) ,5);
+    
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLOVCD ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBRFN ,20);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBYRF ,20);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLXUFD ,20);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBTPN ,40);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBRSA ,10);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBRSC ,3);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBORF ,10);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBKEY ,100);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBCLRG ,10);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBCLSR ,2);
+    
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLRVCD1 ,5);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLRVCD2 ,5);
+    
+    tllogLog = tllogLog + padLogString ( tllogRequest.FILL03 ,6);
+    
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBRS1 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBRS2 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBRS3 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBRS4 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBRS5 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBRS6 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBRS7 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBRS8 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBRS9 ,1);
+    
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBR10 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBR11 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBR12 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBR13 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBR14 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBR15 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBR16 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBR17 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBR18 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBR19 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBR20 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBR21 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBR22 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBR23 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBR24 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBR25 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBR26 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBR27 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBR28 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBR29 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBR30 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBR31 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBR32 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBR33 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBR34 ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBR35 ,1);
+    
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBREM1 ,120);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBDEAL ,10);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBBNSEC ,2);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBBNBU ,1);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLBBNSTE ,1);
+    
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLMD01 ,4);
+    
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLCH01 ,2);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLCH02 ,2);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLCH03 ,2);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLCH04 ,2);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLCH05 ,2);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLCH06 ,2);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLCH07 ,2);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLCH08 ,2);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLCH09 ,2);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLCH10 ,2);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLCH11 ,2);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLCH12 ,2);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLCH13 ,2);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLCH14 ,2);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLCH15 ,2);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLCH16 ,2);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLCH17 ,2);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLCH18 ,2);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLCH19 ,2);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLCH20 ,2);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLCH21 ,2);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLCH22 ,2);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLCH23 ,2);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLCH24 ,2);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLCH25 ,2);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLCH26 ,2);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLCH27 ,2);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLCH28 ,2);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLCH29 ,2);
+    tllogLog = tllogLog + padLogString ( tllogRequest.TLCH30 ,2);
+    
+    tllogLog = tllogLog + padLogString ( tllogRequest.FILL04 ,1200);
+debug("TLLOG Log");
+debug(tllogLog);
+    return tllogLog;
+}
+
+string generateABCSRejectedLog(DSP_Header_TgIn tcpResponse){
+//debug("generateABCSRejectedLog");
+    //ABCS Payload
+    list<ABCS_Header_With_Payload_TgIn> aList = listCreate(ABCS_Header_With_Payload_TgIn);        
+    udrDecode("ABCS_Header_With_Payload_Decoder", aList, tcpResponse.data);        
+    ABCS_Header_With_Payload_TgIn abcs = listGet(aList,0);
+    
+    //rejected or cannot connect
+    string rejectedLog = "";
+    
+    if(strStartsWith(tcpResponse.I13MSTA, ".DSP")){
+        //Rejected DSP
+        try{
+            //rejected content like request content (TLLOG)
+            list<TLLOG_TgIn> tllogList = listCreate(TLLOG_TgIn);
+            udrDecode("TLLOG_Decoder",tllogList,abcs.data);
+            TLLOG_TgIn tllog = listGet(tllogList,0);
+            string tllogLog = generateTLLOGLog(tllog);
+            rejectedLog = tllogLog;
+        }catch(ExceptionDetails exception){
+            debug("!Error create .DSP rejected response in content part (TLLOG).");
+            debug("!ErrorMsg: " + exception.message);
+            rejectedLog = baToStr(abcs.data,"IBM-Thai");
+        }
+        
+    }else{
+//debug("Rejected ABCS");
+        //Rejected ABCS
+        list<ABCS_Rejected_Header_With_Details_TgIn> abcsRejectedHeaderList = listCreate(ABCS_Rejected_Header_With_Details_TgIn);          
+        udrDecode("ABCS_Rejected_Header_With_Details_Decoder",abcsRejectedHeaderList,abcs.data);
+        ABCS_Rejected_Header_With_Details_TgIn abcsRejected = listGet(abcsRejectedHeaderList,0);
+        
+        //ABCS Rejected Header
+        rejectedLog = rejectedLog + padLogNumeric ( unPackStrForLog(abcsRejected.ABCS_Rejected_Header.RSPLEN_ResponseLength,3) ,3);
+        rejectedLog = rejectedLog + padLogString ( abcsRejected.ABCS_Rejected_Header.RSPCOD_ResponseCode ,2);
+        rejectedLog = rejectedLog + padLogString ( abcsRejected.ABCS_Rejected_Header.TLTXCD_TransactionCode ,10);
+        rejectedLog = rejectedLog + padLogString ( abcsRejected.ABCS_Rejected_Header.TLXMNE_CodeField3 ,3);
+        rejectedLog = rejectedLog + padLogNumeric ( unPackStrForLog(abcsRejected.ABCS_Rejected_Header.TLBSEQ_JournalSeq,9) ,9);
+        rejectedLog = rejectedLog + padLogString ( abcsRejected.ABCS_Rejected_Header.TLBID_TellerID ,10);
+        rejectedLog = rejectedLog + padLogString ( abcsRejected.ABCS_Rejected_Header.TLBCUD_ControlUnit ,7);
+        rejectedLog = rejectedLog + padLogString ( abcsRejected.ABCS_Rejected_Header.TLBWS_WorkStationID ,10);
+        rejectedLog = rejectedLog + padLogString ( abcsRejected.ABCS_Rejected_Header.HOVREQ_HighestOverrideReq ,1);
+        rejectedLog = rejectedLog + padLogNumeric ( unPackStrForLog(abcsRejected.ABCS_Rejected_Header.ER_NumberOfErrors,2) ,2);
+//debug("Rejected Hedaer: " + rejectedLog);        
+        
+        //ABCS Rejected Detail #1
+        rejectedLog = rejectedLog + padLogNumeric ( unPackStrForLog(abcsRejected.ABCS_Rejected_Details.RSPLEN_ResponseLength,3) ,3);
+        rejectedLog = rejectedLog + padLogString ( abcsRejected.ABCS_Rejected_Details.RSPCOD_ResponseCode ,2);
+        rejectedLog = rejectedLog + padLogNumeric ( unPackStrForLog(abcsRejected.ABCS_Rejected_Details.ERN1_ErrorCode,3) ,3);
+        rejectedLog = rejectedLog + padLogString ( abcsRejected.ABCS_Rejected_Details.ERO1_OverrideReq ,1);
+        rejectedLog = rejectedLog + padLogNumeric ( unPackStrForLog(abcsRejected.ABCS_Rejected_Details.APL1_ApplicationLineNum,2) ,2);
+        rejectedLog = rejectedLog + padLogString ( abcsRejected.ABCS_Rejected_Details.APT1_ApplicationType ,1);
+        rejectedLog = rejectedLog + padLogString ( abcsRejected.ABCS_Rejected_Details.ADT1_AddlDataType ,1);
+        rejectedLog = rejectedLog + padLogString ( abcsRejected.ABCS_Rejected_Details.ADF1_AddlDataField ,19);
+        rejectedLog = rejectedLog + padLogString ( abcsRejected.ABCS_Rejected_Details.AEC1_AddlErrorCode ,3);
+        rejectedLog = rejectedLog + padLogString ( abcsRejected.ABCS_Rejected_Details.VAPP_ApplicationCode ,2);
+        rejectedLog = rejectedLog + padLogNumeric ( unPackStrForLog(abcsRejected.ABCS_Rejected_Details.VSCD_SubErrorCode,3) ,3);
+        rejectedLog = rejectedLog + padLogString ( abcsRejected.ABCS_Rejected_Details.VMSG_ErrorMsgText ,60);
+        rejectedLog = rejectedLog + padLogNumeric ( abcsRejected.ABCS_Rejected_Details.AVAILB_AvlBalATM ,17);
+        
+        //ABCS Rejected Detail more
+        list<ABCS_Rejected_Details_TgIn> rejectedDetailList = listCreate(ABCS_Rejected_Details_TgIn);
+        udrDecode("ABCS_Rejected_Details_Decoder",rejectedDetailList,abcsRejected.data);
+//debug("number of loop rejected detail: " + (string)listSize(rejectedDetailList));
+        for(int i = 0 ; i < listSize(rejectedDetailList); i++){
+//debug("loop: "+i);
+            ABCS_Rejected_Details_TgIn rejectedDetail = listGet(rejectedDetailList,i);
+            rejectedLog = rejectedLog + padLogNumeric ( unPackStrForLog(rejectedDetail.RSPLEN_ResponseLength,3) ,3);
+            rejectedLog = rejectedLog + padLogString ( rejectedDetail.RSPCOD_ResponseCode ,2);
+            rejectedLog = rejectedLog + padLogNumeric ( unPackStrForLog(rejectedDetail.ERN1_ErrorCode,3) ,3);
+            rejectedLog = rejectedLog + padLogString ( rejectedDetail.ERO1_OverrideReq ,1);
+            rejectedLog = rejectedLog + padLogNumeric ( unPackStrForLog(rejectedDetail.APL1_ApplicationLineNum,2) ,2);
+            rejectedLog = rejectedLog + padLogString ( rejectedDetail.APT1_ApplicationType ,1);
+            rejectedLog = rejectedLog + padLogString ( rejectedDetail.ADT1_AddlDataType ,1);
+            rejectedLog = rejectedLog + padLogString ( rejectedDetail.ADF1_AddlDataField ,19);
+            rejectedLog = rejectedLog + padLogString ( rejectedDetail.AEC1_AddlErrorCode ,3);
+            rejectedLog = rejectedLog + padLogString ( rejectedDetail.VAPP_ApplicationCode ,2);
+            rejectedLog = rejectedLog + padLogNumeric ( unPackStrForLog(rejectedDetail.VSCD_SubErrorCode,3) ,3);
+            rejectedLog = rejectedLog + padLogString ( rejectedDetail.VMSG_ErrorMsgText ,60);
+            rejectedLog = rejectedLog + padLogNumeric ( rejectedDetail.AVAILB_AvlBalATM ,17);
+        }
+    }
+//debug ("================================================================");
+debug ("Rejected Log");
+debug (rejectedLog);
+    return rejectedLog;
+}
+
+]]></string>
+</exportmultiplex>

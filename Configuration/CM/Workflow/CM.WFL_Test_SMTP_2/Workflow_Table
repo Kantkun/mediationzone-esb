@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="Workflow_Table" ref_path="workflow_data[Internal]/storable[workflow_data]/storable[Data]">
+   <storable name="InstanceTable" storable-id="dr.WorkflowInstanceTableData" ver="0.0">
+      <int name="Instance Count" value="1"/>
+      <long name="InstanceID_0" value="1"/>
+      <string name="InstanceName_0" value="test_smtp"/>
+      <boolean name="InstanceValid_0" value="true"/>
+   </storable>
+   <long name="Workflow ID Counter" value="1"/>
+</exportmultiplex>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="APL_Source_Code" ref_path="apl_script[Internal]/storable[apl_script]/storable[Data]">
+   <string name="Definition"><![CDATA[string getControlUnit(string channelID){
+    string controlUnit = "6900001"; //default
+       
+    if(channelID == "UPD")
+        controlUnit = "PB00000";
+    
+    return controlUnit;
+}]]></string>
+</exportmultiplex>

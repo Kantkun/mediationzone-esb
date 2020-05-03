@@ -1,0 +1,1091 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE exportmultiplex SYSTEM "jar:/mz/dtd/export_multiplex.dtd">
+<exportmultiplex category="APL_Source_Code" ref_path="apl_script[Internal]/storable[apl_script]/storable[Data]">
+   <string name="Definition"><![CDATA[import ultra.ws.IMB.PRF_WS_IMBAddressService.cycles;
+import ultra.ws.IMB.PRF_WS_IMBAddressService.tns;
+import ultra.CBS.UFL_DSP_Header;
+import ultra.CBS.UFL_MBASE_Header;
+import apl.Common.APL_Common_MBASE;
+import ultra.Ultra.UFL_MBASE_CFC152580;
+import ultra.Ultra.UFL_MBASE_CFC800020;
+import ultra.Ultra.UFL_MBASE_CFC800200;
+import ultra.Ultra.UFL_MBASE_CFC152020;
+import ultra.Ultra.UFL_MBASE_Reject;
+import apl.Common.APL_Common_Utilities;
+
+final int sizeOf_CFC152580 = 65;
+final int sizeOf_CFC800020 = 744;
+final int sizeOf_CFC800200 = 430;
+
+//Create Content Message InquiryAddressList
+bytearray createContentMessageCFC152580_InquiryAddressList(string uniqKey,WSCycle_inquiryAddressList request){
+    //DSP Header
+    DSP_Header_TgIn dspHeader = createDefaultDSPHeader();
+    dspHeader.SKTMLEN = sizeOf_DSPHeader + sizeOf_MBaseHeader + sizeOf_CFC152580 - 9;
+    dspHeader.I13FMID = "MBASE";  
+    dspHeader.I13DID = "CIFI";
+    dspHeader.I13SID = request.param_Header.ChannelID + "##";
+    //dspHeader.I13ACQN = uniqKey;  
+    dspHeader.I13ACQN = strSubstring(uniqKey, 0, 12);  
+    dspHeader.I13TMNO = strSubstring(uniqKey, 12, 16);  
+         
+    //MBASE Header
+    MBASE_Header_TI mbaseHeader = createDefaultMBASEHeader();
+    mbaseHeader.HDTCOD = "CFC152580";
+    mbaseHeader.HDDSID = "ESB";
+    mbaseHeader.HDACCD = "I";
+    mbaseHeader.HDNREC = "20";
+    //mbaseHeader.HDVFMT = "P000000001                  000000000";
+    
+    //Request Data
+    MBASE_CFC152580_RQ_TI mbaseRequest = udrCreate(MBASE_CFC152580_RQ_TI);
+    mbaseRequest.CFCIFN_CustomerNumber = request.param_Data.CustomerNumber;
+    mbaseRequest.CFSSNO_IDNumber = request.param_Data.CitizenID;
+    mbaseRequest.CFSSCD_IDTypeCode = "001";
+    mbaseRequest.CFCIDT_IDIssueCountryCode = "TH";
+    
+    bytearray outgoing = udrEncode("DSP_Header_Encoder", dspHeader);
+    outgoing = baAppend(outgoing, udrEncode("MBASE_Header_Encode", mbaseHeader));
+    outgoing = baAppend(outgoing, udrEncode("MBASE_CFC152580_RQ_Encode", mbaseRequest));
+    return outgoing;
+}
+
+//Create Content Message GetMailingAddress
+bytearray createContentMessageCFC152580_GetMailingAddress(string uniqKey,WSCycle_getMailingAddress request,string customerNumber){
+    //DSP Header
+    DSP_Header_TgIn dspHeader = createDefaultDSPHeader();
+    dspHeader.SKTMLEN = sizeOf_DSPHeader + sizeOf_MBaseHeader + sizeOf_CFC152580 - 9;
+    dspHeader.I13FMID = "MBASE";  
+    dspHeader.I13DID = "CIFI";
+    //dspHeader.I13SID = request.param_Header.ChannelID + "##";
+    dspHeader.I13SID = "IMB##";
+    //dspHeader.I13ACQN = uniqKey;  
+    dspHeader.I13ACQN = strSubstring(uniqKey, 0, 12);  
+    dspHeader.I13TMNO = strSubstring(uniqKey, 12, 16);   
+         
+    //MBASE Header
+    MBASE_Header_TI mbaseHeader = createDefaultMBASEHeader();
+    mbaseHeader.HDTCOD = "CFC152580";
+    mbaseHeader.HDDSID = "ESB";
+    mbaseHeader.HDACCD = "I";
+    mbaseHeader.HDNREC = "20";
+    
+    //Request Data
+    
+        
+    MBASE_CFC152580_RQ_TI mbaseRequest = udrCreate(MBASE_CFC152580_RQ_TI);
+    if(customerNumber!=""){
+        mbaseRequest.CFCIFN_CustomerNumber = customerNumber;
+    }else{
+        mbaseRequest.CFCIFN_CustomerNumber = request.param_Data.CustomerNumber;
+    }
+    mbaseRequest.CFSSNO_IDNumber = "";
+    mbaseRequest.CFSSCD_IDTypeCode = "001";
+    mbaseRequest.CFCIDT_IDIssueCountryCode = "TH";
+    
+    bytearray outgoing = udrEncode("DSP_Header_Encoder", dspHeader);
+    outgoing = baAppend(outgoing, udrEncode("MBASE_Header_Encode", mbaseHeader));
+    outgoing = baAppend(outgoing, udrEncode("MBASE_CFC152580_RQ_Encode", mbaseRequest));
+    return outgoing;
+}
+
+//Create Content Message UpdateMailingAddress
+bytearray createContentMessageCFC800020_UpdateMailingAddress(string uniqKey,WSCycle_updateMailingAddress request, bytearray req){
+    //constants
+    bytearray MOOLBL;
+    bytearray FLOLBL;
+    bytearray ROMLBL;
+    bytearray SOILBL;
+    bytearray RODLBL;
+    
+    MOOLBL = baCreateFromHexString("e0b8abe0b8a1e0b8b9e0b988");  //หมู่
+    FLOLBL = baCreateFromHexString("e0b88ae0b8b1e0b989e0b899e0b897e0b8b5e0b988"); //ชั้น
+    ROMLBL = baCreateFromHexString("e0b8abe0b989e0b8ade0b887"); //ห้อง
+    SOILBL = baCreateFromHexString("e0b88b2e"); //ซอย
+    RODLBL = baCreateFromHexString("e0b8962e"); //ถนน
+    
+    //step for create thai character
+    //1. declare btyearray from hex string
+    //2. convert btyearray to string and encoding with UTF-8 
+    //end constants
+
+    //DSP Header
+    //debug(request);
+    DSP_Header_TgIn dspHeader = createDefaultDSPHeader();
+    dspHeader.SKTMLEN = sizeOf_DSPHeader + sizeOf_MBaseHeader + sizeOf_CFC800020 - 9;
+    dspHeader.I13FMID = "MBASE";  
+    dspHeader.I13DID = "CIFM";
+    dspHeader.I13SID = request.param_Header.ChannelID + "##";
+    //dspHeader.I13ACQN = uniqKey;  
+    dspHeader.I13ACQN = strSubstring(uniqKey, 0, 12);  
+    dspHeader.I13TMNO = strSubstring(uniqKey, 12, 16);   
+         
+    //MBASE Header
+    MBASE_Header_TI mbaseHeader = createDefaultMBASEHeader();
+    mbaseHeader.HDTCOD = "CFC800020";
+    mbaseHeader.HDDSID = "ESB";
+    mbaseHeader.HDACCD = "C";
+    mbaseHeader.HDNREC = "1";
+    
+    list<MBASE_CFC152580_RS_TI> tmpMailingList = listCreate(MBASE_CFC152580_RS_TI);
+    udrDecode("MBASE_CFC152580_RS_Decode", tmpMailingList, req);
+    MBASE_CFC152580_RS_TI mailing = listGet(tmpMailingList,0);
+    debug(mailing);
+    //Request Data
+    MBASE_CFC800020_RQ_TI mbaseRequest = udrCreate(MBASE_CFC800020_RQ_TI);
+    
+    mbaseRequest.CFCIFN_CustomerNumber = request.param_Data.CustomerNumber;
+	//strToLong(request.param_Data.Seq, mbaseRequest.CFZSEQ_SequenceNumber);
+    mbaseRequest.CFZSEQ_SequenceNumber = (string)request.param_Data.Seq;
+	mbaseRequest.CFADFM_AddressFormat	=	request.param_Data.AddressFormat;
+	mbaseRequest.CFADTP_AddressType	=	request.param_Data.AddressType;
+    mbaseRequest.CFNA2_AddressLine1 = getMessageString(request.param_Data.HouseNumber,30) + getMessageString(baToStr(MOOLBL, "UTF-8"),5) + getMessageString(request.param_Data.Moo,5);
+    mbaseRequest.CFNA3_AddressLine2 = getMessageString(baToStr(FLOLBL, "UTF-8"),8) + getMessageString(request.param_Data.FloorNumber,6) + getMessageString(baToStr(ROMLBL, "UTF-8"),5) + getMessageString(request.param_Data.RoomNumber,21);
+    mbaseRequest.CFNA4_AddressLine3	= getMessageString(request.param_Data.Building,40);
+	mbaseRequest.CFNA5_AddressLine4	= getMessageString(baToStr(SOILBL, "UTF-8"), 3) + getMessageString(request.param_Data.Soi, 37);
+	mbaseRequest.CFNA6_AddressLine5	= getMessageString(baToStr(RODLBL, "UTF-8"), 3) + getMessageString(request.param_Data.Road, 37);
+	mbaseRequest.CFNA7_AddressLine6	= getMessageString(request.param_Data.SubDistrictCode,20) + getMessageString(request.param_Data.DistrictCode, 20);
+	mbaseRequest.CFNA8_AddressLine7	= getMessageString(request.param_Data.ProvinceCode,17) + getMessageString(request.param_Data.PostalCode, 6) + getMessageString(request.param_Data.CountryCode, 17);
+	mbaseRequest.CFCINS_CustomerInstruction	=  "";
+	mbaseRequest.CFBADA_InsufficientAddressContact	= mailing.CFBADA_InsufficientAddressContact;
+	mbaseRequest.CFRMKS_Remarks	=	mailing.CFRMKS_Remarks;
+	mbaseRequest.CFZIP_PostalCode	=	request.param_Data.PostalCode;
+	mbaseRequest.CFSTAT_StateCode	=	request.param_Data.ProvinceCode;
+	mbaseRequest.CFDFC1_DistrictCode	=	request.param_Data.DistrictCode;
+	mbaseRequest.CFDFC2_SubDistrictCode	=	request.param_Data.SubDistrictCode;
+	mbaseRequest.CFDFC3_DefaultCode3	=	request.param_Data.DistrictCode;
+	mbaseRequest.CFDFC4_DefaultCode4	=	request.param_Data.SubDistrictCode;
+	mbaseRequest.CFCOUN_CountryCode	=	request.param_Data.CountryCode;
+	mbaseRequest.CFOWNT_HomeCode	=	"";
+	mbaseRequest.CFSTY8_StaySince	=	"";
+	mbaseRequest.WOVRID_OverrideIndicator	=	"";
+	mbaseRequest.WDEFLT_DEFAULTADDRESS	=	mailing.WDEFLT_DefaultAddress;
+	//mbaseRequest.MNLUID_LastMaintenanceUserID	=	mailing.MNLUID_LastMaintenanceUserID;
+    mbaseRequest.MNLUID_LastMaintenanceUserID	= request.param_Data.LastMaintenanceUserID;
+    string lastMaintenanceDateTime = "";
+	dateToString(lastMaintenanceDateTime, request.param_Data.LastMaintenanceDateTime, "yyyy-MM-dd-HH.mm.ss.SSS000" );  
+    mbaseRequest.MNLTIM_LastMaintenanceTime = lastMaintenanceDateTime;
+	mbaseRequest.WOPTION_HandleOption	=	"";
+	mbaseRequest.CFHMNO_HouseNumber	=	request.param_Data.HouseNumber;
+    mbaseRequest.CFBOI1_BOICAddress = "";
+    //mbaseRequest.CFLEF8_MoveOutDate = "";
+    mbaseRequest.CFADR1_ExtentAdr1 = "";
+    mbaseRequest.CFADR2_ExtentAdr2 = "";
+    mbaseRequest.CFADR3_ExtentAdr3 = "";
+    mbaseRequest.CFADR4_ExtentAdr4 = "";
+    mbaseRequest.CFADR5_ExtentAdr5 = "";
+    mbaseRequest.CFAIND_AdrIndicator1 = "";
+    mbaseRequest.CFAIN2_AdrIndicator2 = "";
+    mbaseRequest.CFAIN3_AdrIndicator3 = "";
+    mbaseRequest.CFATXT_AdrText1 = "";
+    mbaseRequest.CFATX2_AdrText2 = "";
+    mbaseRequest.CFATX3_AdrText3 = "";
+    
+    bytearray outgoing = udrEncode("DSP_Header_Encoder", dspHeader);
+    outgoing = baAppend(outgoing, udrEncode("MBASE_Header_Encode", mbaseHeader));
+    outgoing = baAppend(outgoing, udrEncode("MBASE_CFC800020_RQ_Encode", mbaseRequest));
+    return outgoing;
+}
+
+//Create Content Message UpdateContact
+bytearray createContentMessageCFC800200_UpdateContact(string uniqKey,WSCycle_updateContact request,bytearray contactDetail){
+   //DSP Header
+    DSP_Header_TgIn dspHeader = createDefaultDSPHeader();
+    dspHeader.SKTMLEN = sizeOf_DSPHeader + sizeOf_MBaseHeader + sizeOf_CFC800200 - 9;
+    dspHeader.I13FMID = "MBASE";  
+    dspHeader.I13DID = "CIFM";
+    dspHeader.I13SID = request.param_Header.ChannelID + "##";
+    //dspHeader.I13ACQN = uniqKey;  
+    dspHeader.I13ACQN = strSubstring(uniqKey, 0, 12);  
+    dspHeader.I13TMNO = strSubstring(uniqKey, 12, 16);   
+         
+    //MBASE Header
+    MBASE_Header_TI mbaseHeader = createDefaultMBASEHeader();
+    mbaseHeader.HDTCOD = "CFC800200";
+    mbaseHeader.HDDSID = "ESB";
+    mbaseHeader.HDACCD = "C";
+    mbaseHeader.HDNREC = "1"; // record max 20 
+    
+    list<MBASE_CFC152020_RS_TI> contactDetailList = listCreate(MBASE_CFC152020_RS_TI);
+    udrDecode("MBASE_CFC152020_RS_Decode", contactDetailList, contactDetail);
+    MBASE_CFC152020_RS_TI contact = listGet(contactDetailList,0);
+
+    //Request Data
+    MBASE_CFC800200_RQ_TI mbaseRequest = udrCreate(MBASE_CFC800200_RQ_TI);
+    mbaseRequest.CFCIFN_CustomerNumber = request.param_Data.CustomerNumber;
+    mbaseRequest.CFEASQ_ElectronicAddressSeq = (string) request.param_Data.Seq;
+    mbaseRequest.CFEADC_EContactCode = request.param_Data.ContactCode;
+    
+    string AreaCode = "";
+    string ContactDetail = "";
+    //if (request.param_Data.ContactCode == "HPH"){
+        if (strSubstring(request.param_Data.ContactDetail,0,2) == "02"){
+            AreaCode = strSubstring(request.param_Data.ContactDetail,0,2);
+            ContactDetail = strSubstring(request.param_Data.ContactDetail,2,strLength(request.param_Data.ContactDetail));
+        }else{
+            if (request.param_Data.ContactCode == "HPH"){
+                AreaCode = strSubstring(request.param_Data.ContactDetail,0,3);
+                ContactDetail = strSubstring(request.param_Data.ContactDetail,3,strLength(request.param_Data.ContactDetail));
+            }else{
+                ContactDetail = request.param_Data.ContactDetail;
+            }
+        }
+    //}else{
+    //    ContactDetail = request.param_Data.ContactDetail;
+    //}
+    
+    mbaseRequest.CFAREA_AreaCode = AreaCode;
+    mbaseRequest.CFEADD_EContactDetail = ContactDetail;
+    mbaseRequest.CFEEXT_ContactExtensionNo = request.param_Data.Extension;
+    mbaseRequest.CFEINT_InternationalAddressFormat = contact.CFEINT_InternationalAddressFormat;
+    mbaseRequest.CFCOUN_CountryCode = "TH";
+    //mbaseRequest.CFPRFR_Priority = "";
+    mbaseRequest.CFEAN1_ContactName = contact.CFEAN1_ContactName;
+    mbaseRequest.CFEDEP_ContactDepartmentName = contact.CFEDEP_ContactDepartmentName;
+    mbaseRequest.CFEJCD_JobTitle = contact.CFEJCD_JobTitle;
+    mbaseRequest.CFCREL_RelationshipCode = contact.CFCREL_RelationshipCode;
+    mbaseRequest.CFCINS_CustomerInstruction = contact.CFCINS_CustomerInstruction;
+    mbaseRequest.CFBADA_InsufficientAddress = contact.CFBADA_InsufficientAddressContact;
+    mbaseRequest.CFRMKS_Remarks = contact.CFRMKS_Remarks;
+    //mbaseRequest.WOVRID_OverrideIndicator = "";
+    mbaseRequest.MNLUID_LastMaintenanceUserID = request.param_Data.LastMaintenanceUserID;
+    string lastMaintenanceDateTime = "";
+    //2018-04-20-10.23.41.972000
+    //yyyy-MM-dd-HH.mm.ss.SSS000
+	dateToString(lastMaintenanceDateTime, request.param_Data.LastMaintenanceDateTime, "yyyy-MM-dd-HH.mm.ss.SSS000" );  
+    debug(lastMaintenanceDateTime);
+    mbaseRequest.MNLTIM_LastMaintenanceTime = lastMaintenanceDateTime;
+    //mbaseRequest.WOPTION_HandleOption = "";
+    
+    //Build Socket Message
+    bytearray outgoing = udrEncode("DSP_Header_Encoder", dspHeader);
+    outgoing = baAppend(outgoing, udrEncode("MBASE_Header_Encode", mbaseHeader));
+    outgoing = baAppend(outgoing, udrEncode("MBASE_CFC800200_RQ_Encode", mbaseRequest));
+    return outgoing;
+}
+
+
+//Set Response Message InquiryAddressList
+WSCycle_inquiryAddressList responseMessage_InquiryAddressList(WSCycle_inquiryAddressList responseMessage,DSP_Header_TgIn tcpResponse,date requestDatetime, long requestMillisec,boolean errorUDR){
+    if(errorUDR==false){
+        list<MBASE_Header_With_Payload_TI> aList = listCreate(MBASE_Header_With_Payload_TI);
+        udrDecode("MBASE_Header_With_Payload_Decode", aList, tcpResponse.data);
+        MBASE_Header_With_Payload_TI mbase = listGet(aList,0);
+        //debug(mbase);
+        //debug("MBase Header:" + mbase.mbaseHeader);
+        //debug("MBase Data:" + baToStr(mbase.data, "IBM-Thai")); 
+        bytearray refilled = refillTrimedColumn(mbase.data,1995);
+        //debug(baToStr(refilled,"IBM-Thai"));
+        //Response Header
+        
+        date testDate;
+        //debug(strToDate(testDate,"2018-05-12-13.00.04.040","yyyy-MM-dd-HH.mm.ss.SSS"));
+        //dateSetTimeZone(testDate, "GMT+7");
+        debug(testDate);
+        
+        responseMessage.param_Header_01 = udrCreate(InquiryAddressListResponse$Header);
+        date responseTransactinDatetime = dateCreateCopy(responseMessage.param_Header.TransactionDateTime);
+        dateSetTimeZone(responseTransactinDatetime, "GMT+7");       
+        responseMessage.param_Header_01.ReferenceNo = responseMessage.param_Header.ReferenceNo;
+        responseMessage.param_Header_01.TransactionDateTime = responseTransactinDatetime;
+        responseMessage.param_Header_01.ChannelID = responseMessage.param_Header.ChannelID;
+    
+        //Response StatusInfo
+        responseMessage.param_Header_01.StatusInfo = udrCreate(InquiryAddressListResponse$Header$StatusInfo);
+        responseMessage.param_Header_01.StatusInfo.Status = udrCreate(InquiryAddressListResponse$Header$StatusInfo$Status);
+        responseMessage.param_Header_01.StatusInfo.Status.UsageTime = dateCreateNowMilliseconds()-requestMillisec;
+    
+         //Request Data AccountList 
+        if(!strStartsWith(tcpResponse.I13MSTA, ".DSP")){
+            if(mbase.mbaseHeader.HDRIND == "AA"){
+                //Success
+                //debug("AA");
+                responseMessage.param_Header_01.AddressList = udrCreate(InquiryAddressListResponse$Header$AddressList);
+                responseMessage.param_Header_01.AddressList.Address = listCreate(InquiryAddressListResponse$Header$AddressList$Address);
+                
+                //response content list
+                list<MBASE_CFC152580_RS_TI> addressList = listCreate(MBASE_CFC152580_RS_TI);
+                list<MBASE_CFC152580_RS_TI> tmpHomeList = listCreate(MBASE_CFC152580_RS_TI);
+                list<MBASE_CFC152580_RS_TI> tmpWorkList = listCreate(MBASE_CFC152580_RS_TI);
+                list<MBASE_CFC152580_RS_TI> tmpMailingList = listCreate(MBASE_CFC152580_RS_TI);
+                //debug(udrDecode("MBASE_CFC152580_RS_Decode", addressList, refilled));
+                udrDecode("MBASE_CFC152580_RS_Decode", addressList, refilled);
+                for(MBASE_CFC152580_RS_TI address: addressList){
+                    //InquiryAddressListResponse$Header$AddressList$Address ad = udrCreate(InquiryAddressListResponse$Header$AddressList$Address);
+                    MBASE_CFC152580_RS_TI tmpAddress = udrCreate(MBASE_CFC152580_RS_TI);
+                    tmpAddress.CFCIFN_CustomerNumber = padCustomerNumber(getStringValue(address.CFCIFN_CustomerNumber),9);
+                    tmpAddress.CFZSEQ_SequenceNumber= getStringValue(address.CFZSEQ_SequenceNumber);
+                    tmpAddress.CFSSNO_IDNumber    = getStringValue(address.CFSSNO_IDNumber);
+                    tmpAddress.WCFNA1A_PrimaryFirstName  = getStringValue(address.WCFNA1A_PrimaryFirstName);
+                    tmpAddress.WCFNA1B_PrimaryLastName   = getStringValue(address.WCFNA1B_PrimaryLastName);
+                    tmpAddress.WCFNA2A_SecondaryName1  = getStringValue(address.WCFNA2A_SecondaryName1);
+                    tmpAddress.WCFNA2B_SecondaryName2 = getStringValue(address.WCFNA2B_SecondaryName2);
+                    tmpAddress.WCFNA2C_SecondaryName3   = getStringValue(address.WCFNA2C_SecondaryName3);
+                    tmpAddress.CFADFM_AddressFormat= getStringValue(address.CFADFM_AddressFormat);
+                    tmpAddress.CFADTP_AddressType  = getStringValue(address.CFADTP_AddressType);
+                    tmpAddress.CFHMNO_HouseNumber  = getStringValue(address.CFHMNO_HouseNumber);
+                    tmpAddress.CFAMOO_MOO          = getStringValue(address.CFAMOO_MOO);
+                    
+                    tmpAddress.CFASOI_Soi          = getStringValue(address.CFASOI_Soi);
+                    tmpAddress.CFABUI_Building     = getStringValue(address.CFABUI_Building);
+                    tmpAddress.CFAROD_Road         = getStringValue(address.CFAROD_Road);
+                    tmpAddress.CFASDT_SubDistrict  = getStringValue(address.CFASDT_SubDistrict);
+                    tmpAddress.CFADIS_District     = getStringValue(address.CFADIS_District);
+                    tmpAddress.CFAPRO_Province     = getStringValue(address.CFAPRO_Province);
+                    tmpAddress.WCOUNTRY_Country      = getStringValue(address.WCOUNTRY_Country);
+                    tmpAddress.CFDFC2_SubDistrictCode = getStringValue(address.CFDFC2_SubDistrictCode);
+                    tmpAddress.CFDFC1_DistrictCode = getStringValue(address.CFDFC1_DistrictCode);
+                    tmpAddress.CFSTAT_StateCode = getStringValue(address.CFSTAT_StateCode);
+                    tmpAddress.CFZIP_PostalCode   = getStringValue(address.CFZIP_PostalCode);
+                    tmpAddress.CFCOUN_CountryCode  = getStringValue(address.CFCOUN_CountryCode);
+                    //tmpAddress.CFEADD_eMail        = getStringValue(address.CFEADD_eMail);
+                    //tmpAddress.CFEDD2_Mobile       = getStringValue(address.CFEDD2_Mobile);
+                    //tmpAddress.CFEDD3_Phone1       = getStringValue(address.CFEDD3_Phone1);
+                    //tmpAddress.CFEDD4_Phone2       = getStringValue(address.CFEDD4_Phone2);
+                    tmpAddress.MNLUID_LastMaintenanceUserID = getStringValue(address.MNLUID_LastMaintenanceUserID);
+                    tmpAddress.MNLTIM_LastMaintenanceTime = getStringValue(address.MNLTIM_LastMaintenanceTime);
+                    
+                    tmpAddress.CFZSEQ1_SequenceNumber = getStringValue(address.CFZSEQ1_SequenceNumber);
+                    tmpAddress.CFAREA_AreaCode = getStringValue(address.CFAREA_AreaCode);
+                    tmpAddress.CFEADD_EContactDetail = getStringValue(address.CFEADD_EContactDetail);
+                    tmpAddress.CFEEXT_ContactExtensionNo = getStringValue(address.CFEEXT_ContactExtensionNo);
+                    tmpAddress.MNLUIDC_LastMaintenanceUserID = getStringValue(address.MNLUIDC_LastMaintenanceUserID);
+                    tmpAddress.MNLTIMC_LastMaintenanceTime = getStringValue(address.MNLTIMC_LastMaintenanceTime);
+                        
+                    tmpAddress.CFZSEQ2_SequenceNumber = getStringValue(address.CFZSEQ2_SequenceNumber);
+                    tmpAddress.CFAREA2_AreaCode = getStringValue(address.CFAREA2_AreaCode);
+                    tmpAddress.CFEADD2_EContactDetail = getStringValue(address.CFEADD2_EContactDetail);
+                    tmpAddress.CFEEXT2_ContactExtensionNo = getStringValue(address.CFEEXT2_ContactExtensionNo);
+                    tmpAddress.MNLUIDD_LastMaintenanceUserID = getStringValue(address.MNLUIDD_LastMaintenanceUserID);
+                    tmpAddress.MNLTIMD_LastMaintenanceTime = getStringValue(address.MNLTIMD_LastMaintenanceTime);
+                       
+                    tmpAddress.CFZSEQ3_SequenceNumber = getStringValue(address.CFZSEQ3_SequenceNumber);
+                    tmpAddress.CFAREA3_AreaCode = getStringValue(address.CFAREA3_AreaCode);
+                    tmpAddress.CFEADD3_EContactDetail = getStringValue(address.CFEADD3_EContactDetail);
+                    tmpAddress.CFEEXT3_ContactExtensionNo = getStringValue(address.CFEEXT3_ContactExtensionNo);
+                    tmpAddress.MNLUIDE_LastMaintenanceUserID = getStringValue(address.MNLUIDE_LastMaintenanceUserID);
+                    tmpAddress.MNLTIME_LastMaintenanceTime = getStringValue(address.MNLTIME_LastMaintenanceTime);
+                        
+                    tmpAddress.CFZSEQ4_SequenceNumber = getStringValue(address.CFZSEQ4_SequenceNumber);
+                    tmpAddress.CFAREA4_AreaCode = getStringValue(address.CFAREA4_AreaCode);
+                    tmpAddress.CFEADD4_EContactDetail = getStringValue(address.CFEADD4_EContactDetail);
+                    tmpAddress.CFEEXT4_ContactExtensionNo = getStringValue(address.CFEEXT4_ContactExtensionNo);
+                    tmpAddress.MNLUIDF_LastMaintenanceUserID = getStringValue(address.MNLUIDF_LastMaintenanceUserID);
+                    tmpAddress.MNLTIMF_LastMaintenanceTime = getStringValue(address.MNLTIMF_LastMaintenanceTime);
+                    debug("Address Type : " + address.CFADTP_AddressType);
+                    if(address.CFADTP_AddressType == "R"){
+                        listAdd(tmpHomeList,tmpAddress); 
+                    }else if(address.CFADTP_AddressType == "O"){
+                        listAdd(tmpWorkList,tmpAddress); 
+                    }else if(address.CFADTP_AddressType == "M"){
+                        listAdd(tmpMailingList,tmpAddress);
+                    }                  
+                }
+                
+                for(MBASE_CFC152580_RS_TI tmpAddress : tmpHomeList){
+                    InquiryAddressListResponse$Header$AddressList$Address ad = udrCreate(InquiryAddressListResponse$Header$AddressList$Address);
+                    ad.CustomerNumber = tmpAddress.CFCIFN_CustomerNumber;
+                    strToLong(ad.Seq,tmpAddress.CFZSEQ_SequenceNumber);
+                    ad.CitizenID    = tmpAddress.CFSSNO_IDNumber;
+                    ad.FirstNameTH  = tmpAddress.WCFNA1A_PrimaryFirstName;
+                    ad.LastNameTH   = tmpAddress.WCFNA1B_PrimaryLastName;
+                    ad.FirstNameEN  = tmpAddress.WCFNA2A_SecondaryName1;
+                    ad.MiddleNameEN = tmpAddress.WCFNA2B_SecondaryName2;
+                    ad.LastNameEN   = tmpAddress.WCFNA2C_SecondaryName3;
+                    ad.AddressFormat= tmpAddress.CFADFM_AddressFormat;
+                    //ad.AddressType  = getMappingRules("InquiryAddressList","AddressType",tmpAddress.CFADTP_AddressType);
+                    ad.AddressType = tmpAddress.CFADTP_AddressType;
+                    ad.HouseNumber  = tmpAddress.CFHMNO_HouseNumber;
+                    ad.Moo          = tmpAddress.CFAMOO_MOO;
+                    ad.Soi          = tmpAddress.CFASOI_Soi;
+                    ad.Building     = tmpAddress.CFABUI_Building;
+                    ad.Road         = tmpAddress.CFAROD_Road;
+                    ad.SubDistrict  = tmpAddress.CFASDT_SubDistrict;
+                    ad.District     = tmpAddress.CFADIS_District;
+                    ad.Province     = tmpAddress.CFAPRO_Province;
+                    ad.Country      = tmpAddress.WCOUNTRY_Country;
+                    ad.SubDistrictCode = tmpAddress.CFDFC2_SubDistrictCode;
+                    ad.DistrictCode = tmpAddress.CFDFC1_DistrictCode;
+                    ad.ProvinceCode = tmpAddress.CFSTAT_StateCode;
+                    ad.PostalCode   = tmpAddress.CFZIP_PostalCode;
+                    ad.CountryCode  = tmpAddress.CFCOUN_CountryCode;;
+                    ad.Email        = tmpAddress.CFEADD_EContactDetail;
+                    ad.Mobile       = tmpAddress.CFEADD2_EContactDetail;
+                    ad.Phone1       = tmpAddress.CFAREA3_AreaCode + tmpAddress.CFEADD3_EContactDetail;
+                    ad.Phone2       = tmpAddress.CFAREA4_AreaCode + tmpAddress.CFEADD4_EContactDetail;
+                    ad.LastMaintenanceUserID = tmpAddress.MNLUID_LastMaintenanceUserID;
+                    strToDate(ad.LastMaintenanceDateTime, strSubstring(tmpAddress.MNLTIM_LastMaintenanceTime,0,23), "yyyy-MM-dd-HH.mm.ss.SSS", "GMT+7");  
+                    listAdd(responseMessage.param_Header_01.AddressList.Address,ad);
+                
+                }
+                
+                for(MBASE_CFC152580_RS_TI tmpAddress : tmpWorkList){
+                    InquiryAddressListResponse$Header$AddressList$Address ad = udrCreate(InquiryAddressListResponse$Header$AddressList$Address);
+                    ad.CustomerNumber = tmpAddress.CFCIFN_CustomerNumber;
+                    strToLong(ad.Seq,tmpAddress.CFZSEQ_SequenceNumber);
+                    ad.CitizenID    = tmpAddress.CFSSNO_IDNumber;
+                    ad.FirstNameTH  = tmpAddress.WCFNA1A_PrimaryFirstName;
+                    ad.LastNameTH   = tmpAddress.WCFNA1B_PrimaryLastName;
+                    ad.FirstNameEN  = tmpAddress.WCFNA2A_SecondaryName1;
+                    ad.MiddleNameEN = tmpAddress.WCFNA2B_SecondaryName2;
+                    ad.LastNameEN   = tmpAddress.WCFNA2C_SecondaryName3;
+                    ad.AddressFormat= tmpAddress.CFADFM_AddressFormat;
+                    //ad.AddressType  = getMappingRules("InquiryAddressList","AddressType",tmpAddress.CFADTP_AddressType);
+                    ad.AddressType = tmpAddress.CFADTP_AddressType;
+                    ad.HouseNumber  = tmpAddress.CFHMNO_HouseNumber;
+                    ad.Moo          = tmpAddress.CFAMOO_MOO;
+                    ad.Soi          = tmpAddress.CFASOI_Soi;
+                    ad.Building     = tmpAddress.CFABUI_Building;
+                    ad.Road         = tmpAddress.CFAROD_Road;
+                    ad.SubDistrict  = tmpAddress.CFASDT_SubDistrict;
+                    ad.District     = tmpAddress.CFADIS_District;
+                    ad.Province     = tmpAddress.CFAPRO_Province;
+                    ad.Country      = tmpAddress.WCOUNTRY_Country;
+                    ad.SubDistrictCode = tmpAddress.CFDFC2_SubDistrictCode;
+                    ad.DistrictCode = tmpAddress.CFDFC1_DistrictCode;
+                    ad.ProvinceCode = tmpAddress.CFSTAT_StateCode;
+                    ad.PostalCode   = tmpAddress.CFZIP_PostalCode;
+                    ad.CountryCode  = tmpAddress.CFCOUN_CountryCode;;
+                    ad.Email        = tmpAddress.CFEADD_EContactDetail;
+                    ad.Mobile       = tmpAddress.CFEADD2_EContactDetail;
+                    ad.Phone1       = tmpAddress.CFAREA3_AreaCode + tmpAddress.CFEADD3_EContactDetail;
+                    ad.Phone2       = tmpAddress.CFAREA4_AreaCode + tmpAddress.CFEADD4_EContactDetail;
+                    ad.LastMaintenanceUserID = tmpAddress.MNLUID_LastMaintenanceUserID;
+                    //2018-05-12-13.00.04.400000
+                    strToDate(ad.LastMaintenanceDateTime, strSubstring(tmpAddress.MNLTIM_LastMaintenanceTime,0,23), "yyyy-MM-dd-HH.mm.ss.SSS", "GMT+7");
+                    listAdd(responseMessage.param_Header_01.AddressList.Address,ad);
+                
+                }
+                
+                for(MBASE_CFC152580_RS_TI tmpAddress : tmpMailingList){
+                    InquiryAddressListResponse$Header$AddressList$Address ad = udrCreate(InquiryAddressListResponse$Header$AddressList$Address);
+                    ad.CustomerNumber = tmpAddress.CFCIFN_CustomerNumber;
+                    strToLong(ad.Seq,tmpAddress.CFZSEQ_SequenceNumber);
+                    ad.CitizenID    = tmpAddress.CFSSNO_IDNumber;
+                    ad.FirstNameTH  = tmpAddress.WCFNA1A_PrimaryFirstName;
+                    ad.LastNameTH   = tmpAddress.WCFNA1B_PrimaryLastName;
+                    ad.FirstNameEN  = tmpAddress.WCFNA2A_SecondaryName1;
+                    ad.MiddleNameEN = tmpAddress.WCFNA2B_SecondaryName2;
+                    ad.LastNameEN   = tmpAddress.WCFNA2C_SecondaryName3;
+                    ad.AddressFormat= tmpAddress.CFADFM_AddressFormat;
+                    //ad.AddressType  = getMappingRules("InquiryAddressList","AddressType",tmpAddress.CFADTP_AddressType);
+                    ad.AddressType = tmpAddress.CFADTP_AddressType;
+                    ad.HouseNumber  = tmpAddress.CFHMNO_HouseNumber;
+                    ad.Moo          = tmpAddress.CFAMOO_MOO;
+                    ad.Soi          = tmpAddress.CFASOI_Soi;
+                    ad.Building     = tmpAddress.CFABUI_Building;
+                    ad.Road         = tmpAddress.CFAROD_Road;
+                    ad.SubDistrict  = tmpAddress.CFASDT_SubDistrict;
+                    ad.District     = tmpAddress.CFADIS_District;
+                    ad.Province     = tmpAddress.CFAPRO_Province;
+                    ad.Country      = tmpAddress.WCOUNTRY_Country;
+                    ad.SubDistrictCode = tmpAddress.CFDFC2_SubDistrictCode;
+                    ad.DistrictCode = tmpAddress.CFDFC1_DistrictCode;
+                    ad.ProvinceCode = tmpAddress.CFSTAT_StateCode;
+                    ad.PostalCode   = tmpAddress.CFZIP_PostalCode;
+                    ad.CountryCode  = tmpAddress.CFCOUN_CountryCode;;
+                    ad.Email        = tmpAddress.CFEADD_EContactDetail;
+                    ad.Mobile       = tmpAddress.CFEADD2_EContactDetail;
+                    ad.Phone1       = tmpAddress.CFAREA3_AreaCode + tmpAddress.CFEADD3_EContactDetail;
+                    ad.Phone2       = tmpAddress.CFAREA4_AreaCode + tmpAddress.CFEADD4_EContactDetail;
+                    ad.LastMaintenanceUserID = tmpAddress.MNLUID_LastMaintenanceUserID;
+                    strToDate(ad.LastMaintenanceDateTime, strSubstring(tmpAddress.MNLTIM_LastMaintenanceTime,0,23), "yyyy-MM-dd-HH.mm.ss.SSS", "GMT+7");
+                    listAdd(responseMessage.param_Header_01.AddressList.Address,ad);
+                
+                }
+        
+                 //Response Status Info
+                responseMessage.param_Header_01.StatusInfo.Status.Success = true;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = mbase.mbaseHeader.HDRIND;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Success";
+                
+            }else{
+                //Rejected
+                //debug("AB");
+                
+                //Response Status Info
+                //Get Mbase Reject
+                list<MBASE_Reject_With_Payload_TI> aRejected = listCreate(MBASE_Reject_With_Payload_TI);
+                udrDecode("MBASE_Reject_With_Payload_Decode", aRejected, mbase.data);
+                MBASE_Reject_With_Payload_TI rejected = listGet(aRejected,0);
+                
+                responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = rejected.mbaseReject.ErrorCode;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = baToStr(rejected.errorDesc, "IBM-Thai");
+            }
+        }else{
+                if(strStartsWith(tcpResponse.I13MSTA, ".DSP")){
+                    //Response Stattus Info
+                    string responseCodeDSP = strREReplaceAll(tcpResponse.I13MSTA, "\\.", "");
+                    responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = responseCodeDSP;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = getDSPErrorDesc(responseCodeDSP);       
+                }
+                else{
+                    //DSP Service down 
+                    responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = "CBS8999";
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Unknow data format (Invalid response from host)";     
+                }
+        }
+    }else{
+           
+                //Response Header
+                responseMessage.param_Header_01 = udrCreate(InquiryAddressListResponse$Header);
+                date responseTransactinDatetime = dateCreateCopy(responseMessage.param_Header.TransactionDateTime);
+                dateSetTimeZone(responseTransactinDatetime, "GMT+7");       
+                responseMessage.param_Header_01.ReferenceNo = responseMessage.param_Header.ReferenceNo;
+                responseMessage.param_Header_01.TransactionDateTime = responseTransactinDatetime;
+                responseMessage.param_Header_01.ChannelID = responseMessage.param_Header.ChannelID;
+                //Response StatusInfo
+                responseMessage.param_Header_01.StatusInfo = udrCreate(InquiryAddressListResponse$Header$StatusInfo);
+                responseMessage.param_Header_01.StatusInfo.Status = udrCreate(InquiryAddressListResponse$Header$StatusInfo$Status);
+                responseMessage.param_Header_01.StatusInfo.Status.UsageTime = dateCreateNowMilliseconds()-requestMillisec;
+                responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = "CBS8990";
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Connection to CBS lost";
+    }
+    return responseMessage;
+}
+
+//Set Response Message GetMailingAddress
+WSCycle_getMailingAddress responseMessage_GetMailingAddress(WSCycle_getMailingAddress responseMessage,DSP_Header_TgIn tcpResponse,date requestDatetime, long requestMillisec,boolean errorUDR){ 
+    if(errorUDR==false){
+        list<MBASE_Header_With_Payload_TI> aList = listCreate(MBASE_Header_With_Payload_TI);
+        udrDecode("MBASE_Header_With_Payload_Decode", aList, tcpResponse.data);
+        MBASE_Header_With_Payload_TI mbase = listGet(aList,0);
+        //debug("MBase Data:" + baToStr(mbase.data, "IBM-Thai")); 
+        bytearray refilled = refillTrimedColumn(mbase.data,1995);
+        //debug("MBase Data:" + baToStr(refilled, "IBM-Thai"));
+        //debug("refilled : " + baToStr(refilled,"IBM-Thai"));
+        //debug("testing: " + getMessageString("Testing",10));
+    
+        //Response Header
+        responseMessage.param_Header_01 = udrCreate(GetMailingAddressResponse$Header);
+        date responseTransactinDatetime = dateCreateCopy(responseMessage.param_Header.TransactionDateTime);
+        dateSetTimeZone(responseTransactinDatetime, "GMT+7");       
+        responseMessage.param_Header_01.ReferenceNo = responseMessage.param_Header.ReferenceNo;
+        responseMessage.param_Header_01.TransactionDateTime = responseTransactinDatetime;
+        responseMessage.param_Header_01.ChannelID = responseMessage.param_Header.ChannelID;
+    
+        //Response StatusInfo
+        responseMessage.param_Header_01.StatusInfo = udrCreate(GetMailingAddressResponse$Header$StatusInfo);
+        responseMessage.param_Header_01.StatusInfo.Status = udrCreate(GetMailingAddressResponse$Header$StatusInfo$Status);
+        responseMessage.param_Header_01.StatusInfo.Status.UsageTime = dateCreateNowMilliseconds()-requestMillisec;
+    
+         //Request Data AccountList 
+        if(!strStartsWith(tcpResponse.I13MSTA, ".DSP")){
+            if(mbase.mbaseHeader.HDRIND == "AA"){
+                //Success
+                //debug("AA");
+        
+                //response content list
+                list<MBASE_CFC152580_RS_TI> addressList = listCreate(MBASE_CFC152580_RS_TI);
+                list<MBASE_CFC152580_RS_TI> tmpMailingList = listCreate(MBASE_CFC152580_RS_TI);
+                udrDecode("MBASE_CFC152580_RS_Decode", addressList, refilled);
+                //debug(addressList);
+                
+                for(MBASE_CFC152580_RS_TI address: addressList){
+                    if (address.CFADTP_AddressType == "M"){
+                        MBASE_CFC152580_RS_TI tmpAddress = udrCreate(MBASE_CFC152580_RS_TI);
+                        
+                        tmpAddress.CFADFM_AddressFormat = getStringValue(address.CFADFM_AddressFormat);
+                        tmpAddress.CFADTP_AddressType = getStringValue(address.CFADTP_AddressType);
+                        tmpAddress.CFABUI_Building = getStringValue(address.CFABUI_Building);
+                        tmpAddress.CFCOUN_CountryCode = getStringValue(address.CFCOUN_CountryCode);
+                        tmpAddress.CFCIFN_CustomerNumber = padCustomerNumber(getStringValue(address.CFCIFN_CustomerNumber),9);
+                        tmpAddress.CFDFC1_DistrictCode = getStringValue(address.CFDFC1_DistrictCode);
+                        //responseMessage.param_Header_01.AddressInfo.Address.FloorNumber = "";
+                        tmpAddress.CFHMNO_HouseNumber = getStringValue(address.CFHMNO_HouseNumber);
+                        tmpAddress.MNLUID_LastMaintenanceUserID = getStringValue(address.MNLUID_LastMaintenanceUserID);
+                        tmpAddress.MNLTIM_LastMaintenanceTime = getStringValue(address.MNLTIM_LastMaintenanceTime);
+                        //tmpAddress.CFEDD2_Mobile = getStringValue(address.CFEDD2_Mobile);
+                        tmpAddress.CFAMOO_MOO = getStringValue(address.CFAMOO_MOO);
+                        tmpAddress.CFAFLR_Floor = getStringValue(address.CFAFLR_Floor);
+                        tmpAddress.CFAROM_Room = getStringValue(address.CFAROM_Room);
+                        //tmpAddress.CFEDD3_Phone1 = getStringValue(address.CFEDD3_Phone1);
+                        //tmpAddress.CFEDD4_Phone2 = getStringValue(address.CFEDD4_Phone2);
+                        tmpAddress.CFZIP_PostalCode = getStringValue(address.CFZIP_PostalCode);
+                        tmpAddress.CFAPRO_Province = getStringValue(address.CFAPRO_Province);
+                        tmpAddress.CFSTAT_StateCode = getStringValue(address.CFSTAT_StateCode);
+                        tmpAddress.CFAROD_Road = getStringValue(address.CFAROD_Road);
+                        //responseMessage.param_Header_01.AddressInfo.Address.RoomNumber = "";
+                        tmpAddress.CFZSEQ_SequenceNumber = getStringValue(address.CFZSEQ_SequenceNumber);
+                        tmpAddress.CFASOI_Soi = getStringValue(address.CFASOI_Soi);
+                        tmpAddress.CFDFC2_SubDistrictCode = getStringValue(address.CFDFC2_SubDistrictCode);
+                        
+                        tmpAddress.CFZSEQ1_SequenceNumber = getStringValue(address.CFZSEQ1_SequenceNumber);
+                        tmpAddress.CFAREA_AreaCode = getStringValue(address.CFAREA_AreaCode);
+                        tmpAddress.CFEADD_EContactDetail = getStringValue(address.CFEADD_EContactDetail);
+                        tmpAddress.CFEEXT_ContactExtensionNo = getStringValue(address.CFEEXT_ContactExtensionNo);
+                        tmpAddress.MNLUIDC_LastMaintenanceUserID = getStringValue(address.MNLUIDC_LastMaintenanceUserID);
+                        tmpAddress.MNLTIMC_LastMaintenanceTime = getStringValue(address.MNLTIMC_LastMaintenanceTime);
+                        
+                        tmpAddress.CFZSEQ2_SequenceNumber = getStringValue(address.CFZSEQ2_SequenceNumber);
+                        tmpAddress.CFAREA2_AreaCode = getStringValue(address.CFAREA2_AreaCode);
+                        tmpAddress.CFEADD2_EContactDetail = getStringValue(address.CFEADD2_EContactDetail);
+                        tmpAddress.CFEEXT2_ContactExtensionNo = getStringValue(address.CFEEXT2_ContactExtensionNo);
+                        tmpAddress.MNLUIDD_LastMaintenanceUserID = getStringValue(address.MNLUIDD_LastMaintenanceUserID);
+                        tmpAddress.MNLTIMD_LastMaintenanceTime = getStringValue(address.MNLTIMD_LastMaintenanceTime);
+                        
+                        tmpAddress.CFZSEQ3_SequenceNumber = getStringValue(address.CFZSEQ3_SequenceNumber);
+                        tmpAddress.CFAREA3_AreaCode = getStringValue(address.CFAREA3_AreaCode);
+                        tmpAddress.CFEADD3_EContactDetail = getStringValue(address.CFEADD3_EContactDetail);
+                        tmpAddress.CFEEXT3_ContactExtensionNo = getStringValue(address.CFEEXT3_ContactExtensionNo);
+                        tmpAddress.MNLUIDE_LastMaintenanceUserID = getStringValue(address.MNLUIDE_LastMaintenanceUserID);
+                        tmpAddress.MNLTIME_LastMaintenanceTime = getStringValue(address.MNLTIME_LastMaintenanceTime);
+                        
+                        tmpAddress.CFZSEQ4_SequenceNumber = getStringValue(address.CFZSEQ4_SequenceNumber);
+                        tmpAddress.CFAREA4_AreaCode = getStringValue(address.CFAREA4_AreaCode);
+                        tmpAddress.CFEADD4_EContactDetail = getStringValue(address.CFEADD4_EContactDetail);
+                        tmpAddress.CFEEXT4_ContactExtensionNo = getStringValue(address.CFEEXT4_ContactExtensionNo);
+                        tmpAddress.MNLUIDF_LastMaintenanceUserID = getStringValue(address.MNLUIDF_LastMaintenanceUserID);
+                        tmpAddress.MNLTIMF_LastMaintenanceTime = getStringValue(address.MNLTIMF_LastMaintenanceTime);
+                        
+                        listAdd(tmpMailingList,tmpAddress);
+                    }
+                }
+                
+                //debug("Address list size:" + listSize(tmpMailingList));
+                if (listSize(tmpMailingList) > 0){
+                    //Address Info
+                    responseMessage.param_Header_01.AddressInfo = udrCreate(GetMailingAddressResponse$Header$AddressInfo);
+                    responseMessage.param_Header_01.AddressInfo.Address = udrCreate(GetMailingAddressResponse$Header$AddressInfo$Address);
+        
+                    MBASE_CFC152580_RS_TI mailing = listGet(tmpMailingList,0);
+                    debug(mailing);
+                    responseMessage.param_Header_01.AddressInfo.Address.AddressFormat = mailing.CFADFM_AddressFormat;
+                    responseMessage.param_Header_01.AddressInfo.Address.AddressType = mailing.CFADTP_AddressType;
+                    //responseMessage.param_Header_01.AddressInfo.Address.AddressType = "Mailing";
+                    responseMessage.param_Header_01.AddressInfo.Address.Building = mailing.CFABUI_Building;
+                    responseMessage.param_Header_01.AddressInfo.Address.CountryCode = mailing.CFCOUN_CountryCode;
+                    responseMessage.param_Header_01.AddressInfo.Address.CustomerNumber = padCustomerNumber(getStringValue(mailing.CFCIFN_CustomerNumber),9);
+                    responseMessage.param_Header_01.AddressInfo.Address.DistrictCode = mailing.CFDFC1_DistrictCode;
+                    responseMessage.param_Header_01.AddressInfo.Address.FloorNumber = "";
+                    responseMessage.param_Header_01.AddressInfo.Address.HouseNumber = mailing.CFHMNO_HouseNumber;
+                    //2018-05-12-12.58.56.278000
+                    if (strLength(mailing.MNLTIM_LastMaintenanceTime)>0){
+                        strToDate(responseMessage.param_Header_01.AddressInfo.Address.LastMaintenanceDateTime, strSubstring(mailing.MNLTIM_LastMaintenanceTime,0,23), "yyyy-MM-dd-HH.mm.ss.SSS","GMT+7"); 
+                    }
+                    //dateSetTimeZone(LastMaintenanceDatetime, "GMT+7");
+                    responseMessage.param_Header_01.AddressInfo.Address.LastMaintenanceUserID = mailing.MNLUID_LastMaintenanceUserID;
+                    //responseMessage.param_Header_01.AddressInfo.Address.MobilePhone = mailing.CFEDD2_Mobile;
+                    responseMessage.param_Header_01.AddressInfo.Address.Moo = mailing.CFAMOO_MOO;
+                    responseMessage.param_Header_01.AddressInfo.Address.FloorNumber = mailing.CFAFLR_Floor;
+                    responseMessage.param_Header_01.AddressInfo.Address.RoomNumber = mailing.CFAROM_Room;
+                    //responseMessage.param_Header_01.AddressInfo.Address.Phone1 = mailing.CFEDD3_Phone1;
+                    //responseMessage.param_Header_01.AddressInfo.Address.Phone2 = mailing.CFEDD4_Phone2;
+                    responseMessage.param_Header_01.AddressInfo.Address.PostalCode = mailing.CFZIP_PostalCode;
+                    //responseMessage.param_Header_01.AddressInfo.Address.ProvinceCode = mailing.CFAPRO_Province;
+                    responseMessage.param_Header_01.AddressInfo.Address.ProvinceCode = mailing.CFSTAT_StateCode;
+                    responseMessage.param_Header_01.AddressInfo.Address.Road = mailing.CFAROD_Road;
+                    strToLong(responseMessage.param_Header_01.AddressInfo.Address.Seq,mailing.CFZSEQ_SequenceNumber);
+                    responseMessage.param_Header_01.AddressInfo.Address.Soi = mailing.CFASOI_Soi;
+                    responseMessage.param_Header_01.AddressInfo.Address.SubDistrictCode = mailing.CFDFC2_SubDistrictCode;
+                    
+                    //Email Info
+                    if (mailing.CFZSEQ1_SequenceNumber != "00000"){
+                        responseMessage.param_Header_01.EmailInfo = udrCreate(GetMailingAddressResponse$Header$EmailInfo);
+                        responseMessage.param_Header_01.EmailInfo.Contact = udrCreate(GetMailingAddressResponse$Header$EmailInfo$Contact);
+                        responseMessage.param_Header_01.EmailInfo.Contact.ContactDetail = mailing.CFEADD_EContactDetail;
+                        responseMessage.param_Header_01.EmailInfo.Contact.Extension = mailing.CFEEXT_ContactExtensionNo;
+                        //2018-05-12-12.59.23.770000
+                        if (strLength(mailing.MNLTIMC_LastMaintenanceTime)>0){
+                            strToDate(responseMessage.param_Header_01.EmailInfo.Contact.LastMaintenanceDateTime, strSubstring(mailing.MNLTIMC_LastMaintenanceTime,0,23), "yyyy-MM-dd-HH.mm.ss.SSS", "GMT+7"); 
+                        }
+                        responseMessage.param_Header_01.EmailInfo.Contact.LastMaintenanceUserID = mailing.MNLUIDC_LastMaintenanceUserID;
+                        strToLong(responseMessage.param_Header_01.EmailInfo.Contact.Seq, mailing.CFZSEQ1_SequenceNumber);
+                    }
+                    
+                    //Mobile Info
+                    if (mailing.CFZSEQ2_SequenceNumber != "00000"){
+                        responseMessage.param_Header_01.MobileInfo = udrCreate(GetMailingAddressResponse$Header$MobileInfo);
+                        responseMessage.param_Header_01.MobileInfo.Contact = udrCreate(GetMailingAddressResponse$Header$MobileInfo$Contact);
+                        responseMessage.param_Header_01.MobileInfo.Contact.ContactDetail = mailing.CFEADD2_EContactDetail;
+                        responseMessage.param_Header_01.MobileInfo.Contact.Extension = mailing.CFEEXT2_ContactExtensionNo;
+                        if (strLength(mailing.MNLTIMD_LastMaintenanceTime)>0){
+                            strToDate(responseMessage.param_Header_01.MobileInfo.Contact.LastMaintenanceDateTime, strSubstring(mailing.MNLTIMD_LastMaintenanceTime,0,23), "yyyy-MM-dd-HH.mm.ss.SSS", "GMT+7"); 
+                        }
+                        responseMessage.param_Header_01.MobileInfo.Contact.LastMaintenanceUserID = mailing.MNLUIDD_LastMaintenanceUserID;
+                        strToLong(responseMessage.param_Header_01.MobileInfo.Contact.Seq, mailing.CFZSEQ2_SequenceNumber);
+                    }
+                    
+                    //Phone1 Info
+                    if (mailing.CFZSEQ3_SequenceNumber != "00000"){
+                        responseMessage.param_Header_01.Phone1Info = udrCreate(GetMailingAddressResponse$Header$Phone1Info);
+                        responseMessage.param_Header_01.Phone1Info.Contact = udrCreate(GetMailingAddressResponse$Header$Phone1Info$Contact);
+                        responseMessage.param_Header_01.Phone1Info.Contact.ContactDetail = mailing.CFAREA3_AreaCode + mailing.CFEADD3_EContactDetail;
+                        responseMessage.param_Header_01.Phone1Info.Contact.Extension = mailing.CFEEXT3_ContactExtensionNo;
+                        if (strLength(mailing.MNLTIME_LastMaintenanceTime)>0){
+                            strToDate(responseMessage.param_Header_01.Phone1Info.Contact.LastMaintenanceDateTime, strSubstring(mailing.MNLTIME_LastMaintenanceTime,0,23), "yyyy-MM-dd-HH.mm.ss.SSS", "GMT+7"); 
+                        }
+                        responseMessage.param_Header_01.Phone1Info.Contact.LastMaintenanceUserID = mailing.MNLUIDE_LastMaintenanceUserID;
+                        strToLong(responseMessage.param_Header_01.Phone1Info.Contact.Seq, mailing.CFZSEQ3_SequenceNumber);    
+                    }
+        
+                    //Phone2 Info
+                    if (mailing.CFZSEQ4_SequenceNumber != "00000"){
+                        responseMessage.param_Header_01.Phone2Info = udrCreate(GetMailingAddressResponse$Header$Phone2Info);
+                        responseMessage.param_Header_01.Phone2Info.Contact = udrCreate(GetMailingAddressResponse$Header$Phone2Info$Contact);
+                        responseMessage.param_Header_01.Phone2Info.Contact.ContactDetail = mailing.CFAREA4_AreaCode + mailing.CFEADD4_EContactDetail;
+                        responseMessage.param_Header_01.Phone2Info.Contact.Extension = mailing.CFEEXT4_ContactExtensionNo;
+                        if (strLength(mailing.MNLTIMF_LastMaintenanceTime)>0){
+                            strToDate(responseMessage.param_Header_01.Phone2Info.Contact.LastMaintenanceDateTime, strSubstring(mailing.MNLTIMF_LastMaintenanceTime,0,23), "yyyy-MM-dd-HH.mm.ss.SSS", "GMT+7"); 
+                        }
+                        responseMessage.param_Header_01.Phone2Info.Contact.LastMaintenanceUserID = mailing.MNLUIDF_LastMaintenanceUserID;
+                        strToLong(responseMessage.param_Header_01.Phone2Info.Contact.Seq, mailing.CFZSEQ4_SequenceNumber);    
+                    }
+        
+                    //Response Status Info
+                    responseMessage.param_Header_01.StatusInfo.Status.Success = true;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = mbase.mbaseHeader.HDRIND;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Success";
+                }else{
+                    responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = "MBM2001";
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "CFC152580:No records found.";
+                }  
+            }else{
+                //Rejected
+                //debug("AB");
+                
+                //Response Status Info
+                //Get Mbase Reject
+                list<MBASE_Reject_With_Payload_TI> aRejected = listCreate(MBASE_Reject_With_Payload_TI);
+                udrDecode("MBASE_Reject_With_Payload_Decode", aRejected, mbase.data);
+                MBASE_Reject_With_Payload_TI rejected = listGet(aRejected,0);
+                
+                responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = rejected.mbaseReject.ErrorCode;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = baToStr(rejected.errorDesc, "IBM-Thai");
+            }
+        }else{
+                if(strStartsWith(tcpResponse.I13MSTA, ".DSP")){
+                    //Response Stattus Info
+                    string responseCodeDSP = strREReplaceAll(tcpResponse.I13MSTA, "\\.", "");
+                    responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = responseCodeDSP;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = getDSPErrorDesc(responseCodeDSP);       
+                }
+                else{
+                    //DSP Service down 
+                    responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = "CBS8999";
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Unknow data format (Invalid response from host)";     
+                }
+        }
+    }else{
+           
+                //Response Header
+                responseMessage.param_Header_01 = udrCreate(GetMailingAddressResponse$Header);
+                date responseTransactinDatetime = dateCreateCopy(responseMessage.param_Header.TransactionDateTime);
+                dateSetTimeZone(responseTransactinDatetime, "GMT+7");       
+                responseMessage.param_Header_01.ReferenceNo = responseMessage.param_Header.ReferenceNo;
+                responseMessage.param_Header_01.TransactionDateTime = responseTransactinDatetime;
+                responseMessage.param_Header_01.ChannelID = responseMessage.param_Header.ChannelID;
+                //Response StatusInfo
+                responseMessage.param_Header_01.StatusInfo = udrCreate(GetMailingAddressResponse$Header$StatusInfo);
+                responseMessage.param_Header_01.StatusInfo.Status = udrCreate(GetMailingAddressResponse$Header$StatusInfo$Status);
+                responseMessage.param_Header_01.StatusInfo.Status.UsageTime = dateCreateNowMilliseconds()-requestMillisec;
+                responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = "CBS8990";
+    }
+    return responseMessage;
+}
+
+bytearray responseByteArray_GetMailingAddress(DSP_Header_TgIn tcpResponse){ 
+    bytearray returnGetMailing;
+    list<MBASE_Header_With_Payload_TI> aList = listCreate(MBASE_Header_With_Payload_TI);
+    udrDecode("MBASE_Header_With_Payload_Decode", aList, tcpResponse.data);
+    MBASE_Header_With_Payload_TI mbase = listGet(aList,0);
+    bytearray refilled = refillTrimedColumn(mbase.data,1995);
+    
+     //Request Data AccountList 
+        if(mbase.mbaseHeader.HDRIND == "AA"){
+            //Success
+            //debug("AA");
+            //response content list
+            list<MBASE_CFC152580_RS_TI> tmpMailingList = listCreate(MBASE_CFC152580_RS_TI);
+            list<MBASE_CFC152580_RS_TI> addressList = listCreate(MBASE_CFC152580_RS_TI);
+            udrDecode("MBASE_CFC152580_RS_Decode", addressList, refilled);
+            
+            for(MBASE_CFC152580_RS_TI address: addressList){
+                if (address.CFADTP_AddressType == "M"){
+                    MBASE_CFC152580_RS_TI tmpAddress = udrCreate(MBASE_CFC152580_RS_TI);
+                    
+                    tmpAddress.CFADFM_AddressFormat = getStringValue(address.CFADFM_AddressFormat);
+                    tmpAddress.CFADTP_AddressType = getStringValue(address.CFADTP_AddressType);
+                    tmpAddress.CFABUI_Building = getStringValue(address.CFABUI_Building);
+                    tmpAddress.CFCOUN_CountryCode = getStringValue(address.CFCOUN_CountryCode);
+                    tmpAddress.WDEFLT_DefaultAddress = getStringValue(address.WDEFLT_DefaultAddress);
+                    tmpAddress.CFCIFN_CustomerNumber = getStringValue(address.CFCIFN_CustomerNumber);
+                    tmpAddress.CFDFC1_DistrictCode = getStringValue(address.CFDFC1_DistrictCode);
+                    tmpAddress.CFBADA_InsufficientAddressContact = getStringValue(address.CFBADA_InsufficientAddressContact);
+                    //responseMessage.param_Header_01.AddressInfo.Address.FloorNumber = "";
+                    tmpAddress.CFHMNO_HouseNumber = getStringValue(address.CFHMNO_HouseNumber);
+                    tmpAddress.MNLUID_LastMaintenanceUserID = getStringValue(address.MNLUID_LastMaintenanceUserID);
+                    tmpAddress.MNLTIM_LastMaintenanceTime = getStringValue(address.MNLTIM_LastMaintenanceTime);
+                    //tmpAddress.CFEDD2_Mobile = getStringValue(address.CFEDD2_Mobile);
+                    tmpAddress.CFAMOO_MOO = getStringValue(address.CFAMOO_MOO);
+                    tmpAddress.CFAFLR_Floor = getStringValue(address.CFAFLR_Floor);
+                    tmpAddress.CFAROM_Room = getStringValue(address.CFAROM_Room);
+                    //tmpAddress.CFEDD3_Phone1 = getStringValue(address.CFEDD3_Phone1);
+                    //tmpAddress.CFEDD4_Phone2 = getStringValue(address.CFEDD4_Phone2);
+                    tmpAddress.CFZIP_PostalCode = getStringValue(address.CFZIP_PostalCode);
+                    tmpAddress.CFAPRO_Province = getStringValue(address.CFAPRO_Province);
+                    tmpAddress.CFSTAT_StateCode = getStringValue(address.CFSTAT_StateCode);
+                    tmpAddress.CFAROD_Road = getStringValue(address.CFAROD_Road);
+                    //responseMessage.param_Header_01.AddressInfo.Address.RoomNumber = "";
+                    tmpAddress.CFZSEQ_SequenceNumber = getStringValue(address.CFZSEQ_SequenceNumber);
+                    tmpAddress.CFASOI_Soi = getStringValue(address.CFASOI_Soi);
+                    tmpAddress.CFDFC2_SubDistrictCode = getStringValue(address.CFDFC2_SubDistrictCode);
+                    
+                    tmpAddress.CFZSEQ1_SequenceNumber = getStringValue(address.CFZSEQ1_SequenceNumber);
+                    tmpAddress.CFAREA_AreaCode = getStringValue(address.CFAREA_AreaCode);
+                    tmpAddress.CFEADD_EContactDetail = getStringValue(address.CFEADD_EContactDetail);
+                    tmpAddress.CFEEXT_ContactExtensionNo = getStringValue(address.CFEEXT_ContactExtensionNo);
+                    tmpAddress.MNLUIDC_LastMaintenanceUserID = getStringValue(address.MNLUIDC_LastMaintenanceUserID);
+                    tmpAddress.MNLTIMC_LastMaintenanceTime = getStringValue(address.MNLTIMC_LastMaintenanceTime);
+                    
+                    tmpAddress.CFZSEQ2_SequenceNumber = getStringValue(address.CFZSEQ2_SequenceNumber);
+                    tmpAddress.CFAREA2_AreaCode = getStringValue(address.CFAREA2_AreaCode);
+                    tmpAddress.CFEADD2_EContactDetail = getStringValue(address.CFEADD2_EContactDetail);
+                    tmpAddress.CFEEXT2_ContactExtensionNo = getStringValue(address.CFEEXT2_ContactExtensionNo);
+                    tmpAddress.MNLUIDD_LastMaintenanceUserID = getStringValue(address.MNLUIDD_LastMaintenanceUserID);
+                    tmpAddress.MNLTIMD_LastMaintenanceTime = getStringValue(address.MNLTIMD_LastMaintenanceTime);
+                    
+                    tmpAddress.CFZSEQ3_SequenceNumber = getStringValue(address.CFZSEQ3_SequenceNumber);
+                    tmpAddress.CFAREA3_AreaCode = getStringValue(address.CFAREA3_AreaCode);
+                    tmpAddress.CFEADD3_EContactDetail = getStringValue(address.CFEADD3_EContactDetail);
+                    tmpAddress.CFEEXT3_ContactExtensionNo = getStringValue(address.CFEEXT3_ContactExtensionNo);
+                    tmpAddress.MNLUIDE_LastMaintenanceUserID = getStringValue(address.MNLUIDE_LastMaintenanceUserID);
+                    tmpAddress.MNLTIME_LastMaintenanceTime = getStringValue(address.MNLTIME_LastMaintenanceTime);
+                    
+                    tmpAddress.CFZSEQ4_SequenceNumber = getStringValue(address.CFZSEQ4_SequenceNumber);
+                    tmpAddress.CFAREA4_AreaCode = getStringValue(address.CFAREA4_AreaCode);
+                    tmpAddress.CFEADD4_EContactDetail = getStringValue(address.CFEADD4_EContactDetail);
+                    tmpAddress.CFEEXT4_ContactExtensionNo = getStringValue(address.CFEEXT4_ContactExtensionNo);
+                    tmpAddress.MNLUIDF_LastMaintenanceUserID = getStringValue(address.MNLUIDF_LastMaintenanceUserID);
+                    tmpAddress.MNLTIMF_LastMaintenanceTime = getStringValue(address.MNLTIMF_LastMaintenanceTime);
+                    listAdd(tmpMailingList,tmpAddress);
+                }
+            }
+            
+            //debug("Address list size:" + listSize(tmpMailingList));
+            if (listSize(tmpMailingList) > 0){
+                MBASE_CFC152580_RS_TI mailing = listGet(tmpMailingList,0);
+                MBASE_CFC152580_RS_TI Address = udrCreate(MBASE_CFC152580_RS_TI);
+                    
+                Address.CFCIFN_CustomerNumber = mailing.CFCIFN_CustomerNumber;
+                Address.CFZSEQ_SequenceNumber = mailing.CFZSEQ_SequenceNumber;
+                Address.CFADFM_AddressFormat = mailing.CFADFM_AddressFormat;
+                Address.CFADTP_AddressType = mailing.CFADTP_AddressType;
+                /*Address.CFNA2_AddressLine1 = mailing.CFNA2_AddressLine1;
+                Address.CFNA3_AddressLine2 = mailing.CFNA3_AddressLine2;
+                Address.CFNA4_AddressLine3 = mailing.CFNA4_AddressLine3;
+                Address.CFNA5_AddressLine4 = mailing.CFNA5_AddressLine4;
+                Address.CFNA6_AddressLine5 = mailing.CFNA6_AddressLine5;
+                Address.CFNA7_AddressLine6 = mailing.CFNA7_AddressLine6;
+                Address.CFNA8_AddressLine7 = mailing.CFNA8_AddressLine7;*/
+                Address.CFBADA_InsufficientAddressContact = mailing.CFBADA_InsufficientAddressContact;
+                Address.CFRMKS_Remarks = mailing.CFRMKS_Remarks;
+                Address.CFZIP_PostalCode = mailing.CFZIP_PostalCode;
+                Address.CFSTAT_StateCode = mailing.CFSTAT_StateCode;
+                Address.CFCOUN_CountryCode = mailing.CFCOUN_CountryCode;
+                Address.WDEFLT_DefaultAddress = mailing.WDEFLT_DefaultAddress;
+                Address.WACLNK_AccountLinked = mailing.WACLNK_AccountLinked;
+                Address.WCONTL_AccountLinked = mailing.WCONTL_AccountLinked;
+                Address.CFSSNO_IDNumber = mailing.CFSSNO_IDNumber;
+                Address.WCFNA1A_PrimaryFirstName = mailing.WCFNA1A_PrimaryFirstName;
+                Address.WCFNA1B_PrimaryLastName = mailing.WCFNA1B_PrimaryLastName;
+                Address.WCFNA2A_SecondaryName1 = mailing.WCFNA2A_SecondaryName1;
+                Address.WCFNA2B_SecondaryName2 = mailing.WCFNA2B_SecondaryName2;
+                Address.WCFNA2C_SecondaryName3 = mailing.WCFNA2C_SecondaryName3;
+                Address.CFHMNO_HouseNumber = mailing.CFHMNO_HouseNumber;
+                Address.CFAMOO_MOO = mailing.CFAMOO_MOO;
+                Address.CFAFLR_Floor = mailing.CFAFLR_Floor;
+                Address.CFAROM_Room = mailing.CFAROM_Room;
+                Address.CFASOI_Soi = mailing.CFASOI_Soi;
+                Address.CFABUI_Building = mailing.CFABUI_Building;
+                Address.CFAROD_Road = mailing.CFAROD_Road;
+                Address.CFAPRO_Province = mailing.CFAPRO_Province;
+                Address.CFDFC2_SubDistrictCode = mailing.CFDFC2_SubDistrictCode;
+                Address.CFDFC1_DistrictCode = mailing.CFDFC1_DistrictCode;
+                //responseMessage.param_Header_01.AddressInfo.Address.FloorNumber = "";
+                Address.MNLUIDF_LastMaintenanceUserID = mailing.MNLUID_LastMaintenanceUserID;
+                Address.MNLTIMF_LastMaintenanceTime = mailing.MNLTIM_LastMaintenanceTime;
+                //Address.CFEADD_eMail = mailing.CFEADD_eMail;
+                //Address.CFEDD2_Mobile = mailing.CFEDD2_Mobile;
+                //Address.CFEDD3_Phone1 = mailing.CFEDD3_Phone1;
+                //Address.CFEDD4_Phone2 = mailing.CFEDD4_Phone2;
+                
+                returnGetMailing = udrEncode("MBASE_CFC152580_RS_Encode", Address);
+            }
+        }
+    return returnGetMailing;
+}
+
+WSCycle_updateMailingAddress responseMessage_UpdateMailingAddress(WSCycle_updateMailingAddress responseMessage,DSP_Header_TgIn tcpResponse,date requestDatetime, long requestMillisec,boolean errorUDR){  
+    if(errorUDR==false){  
+        list<MBASE_Header_With_Payload_TI> aList = listCreate(MBASE_Header_With_Payload_TI);
+        udrDecode("MBASE_Header_With_Payload_Decode", aList, tcpResponse.data);
+        MBASE_Header_With_Payload_TI mbase = listGet(aList,0);
+        //debug(mbase);
+        debug("MBase Header:" + mbase.mbaseHeader);
+        //debug("MBase Data:" + baToStr(mbase.data, "IBM-Thai")); 
+        
+        
+        //Response Header
+        responseMessage.param_Header_01 = udrCreate(UpdateMailingAddressResponse$Header);
+        date responseTransactinDatetime = dateCreateCopy(responseMessage.param_Header.TransactionDateTime);
+        dateSetTimeZone(responseTransactinDatetime, "GMT+7");       
+        responseMessage.param_Header_01.ReferenceNo = responseMessage.param_Header.ReferenceNo;
+        responseMessage.param_Header_01.TransactionDateTime = responseTransactinDatetime;
+        responseMessage.param_Header_01.ChannelID = responseMessage.param_Header.ChannelID;
+    
+        //Response StatusInfo
+        responseMessage.param_Header_01.StatusInfo = udrCreate(UpdateMailingAddressResponse$Header$StatusInfo);
+        responseMessage.param_Header_01.StatusInfo.Status = udrCreate(UpdateMailingAddressResponse$Header$StatusInfo$Status);
+        responseMessage.param_Header_01.StatusInfo.Status.UsageTime = dateCreateNowMilliseconds()-requestMillisec;
+    
+         //Request Data AccountList 
+        if(!strStartsWith(tcpResponse.I13MSTA, ".DSP")){
+            if(mbase.mbaseHeader.HDRIND == "AA"){
+                //Success
+                debug("AA");
+                 //Response Status Info
+                responseMessage.param_Header_01.StatusInfo.Status.Success = true;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = mbase.mbaseHeader.HDRIND;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Success";
+                
+            }else{
+                //Rejected
+                debug("AB");
+                //Response Status Info
+                //Get Mbase Reject
+                list<MBASE_Reject_With_Payload_TI> aRejected = listCreate(MBASE_Reject_With_Payload_TI);
+                udrDecode("MBASE_Reject_With_Payload_Decode", aRejected, mbase.data);
+                MBASE_Reject_With_Payload_TI rejected = listGet(aRejected,0);
+                
+                responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = rejected.mbaseReject.ErrorCode;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = baToStr(rejected.errorDesc, "IBM-Thai");
+            }
+        }else{
+                if(strStartsWith(tcpResponse.I13MSTA, ".DSP")){
+                    //Response Stattus Info
+                    string responseCodeDSP = strREReplaceAll(tcpResponse.I13MSTA, "\\.", "");
+                    responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = responseCodeDSP;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = getDSPErrorDesc(responseCodeDSP);       
+                }
+                else{
+                    //DSP Service down 
+                    responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = "CBS8999";
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Unknow data format (Invalid response from host)";     
+                }
+        }
+    }else{
+           
+                //Response Header
+                responseMessage.param_Header_01 = udrCreate(UpdateMailingAddressResponse$Header);
+                date responseTransactinDatetime = dateCreateCopy(responseMessage.param_Header.TransactionDateTime);
+                dateSetTimeZone(responseTransactinDatetime, "GMT+7");       
+                responseMessage.param_Header_01.ReferenceNo = responseMessage.param_Header.ReferenceNo;
+                responseMessage.param_Header_01.TransactionDateTime = responseTransactinDatetime;
+                responseMessage.param_Header_01.ChannelID = responseMessage.param_Header.ChannelID;
+                //Response StatusInfo
+                responseMessage.param_Header_01.StatusInfo = udrCreate(UpdateMailingAddressResponse$Header$StatusInfo);
+                responseMessage.param_Header_01.StatusInfo.Status = udrCreate(UpdateMailingAddressResponse$Header$StatusInfo$Status);
+                responseMessage.param_Header_01.StatusInfo.Status.UsageTime = dateCreateNowMilliseconds()-requestMillisec;
+                responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = "CBS8990";
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Connection to CBS lost";
+    }    
+    return responseMessage;    
+}
+    
+WSCycle_updateContact responseMessage_UpdateContact(WSCycle_updateContact responseMessage,DSP_Header_TgIn tcpResponse,long requestMillisec,boolean errorUDR){  
+    if(errorUDR==false){
+        list<MBASE_Header_With_Payload_TI> aList = listCreate(MBASE_Header_With_Payload_TI);
+        udrDecode("MBASE_Header_With_Payload_Decode", aList, tcpResponse.data);
+        MBASE_Header_With_Payload_TI mbase = listGet(aList,0);
+        //debug(mbase);
+        //debug("MBase Header:" + mbase.mbaseHeader);
+        //debug("MBase Data:" + baToStr(mbase.data, "IBM-Thai")); 
+        
+        
+        //Response Header
+        responseMessage.param_Header_01 = udrCreate(UpdateContactResponse$Header);
+        date responseTransactinDatetime = dateCreateCopy(responseMessage.param_Header.TransactionDateTime);
+        dateSetTimeZone(responseTransactinDatetime, "GMT+7");       
+        responseMessage.param_Header_01.ReferenceNo = responseMessage.param_Header.ReferenceNo;
+        responseMessage.param_Header_01.TransactionDateTime = responseTransactinDatetime;
+        responseMessage.param_Header_01.ChannelID = responseMessage.param_Header.ChannelID;
+    
+        //Response StatusInfo
+        responseMessage.param_Header_01.StatusInfo = udrCreate(UpdateContactResponse$Header$StatusInfo);
+        responseMessage.param_Header_01.StatusInfo.Status = udrCreate(UpdateContactResponse$Header$StatusInfo$Status);
+        responseMessage.param_Header_01.StatusInfo.Status.UsageTime = dateCreateNowMilliseconds()-requestMillisec;
+    
+         //Request Data AccountList 
+        if(!strStartsWith(tcpResponse.I13MSTA, ".DSP")){
+            if(mbase.mbaseHeader.HDRIND == "AA"){
+                //Success
+                debug("AA");
+                 //Response Status Info
+                responseMessage.param_Header_01.StatusInfo.Status.Success = true;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = mbase.mbaseHeader.HDRIND;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Success";
+                
+            }else{
+                //Rejected
+                debug("AB");
+                //Response Status Info
+                //Get Mbase Reject
+                list<MBASE_Reject_With_Payload_TI> aRejected = listCreate(MBASE_Reject_With_Payload_TI);
+                udrDecode("MBASE_Reject_With_Payload_Decode", aRejected, mbase.data);
+                MBASE_Reject_With_Payload_TI rejected = listGet(aRejected,0);
+                
+                responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = rejected.mbaseReject.ErrorCode;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = baToStr(rejected.errorDesc, "IBM-Thai");
+            }
+        }else{
+                if(strStartsWith(tcpResponse.I13MSTA, ".DSP")){
+                    //Response Stattus Info
+                    string responseCodeDSP = strREReplaceAll(tcpResponse.I13MSTA, "\\.", "");
+                    responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = responseCodeDSP;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = getDSPErrorDesc(responseCodeDSP);       
+                }
+                else{
+                    //DSP Service down 
+                    responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = "CBS8999";
+                    responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Unknow data format (Invalid response from host)";     
+                }
+        }
+    }else{
+           
+                //Response Header
+                responseMessage.param_Header_01 = udrCreate(UpdateContactResponse$Header);
+                date responseTransactinDatetime = dateCreateCopy(responseMessage.param_Header.TransactionDateTime);
+                dateSetTimeZone(responseTransactinDatetime, "GMT+7");       
+                responseMessage.param_Header_01.ReferenceNo = responseMessage.param_Header.ReferenceNo;
+                responseMessage.param_Header_01.TransactionDateTime = responseTransactinDatetime;
+                responseMessage.param_Header_01.ChannelID = responseMessage.param_Header.ChannelID;
+                //Response StatusInfo
+                responseMessage.param_Header_01.StatusInfo = udrCreate(UpdateContactResponse$Header$StatusInfo);
+                responseMessage.param_Header_01.StatusInfo.Status = udrCreate(UpdateContactResponse$Header$StatusInfo$Status);
+                responseMessage.param_Header_01.StatusInfo.Status.UsageTime = dateCreateNowMilliseconds()-requestMillisec;
+                responseMessage.param_Header_01.StatusInfo.Status.Success = false;
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseCode = "CBS8990";
+                responseMessage.param_Header_01.StatusInfo.Status.ResponseMessage = "Connection to CBS lost";
+    }
+    return responseMessage;
+}
+
+]]></string>
+</exportmultiplex>

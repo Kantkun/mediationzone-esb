@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE pythonmodule_profile SYSTEM "jar:/mz/dtd/pythonmodule_profile.dtd">
+<pythonmodule_profile category="Internal">
+   <storable name="pythonmodule_profile" storable-id="dr.Configuration" ver="6.0">
+      <array classname="java.lang.String" name="Access Groups -read -write -execute" size="3">
+         <string name="0" value="All"/>
+         <string name="1" value="Administrator"/>
+         <string name="2" value="All"/>
+      </array>
+      <storable name="Auxiliary Data" null="true"/>
+      <string name="Current Comment" null="true"/>
+      <storable name="Data" storable-id="dr.PythonModuleData" ver="1.0">
+         <object name="Source Code">
+            <storable name="Object Internal" storable-id="dr.DRGeneratedFromContract$Field$FieldWrapper" ver="1.0">
+               <object name="Value">
+                  <string name="Object Internal"><![CDATA[#import
+import platform
+import ftplib
+import pysftp
+import os
+import socket
+import xlrd
+from python.CM.PYM_Common import *
+
+#ftp server configuration
+server = 'cbsftpp01.ghb.co.th'
+user = 'AS400CMS'
+password = 'GHB#123'
+cnopts = pysftp.CnOpts()
+cnopts.hostkeys = None
+#client ftp folder
+destination = '/home/mzadmin/mzdata/CMS_FTP'
+
+
+def downloadFile(folder,excelFile):
+    try:
+        debug(server)
+        ftp = pysftp.Connection(host=server, username=user, password=password, port=22, cnopts=cnopts)
+    except Exception as e:
+        print 'ERROR: cannot reach "%s"' % server 
+        return 'ERROR: cannot reach "%s"' % server  
+    print '*** Connected to host "%s"' % server
+    print '*** Logged in as "%s"' % user
+    
+    try:
+        #current working directory ('cwd')
+        ftp.cwd(folder)
+    except Exception as e:
+        print 'ERROR: cannot CD to "%s"' % folder
+        ftp.close()
+        return 'ERROR: cannot CD to "%s"' % folder
+    print '*** Changed to "%s" folder' % folder
+    
+    try:
+        #files = open(os.path.join(destination, excelFile),'wb')
+        #files = open(os.path.join(check_makePath(folder), excelFile),'wb')
+        #ftp.retrbinary('RETR ' + excelFile, files.write) 
+        ftp.get(excelFile, os.path.join(destination, excelFile))    
+    except Exception as e:
+        print 'ERROR: cannot *read* file "%s"' % excelFile
+        return 'Cannot *read* file: %s' % excelFile
+        os.unlink(excelFile)
+    else:
+        print '*** Downloaded "%s" to CWD' % excelFile
+        
+    ftp.close()
+    #files.close()
+    return 'S'
+
+def uploadFile(folder,fileName):
+    try:
+        debug(server)
+        ftp = pysftp.Connection(host=server, username=user, password=password, port=22, cnopts=cnopts)
+    except Exception as e:
+        print 'ERROR: cannot reach "%s"' % server
+        return
+    print '*** Connected to host "%s"' % server
+    print '*** Logged in as "%s"' % user
+    
+    try:
+        files = open(os.path.join(destination, fileName),'rb')
+        ftp.putfo(files, str(os.path.join(folder, fileName)))
+        #ftp.put(str(os.path.join(destination, fileName)),str(os.path.join(folder, fileName)))          
+    except Exception as e:
+        print 'ERROR SFTP: '+str(e)
+        print 'ERROR: cannot read file(In Upload) "%s"' % fileName
+        os.unlink(fileName)
+    else:
+        print '*** Uploaded "%s" to CWD' % fileName
+    ftp.close()
+    files.close() 
+    
+def writeFile(stringToWrite,fileName):
+    files = open(os.path.join(destination, fileName),'w+')
+    files.write('%s\r\n' % stringToWrite)
+    files.close()
+    print 'Write File Successful'    
+#end ftp function   
+#===============================================================================================
+
+#check file type
+def CheckFileTypeSupported(excelFile):
+    #print excelFile
+    #print str(excelFile).rfind('.xlsx')
+    #if (str(excelFile).rfind('.xlsx') > 0):
+    #    print 'File type (.xlsx) is not supported.'
+    #    return 'File type (.xlsx) is not supported.'
+    #else:
+    #    print 'Supported'
+    #    return 'S'
+    if (str(excelFile)=="" or str(excelFile)==None):
+        print 'must select Excel file.'     
+        return 'must select Excel file.'
+        
+    if (str(excelFile).lower().rfind('.xlsx') > 0):
+        print 'File type is not supported.'
+        return 'File type is not supported.'      
+    else:
+        print 'Supported'
+        return 'S'
+#end check file type
+
+
+
+#convert file function
+def ReadTemplate_1(folder,excelFile,fileName,date): #Company Type
+    defaultSize = 50
+    indexColumn = 0
+    indexRow = 0
+    line = 0
+    fileName = fileName
+    stringValue = ""
+    stringList = []
+    errorMessage = ""
+    column = None
+    
+    #check supported type
+    errTypeMessage = CheckFileTypeSupported(excelFile)
+    if(errTypeMessage!='S'):
+        return errTypeMessage
+    
+    #download file from ftp server
+    errFileMessage = downloadFile(folder,excelFile)
+    if(errFileMessage!='S'):
+        return errFileMessage
+    
+    
+    try:
+        #open workbook
+        book = xlrd.open_workbook(destination + '/' + excelFile)
+        #read from sheet1
+        objSheet = book.sheet_by_index(0)
+        #dump(xlrd)
+        while indexRow < objSheet.nrows:
+            stringInrow = ""
+            line = line+1
+            if(objSheet.cell(indexRow,0).value=='') or (objSheet.cell(indexRow,0).value is None):
+                break
+            if(line==1):
+                stringInrow = "H"
+                column=1 
+                stringInrow = stringAppend(stringInrow,stringPadding("H",objSheet.cell(indexRow,0).value,"Text",defaultSize,None)) 
+                column=2
+                stringInrow = stringAppend(stringInrow,stringPadding("H",objSheet.cell(indexRow,1).value,"Text",defaultSize,None))
+                column=3
+                stringInrow = stringAppend(stringInrow,stringPadding("H",objSheet.cell(indexRow,2).value,"Text",defaultSize,None))
+                column=4
+                stringInrow = stringAppend(stringInrow,stringPadding("H",objSheet.cell(indexRow,3).value,"Text",defaultSize,None))
+                stringList.append(stringInrow)
+            else:
+                stringInrow = "\r\n" 
+                stringInrow = stringInrow+"D"
+                column=1
+                stringInrow = stringAppend(stringInrow,stringPadding("D",objSheet.cell(indexRow,0),"Account",defaultSize,None))
+                column=2
+                stringInrow = stringAppend(stringInrow,stringPadding("D",objSheet.cell(indexRow,1).value,"Amount",defaultSize,None))
+                column=3
+                stringInrow = stringAppend(stringInrow,stringPadding("D",objSheet.cell(indexRow,2).value,"Fee1",defaultSize,None))
+                column=4
+                stringInrow = stringAppend(stringInrow,stringPadding("D",objSheet.cell(indexRow,3).value,"Text",defaultSize,None))
+                stringList.append(stringInrow)
+            indexRow = indexRow+1
+            #print "Success Row : "+str(indexRow) 
+                 
+        stringInrow = "\r\n" 
+        stringInrow = stringInrow+"T" 
+        stringInrow = stringAppend(stringInrow,stringPadding("T",'',"Text",defaultSize,None))
+        stringInrow = stringAppend(stringInrow,stringPadding("T",objSheet.cell(indexRow,1).value,"Amount",defaultSize,None))         
+        stringInrow = stringAppend(stringInrow,stringPadding("T",'',"Text",defaultSize,None))
+        stringInrow = stringAppend(stringInrow,stringPadding("T",'',"Text",defaultSize,None)) 
+        stringList.append(stringInrow)
+        
+        #print stringValue         
+        writeFile("".join(stringList).encode('cp874','strict'),fileName)
+        uploadFile(folder,fileName)
+        print 'End'
+        return 'C'
+        #Exception('I know Python!')
+    except ValueError as e: #when Amount = Null
+        print e
+        #return 'Invalid Format'
+        return 'Invalid Format at Line '+str(line)+' and Column '+str(column)
+    except Exception as e:
+        print e
+        #return str(e)
+        #return 'Invalid Template'
+        return 'Invalid Template at Line '+str(line)+' and Column '+str(column)
+
+def ReadTemplate_2(folder,excelFile,fileName): #Payroll Type
+    debug(folder)
+    defaultSize = 50
+    indexColumn = 0
+    indexRow = 0
+    line = 0
+    fileName = fileName
+    stringValue = ""
+    stringList = []
+    errorMessage = ""
+    column = None
+    
+    #check supported type
+    errTypeMessage = CheckFileTypeSupported(excelFile)
+    if(errTypeMessage!='S'):
+        return errTypeMessage
+    
+    #download file from ftp server
+    errFileMessage = downloadFile(folder,excelFile)
+    if(errFileMessage!='S'):
+        return errFileMessage
+
+    try:
+        #open workbook
+        book = xlrd.open_workbook(destination + '/' + excelFile)
+        #read from sheet1
+        objSheet = book.sheet_by_index(0)
+        #dump(objSheet)
+        #print "NumRow :" + str(objSheet.nrows)
+        while indexRow < objSheet.nrows:
+            stringInrow = ""
+            line = line+1
+            if(line==1):
+                stringInrow = "H"
+                column=1
+                stringInrow = stringAppend(stringInrow,stringPadding("H",objSheet.cell(indexRow,0).value,"Text",defaultSize,None))
+                column=2
+                stringInrow = stringAppend(stringInrow,stringPadding("H",objSheet.cell(indexRow,1).value,"Text",defaultSize,None))
+                column=3
+                stringInrow = stringAppend(stringInrow,stringPadding("H",objSheet.cell(indexRow,2).value,"Text",defaultSize,None))
+                column=4
+                stringInrow = stringAppend(stringInrow,stringPadding("H",objSheet.cell(indexRow,3).value,"Text",defaultSize,None))
+                column=5
+                stringInrow = stringAppend(stringInrow,stringPadding("H",objSheet.cell(indexRow,4).value,"Text",defaultSize,None))
+                column=6
+                stringInrow = stringAppend(stringInrow,stringPadding("H",objSheet.cell(indexRow,5).value,"Text",defaultSize,None))
+                column=7
+                stringInrow = stringAppend(stringInrow,stringPadding("H",objSheet.cell(indexRow,6).value,"Text",defaultSize,None))  
+                stringList.append(stringInrow)     
+            else:
+                stringInrow = "\r\n" 
+                stringInrow = stringInrow+"D"
+                #print objSheet.cell(indexRow,0).ctype
+                column=1
+                stringInrow = stringAppend(stringInrow,stringPadding("D",objSheet.cell(indexRow,0).value,"Date",defaultSize,book)) 
+                column=2
+                stringInrow = stringAppend(stringInrow,stringPadding("D",objSheet.cell(indexRow,1),"Account",defaultSize,None))
+                column=3
+                stringInrow = stringAppend(stringInrow,stringPadding("D",objSheet.cell(indexRow,2).value,"Text",defaultSize,None))
+                column=4
+                stringInrow = stringAppend(stringInrow,stringPadding("D",objSheet.cell(indexRow,3).value,"Amount",defaultSize,None))
+                column=5
+                stringInrow = stringAppend(stringInrow,stringPadding("D",objSheet.cell(indexRow,4).value,"Date",defaultSize,book))
+                column=6
+                stringInrow = stringAppend(stringInrow,stringPadding("D",objSheet.cell(indexRow,5).value,"Text",defaultSize,None))
+                column=7
+                stringInrow = stringAppend(stringInrow,stringPadding("D",objSheet.cell(indexRow,6).value,"Fee2",defaultSize,None))
+                stringList.append(stringInrow)  
+            indexRow = indexRow+1
+            
+        writeFile("".join(stringList).encode('cp874','strict'),fileName)
+        uploadFile(folder,fileName)
+        
+        print 'End' 
+        return 'C'
+    except ValueError as e: #when Amount = Null
+        print e
+        #return 'Invalid Format'
+        return 'Invalid Format at Line '+str(line)+' and Column '+str(column)
+    except Exception as e:
+        #return str(e)
+        #return 'Invalid Template'
+        return 'Invalid Template at Line '+str(line)+' and Column '+str(column)
+       
+#end convert file function   ]]></string>
+               </object>
+            </storable>
+         </object>
+         <boolean name="Source Code active" value="true"/>
+         <string name="Source Code extref key" null="true"/>
+         <enum name="Source Code fit" storable-id="dr.DRFieldInstanceType" value="FINAL"/>
+         <boolean name="Source Code mod" value="false"/>
+         <boolean name="Source Code pres" value="true"/>
+      </storable>
+      <string name="Folder" value="CM"/>
+      <boolean name="Is Dirty" value="false"/>
+      <boolean name="Is Encrypted" value="false"/>
+      <boolean name="Is Locked" value="false"/>
+      <boolean name="Is Valid" value="true"/>
+      <string name="Key" value="MZ1523932482256"/>
+      <string name="Modified By" value="mzadmin"/>
+      <long name="Modified Date" value="1574244724327"/>
+      <string name="Name" value="PYM_CMService"/>
+      <string name="Owner" value="mzadmin"/>
+      <string name="Type" value="Python Module"/>
+      <int name="Version" value="40"/>
+      <string name="documentation" value=""/>
+      <string name="parameters" value=""/>
+   </storable>
+</pythonmodule_profile>
